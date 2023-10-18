@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vsla/signup.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -14,6 +15,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
@@ -44,7 +46,8 @@ class _LoginState extends State<Login> {
                   child: Text(
                     "Sign in to your account",
                     style: GoogleFonts.poppins(
-                        fontSize: 24, fontWeight: FontWeight.w700),
+                        fontSize: screenWidth * 0.07,
+                        fontWeight: FontWeight.w700),
                   ),
                 ),
               ),
@@ -61,7 +64,7 @@ class _LoginState extends State<Login> {
                     Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
@@ -104,10 +107,11 @@ class _LoginState extends State<Login> {
                     Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                        border: Border.all(color: Colors.grey.shade300),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
+                        obscuringCharacter: "*",
                         focusNode: pinFocus,
                         onTapOutside: (event) {
                           pinFocus.unfocus();
@@ -150,7 +154,7 @@ class _LoginState extends State<Login> {
                           ),
                           child: Center(
                             child: Text(
-                              "Login",
+                              "LOGIN",
                               style: GoogleFonts.playfairDisplay(
                                 color:
                                     Colors.white, // You can use your color here
@@ -169,53 +173,43 @@ class _LoginState extends State<Login> {
                             color: Colors.grey[500], fontSize: 15),
                       ),
                     ),
-                    Center(
-                      child: RichText(
-                          text: TextSpan(children: <TextSpan>[
-                        TextSpan(
-                            text: "Don't have an account?",
-                            style: GoogleFonts.poppins(
-                                fontSize: 15, color: Colors.grey[700])),
-                        TextSpan(
-                            text: " SIGN UP ",
-                            style: GoogleFonts.poppins(
-                                fontSize: 15, color: Colors.orange))
-                      ])),
-                    ),
                   ],
                 ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.04,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    width: MediaQuery.of(context).size.width * 0.20,
                     decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(10)),
-                    child: Image(
+                    child: const Image(
                         image: AssetImage(
                       "assets/images/google.png",
                     )),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
+                    height: MediaQuery.of(context).size.height * 0.07,
                     width: MediaQuery.of(context).size.width * 0.20,
                     decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(10)),
-                    child: Image(
+                    child: const Image(
                         fit: BoxFit.contain,
-                        height: 50,
+                        height: 60,
                         width: 50,
                         image: AssetImage(
                           "assets/images/facebook.png",
                         )),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    width: MediaQuery.of(context).size.width * 0.20,
                     decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(10)),
@@ -225,7 +219,31 @@ class _LoginState extends State<Login> {
                     )),
                   ),
                 ],
-              )
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.04,
+              ),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Signup()));
+                  },
+                  child: RichText(
+                      text: TextSpan(children: <TextSpan>[
+                    TextSpan(
+                        text: "Don't have an account?",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: Colors.grey[700])),
+                    TextSpan(
+                        text: " SIGN UP ",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: Colors.orange))
+                  ])),
+                ),
+              ),
             ],
           ),
         ),
