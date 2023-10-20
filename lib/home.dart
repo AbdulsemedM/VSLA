@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.2,
                     child: const Image(
                         image: AssetImage("assets/images/CARE.png")),
@@ -76,8 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     Container(
                         width: MediaQuery.of(context).size.width * 0.6,
                         height: MediaQuery.of(context).size.height * 0.08,
-                        child:
-                            Image(image: AssetImage("assets/images/coop.png")))
+                        child: const Image(
+                            image: AssetImage("assets/images/coop.png")))
                   ],
                 )
               ],

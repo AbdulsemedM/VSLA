@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vsla/Pages/home1.dart';
 import 'package:vsla/signup.dart';
 
 class Login extends StatefulWidget {
@@ -144,6 +145,10 @@ class _LoginState extends State<Login> {
                       child: GestureDetector(
                         onTap: () {
                           // login();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Home1()));
                         },
                         child: Container(
                           padding: EdgeInsets.all(
