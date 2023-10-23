@@ -1,3 +1,4 @@
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,6 +11,19 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   // FocusNode phoneFocus = FocusNode();
+  late SingleValueDropDownController _cnt;
+
+  @override
+  void initState() {
+    _cnt = SingleValueDropDownController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _cnt.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,26 +235,90 @@ class _SignupState extends State<Signup> {
                     ),
                   ]),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Select a Comapny",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: DropDownTextField(
+                          // initialValue: "name4",
+                          // readOnly: false,
+                          controller: _cnt,
+                          clearOption: true,
+                          enableSearch: true,
+                          keyboardType: TextInputType.number,
+                          autovalidateMode: AutovalidateMode.always,
+                          clearIconProperty: IconProperty(color: Colors.green),
+                          searchDecoration:
+                              const InputDecoration(hintText: "Serach"),
+                          // validator: (value) {
+                          //   if (value == null || value.isEmpty) {
+                          //     return "Required field";
+                          //   } else {
+                          //     return null;
+                          //   }
+                          // },
+                          dropDownItemCount: 6,
+
+                          dropDownList: const [
+                            DropDownValueModel(name: 'name1', value: "value1"),
+                            DropDownValueModel(
+                                name: 'name2',
+                                value: "value2",
+                                toolTipMsg:
+                                    "DropDownButton is a widget that we can use to select one unique value from a set of values"),
+                            DropDownValueModel(name: 'name3', value: "value3"),
+                            DropDownValueModel(
+                                name: 'name4',
+                                value: "value4",
+                                toolTipMsg:
+                                    "DropDownButton is a widget that we can use to select one unique value from a set of values"),
+                            DropDownValueModel(name: 'name5', value: "value5"),
+                            DropDownValueModel(name: 'name6', value: "value6"),
+                            DropDownValueModel(name: 'name7', value: "value7"),
+                            DropDownValueModel(name: 'name8', value: "value8"),
+                          ],
+                          onChanged: (val) {},
+                        ),
+                      ),
+                    ),
+                  ]),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Checkbox(
-                  checkColor: Colors.orange,
-                  value: false, // Initial value of the checkbox
+                  checkColor: Colors.black,
+                  activeColor: Colors.grey[200],
+                  value: true, // Initial value of the checkbox
                   onChanged: (newValue) {
+                    newValue = false;
                     // Handle checkbox state changes here
                   },
                 ),
                 Text(
-                  'I understood the terms and policy.',
-                  style: TextStyle(fontSize: 16),
+                  'I understood the terms and policies.',
+                  style: TextStyle(fontSize: screenWidth * 0.045),
                 ),
               ],
             ),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.2,
-                vertical: MediaQuery.of(context).size.height * 0.02,
+                vertical: MediaQuery.of(context).size.height * 0.015,
               ),
               child: GestureDetector(
                 onTap: () {
@@ -280,8 +358,8 @@ class _SignupState extends State<Signup> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  width: MediaQuery.of(context).size.width * 0.20,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.15,
                   decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(10)),
@@ -291,8 +369,8 @@ class _SignupState extends State<Signup> {
                   )),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  width: MediaQuery.of(context).size.width * 0.20,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.15,
                   decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(10)),
@@ -305,8 +383,8 @@ class _SignupState extends State<Signup> {
                       )),
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  width: MediaQuery.of(context).size.width * 0.20,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                  width: MediaQuery.of(context).size.width * 0.15,
                   decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(10)),
