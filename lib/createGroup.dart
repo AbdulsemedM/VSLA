@@ -11,6 +11,19 @@ class CreatGroup extends StatefulWidget {
 }
 
 class _CreatGroupState extends State<CreatGroup> {
+  int groupSize = 5;
+  void incrementCounter() {
+    setState(() {
+      groupSize++;
+    });
+  }
+
+  void decrementCounter() {
+    setState(() {
+      groupSize--;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     void valuechanged(_value) {}
@@ -193,11 +206,12 @@ class _CreatGroupState extends State<CreatGroup> {
       ),
     );
     TextEditingController groupSizeController = TextEditingController();
-    int groupSize = 5; // Initial group size
+    // Initial group size
 
     final groupSizeWidget = Padding(
       padding: const EdgeInsets.all(16),
       child: TextField(
+        readOnly: true,
         controller: groupSizeController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -209,7 +223,7 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
-          //labelText: groupSize.toString(),
+          labelText: groupSize.toString(),
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
           suffixIcon: Row(
@@ -219,10 +233,8 @@ class _CreatGroupState extends State<CreatGroup> {
                 icon: Icon(Icons.arrow_drop_up),
                 onPressed: () {
                   // Increase group size
-                  setState(() {
-                    groupSize++;
-                    groupSizeController.text = groupSize.toString();
-                  });
+                  incrementCounter();
+                  groupSizeController.text = '$groupSize';
                 },
               ),
               IconButton(
@@ -230,17 +242,15 @@ class _CreatGroupState extends State<CreatGroup> {
                 onPressed: () {
                   // Decrease group size, but not below 5
                   if (groupSize > 5) {
-                    setState(() {
-                      groupSize--;
-                      groupSizeController.text = groupSize.toString();
-                    });
+                    '$groupSize';
+                    decrementCounter();
+                    groupSizeController.text = '$groupSize';
                   }
                 },
               ),
             ],
           ),
         ),
-        keyboardType: TextInputType.number,
       ),
     );
     TextEditingController entryFeeController = new TextEditingController();
@@ -426,6 +436,20 @@ class _CreatGroupState extends State<CreatGroup> {
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 8, 0, 2),
+                child: Text(
+                  "Group size *",
+                  style: GoogleFonts.poppins(
+                      fontSize: 14, color: Color(0xFFF89520)),
+                ),
+              )
+            ],
           ),
           Row(
             children: [
