@@ -455,6 +455,10 @@ class _AddMemberState extends State<AddMember> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
+          confirmpassword,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
           ElevatedButton(
             onPressed: () {
               // Handle form submission

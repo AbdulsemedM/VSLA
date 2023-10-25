@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vsla/Pages/routes/home3.dart';
+import 'package:vsla/addMember.dart';
 
 class Members extends StatefulWidget {
   const Members({super.key});
@@ -97,15 +98,23 @@ class _MembersState extends State<Members> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(
-                            height: screenWidth * 0.12,
-                            width: screenWidth * 0.12,
-                            decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius:
-                                    BorderRadius.circular(screenWidth * 0.12)),
-                            child: Center(
-                              child: Icon(FontAwesomeIcons.add),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const AddMember()));
+                            },
+                            child: Container(
+                              height: screenWidth * 0.12,
+                              width: screenWidth * 0.12,
+                              decoration: BoxDecoration(
+                                  color: Colors.orange,
+                                  borderRadius: BorderRadius.circular(
+                                      screenWidth * 0.12)),
+                              child: Center(
+                                child: Icon(FontAwesomeIcons.add),
+                              ),
                             ),
                           ),
                         ],

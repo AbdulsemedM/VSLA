@@ -1,6 +1,7 @@
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vsla/Pages/home1.dart';
 
 class CreatGroup extends StatefulWidget {
   const CreatGroup({super.key});
@@ -478,6 +479,8 @@ class _CreatGroupState extends State<CreatGroup> {
           ElevatedButton(
             onPressed: () {
               // Handle form submission
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Home1()));
             },
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
@@ -491,7 +494,10 @@ class _CreatGroupState extends State<CreatGroup> {
               "Save",
               style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
             ), // Button text
-          )
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
         ]),
       )),
     );

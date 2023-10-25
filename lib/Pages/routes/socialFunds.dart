@@ -11,7 +11,17 @@ class Transactions extends StatefulWidget {
 
 class _TransactionsState extends State<Transactions> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    void valuechanged(_value) {}
     var screenWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Container(
@@ -202,6 +212,394 @@ class _TransactionsState extends State<Transactions> {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                  child: Text(
+                    "All Contributions",
+                    style: GoogleFonts.poppins(
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+                Row(
+                  children: [
+                    // Text("View by", style: GoogleFonts.poppins(fontWeight: FontWeight.w500),),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        width: screenWidth * 0.32,
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            contentPadding:
+                                EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                            labelText: "sort by",
+                            // hintText: "Choose zone/subcity",
+                            // labelStyle: GoogleFonts.poppins(
+                            //     fontSize: 14, color: Color(0xFFF89520)),
+                            // hintStyle: GoogleFonts.poppins(
+                            //     fontSize: 14, color: Color(0xFFF89520)),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: Color(0xFFF89520)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: Color(0xFFF89520)),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: Color(0xFFF89520)),
+                            ),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                          ),
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: "1000",
+                              child: Center(
+                                child: Text('Recent',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "1200",
+                              child: Center(
+                                child: Text('Amount',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "1300",
+                              child: Center(
+                                child: Text('Done',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                          ],
+                          onChanged: (_value) => valuechanged(_value),
+                          // hint: Text("Select zone",
+                          //     style: GoogleFonts.poppins(
+                          //         fontSize: 14, color: Color(0xFFF89520))),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Card(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: screenWidth * 0.05,
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                                  AssetImage("assets/images/mProfilePic.png"),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 00, 0, 8.0),
+                                      child: Text(
+                                        "Abdulsemed Mussema",
+                                        style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 0, 10, 0),
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.04,
+                                        width: screenWidth * 0.3,
+                                        decoration: BoxDecoration(
+                                            color: Colors.green[200],
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.userPlus,
+                                                color: Colors.white,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 0, 0, 0),
+                                                child: Text(
+                                                  "Recieved",
+                                                  style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Colors.white),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              " 270 Etb",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.blue[400],
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
+              ),
+            ),
+            Card(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: screenWidth * 0.05,
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                                  AssetImage("assets/images/fProfilePic.jpg"),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 00, 0, 8.0),
+                                      child: Text(
+                                        "Lina Jacob",
+                                        style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 0, 10, 0),
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.04,
+                                        width: screenWidth * 0.3,
+                                        decoration: BoxDecoration(
+                                            color: Colors.green[200],
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.userPlus,
+                                                color: Colors.white,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 0, 0, 0),
+                                                child: Text(
+                                                  "Recieved",
+                                                  style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Colors.white),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              " 270 Etb",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.blue[400],
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
+              ),
+            ),
+            Card(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: screenWidth * 0.05,
+                              backgroundColor: Colors.white,
+                              backgroundImage:
+                                  AssetImage("assets/images/fProfilePic.jpg"),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 00, 0, 8.0),
+                                      child: Text(
+                                        "Mahlet Demeke",
+                                        style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 0, 10, 0),
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.04,
+                                        width: screenWidth * 0.3,
+                                        decoration: BoxDecoration(
+                                            color: Colors.green[200],
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.userPlus,
+                                                color: Colors.white,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        10, 0, 0, 0),
+                                                child: Text(
+                                                  "Recieved",
+                                                  style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Colors.white),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              " 270 Etb",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.blue[400],
+                                  fontWeight: FontWeight.w700),
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
+              ),
             ),
           ],
         ),
