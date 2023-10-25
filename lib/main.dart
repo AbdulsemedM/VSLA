@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vsla/createGroup.dart';
 import 'package:vsla/home.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const CreatGroup(),
     );
   }
 }
