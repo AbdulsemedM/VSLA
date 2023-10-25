@@ -1,4 +1,6 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CreatGroup extends StatefulWidget {
   const CreatGroup({super.key});
@@ -14,7 +16,7 @@ class _CreatGroupState extends State<CreatGroup> {
 
     TextEditingController groupNameController = new TextEditingController();
     final groupName = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: TextField(
         controller: groupNameController,
         decoration: InputDecoration(
@@ -28,19 +30,22 @@ class _CreatGroupState extends State<CreatGroup> {
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Group Name *",
-          labelStyle: TextStyle(color: Color(0xFFF89520)),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
       ),
     );
     final region = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           labelText: "Region *",
           hintText: "Choose Region",
-          labelStyle: TextStyle(color: Color(0xFFF89520)),
-          hintStyle: TextStyle(color: Color(0xFFF89520)),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
@@ -56,40 +61,48 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: const [
+        items: [
           DropdownMenuItem<String>(
             value: "1000",
             child: Center(
-              child: Text('Oromia', style: TextStyle(color: Color(0xFFF89520))),
+              child: Text('Oromia',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
           DropdownMenuItem<String>(
             value: "1200",
             child: Center(
-              child: Text('Amhara', style: TextStyle(color: Color(0xFFF89520))),
+              child: Text('Amhara',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
           DropdownMenuItem<String>(
             value: "1300",
             child: Center(
               child: Text('Addis Ababa',
-                  style: TextStyle(color: Color(0xFFF89520))),
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
         ],
         onChanged: (_value) => valuechanged(_value),
-        hint: Text("Select Region", style: TextStyle(color: Color(0xFFF89520))),
+        hint: Text("Select Region",
+            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
     final zone = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           labelText: "Zone/ Subcity *",
           hintText: "Choose zone/subcity",
-          labelStyle: TextStyle(color: Color(0xFFF89520)),
-          hintStyle: TextStyle(color: Color(0xFFF89520)),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
@@ -105,33 +118,40 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: const [
+        items: [
           DropdownMenuItem<String>(
             value: "1000",
             child: Center(
-              child: Text('Arsi', style: TextStyle(color: Color(0xFFF89520))),
+              child: Text('Arsi',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
           DropdownMenuItem<String>(
             value: "1200",
             child: Center(
-              child: Text('Adama', style: TextStyle(color: Color(0xFFF89520))),
+              child: Text('Adama',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
           DropdownMenuItem<String>(
             value: "1300",
             child: Center(
-              child: Text('Jimma', style: TextStyle(color: Color(0xFFF89520))),
+              child: Text('Jimma',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
         ],
         onChanged: (_value) => valuechanged(_value),
-        hint: Text("Select zone", style: TextStyle(color: Color(0xFFF89520))),
+        hint: Text("Select zone",
+            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
     TextEditingController woredaController = new TextEditingController();
     final woreda = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: TextField(
         controller: woredaController,
         decoration: InputDecoration(
@@ -145,13 +165,14 @@ class _CreatGroupState extends State<CreatGroup> {
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Woreda *",
-          labelStyle: TextStyle(color: Color(0xFFF89520)),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
       ),
     );
     TextEditingController kebeleController = new TextEditingController();
     final kebele = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: TextField(
         controller: kebeleController,
         decoration: InputDecoration(
@@ -165,15 +186,16 @@ class _CreatGroupState extends State<CreatGroup> {
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Kebele *",
-          labelStyle: TextStyle(color: Color(0xFFF89520)),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
       ),
     );
-    final groupSizeController = TextEditingController();
+    TextEditingController groupSizeController = TextEditingController();
     int groupSize = 5; // Initial group size
 
     final groupSizeWidget = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: TextField(
         controller: groupSizeController,
         decoration: InputDecoration(
@@ -186,8 +208,9 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Group Size *",
-          labelStyle: TextStyle(color: Color(0xFFF89520)),
+          //labelText: groupSize.toString(),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -221,7 +244,7 @@ class _CreatGroupState extends State<CreatGroup> {
     );
     TextEditingController entryFeeController = new TextEditingController();
     final entryFee = Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16),
       child: TextField(
         controller: entryFeeController,
         decoration: InputDecoration(
@@ -235,8 +258,90 @@ class _CreatGroupState extends State<CreatGroup> {
             borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Entry Fee",
-          labelStyle: const TextStyle(color: Color(0xFFF89520)),
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
+      ),
+    );
+    final firstMeetingDate = Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: DateTimeFormField(
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "First Meeting Date *",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintText: "Select First Meeting Date",
+        ),
+        mode: DateTimeFieldPickerMode.date,
+        onDateSelected: (DateTime value) {
+          // Handle the selected date
+        },
+      ),
+    );
+    final meetingInterval = Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          labelText: "Meeting Interval *",
+          hintText: "Choose meeting interval",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        items: [
+          DropdownMenuItem<String>(
+            value: "1000",
+            child: Center(
+              child: Text('Monthly',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "1200",
+            child: Center(
+              child: Text('Weekly',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "1300",
+            child: Center(
+              child: Text('By Weekly',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+        ],
+        onChanged: (_value) => valuechanged(_value),
+        hint: Text("Select meeting interval",
+            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
 
@@ -264,6 +369,25 @@ class _CreatGroupState extends State<CreatGroup> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
+                child: Text(
+                  "Create Group",
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
           groupName,
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
@@ -275,7 +399,7 @@ class _CreatGroupState extends State<CreatGroup> {
               ),
               const SizedBox(
                 width:
-                    16.0, // Adjust this value as needed for the gap between the widgets
+                    1.0, // Adjust this value as needed for the gap between the widgets
               ),
               Expanded(
                 child: zone,
@@ -315,6 +439,34 @@ class _CreatGroupState extends State<CreatGroup> {
                 child: entryFee,
               ),
             ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          firstMeetingDate,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          meetingInterval,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Handle form submission
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Color(0xFFF89520), // Text color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              elevation: 5,
+            ),
+            child: Text(
+              "Save",
+              style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
+            ), // Button text
           )
         ]),
       )),
