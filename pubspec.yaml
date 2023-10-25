@@ -39,6 +39,7 @@ dependencies:
   awesome_bottom_bar: ^1.2.4
   font_awesome_flutter: ^10.6.0
   dropdown_textfield: ^1.0.8
+  date_field:
 
 dev_dependencies:
   flutter_test:
