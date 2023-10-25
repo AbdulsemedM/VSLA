@@ -6,7 +6,7 @@ import 'package:vsla/Pages/routes/bank_links.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/routes/profile.dart';
 import 'package:vsla/Pages/routes/settings.dart';
-import 'package:vsla/Pages/routes/transactions.dart';
+import 'package:vsla/Pages/routes/socialFunds.dart';
 
 class Home1 extends StatefulWidget {
   const Home1({super.key});
