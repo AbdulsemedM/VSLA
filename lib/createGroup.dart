@@ -494,7 +494,10 @@ class _CreatGroupState extends State<CreatGroup> {
               "Save",
               style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
             ), // Button text
-          )
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
         ]),
       )),
     );

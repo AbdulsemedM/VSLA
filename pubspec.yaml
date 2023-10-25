@@ -40,6 +40,8 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   dropdown_textfield: ^1.0.8
   date_field:
+  dropdown_model_list: ^1.1.5
+  dropdown_plus_plus: ^0.1.0+3
 
 dev_dependencies:
   flutter_test:
