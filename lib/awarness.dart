@@ -136,7 +136,7 @@ class _AwarnessState extends State<Awarness> {
                   )
                 ],
                 options: CarouselOptions(
-                  height: 400,
+                  height: 305,
                   aspectRatio: 16 / 9,
                   viewportFraction: 0.8,
                   initialPage: 0,
@@ -144,6 +144,70 @@ class _AwarnessState extends State<Awarness> {
                   reverse: false,
                   padEnds: true,
                   autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 3),
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.3,
+                  scrollDirection: Axis.horizontal,
+                )),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
+                  child: Text(
+                    "All Videos",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            CarouselSlider(
+                items: [
+                  Column(
+                    children: [
+                      Column(
+                        children: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    20), // Adjust the radius as needed
+                                child: Image.asset(
+                                  'assets/images/mProfilePic.png',
+                                  fit: BoxFit.cover,
+                                  height: 170,
+                                  width: 150,
+                                ),
+                              )),
+                        ],
+                      ),
+                      Expanded(
+                          child: Text(
+                        "Coffee shope tips...",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, color: Color(0xFFF89520)),
+                      )),
+                    ],
+                  )
+                ],
+                options: CarouselOptions(
+                  height: 300,
+                  aspectRatio: 16 / 9,
+                  viewportFraction: 0.4,
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  padEnds: true,
+                  autoPlay: false,
                   autoPlayInterval: Duration(seconds: 3),
                   autoPlayAnimationDuration: Duration(milliseconds: 800),
                   autoPlayCurve: Curves.fastOutSlowIn,
