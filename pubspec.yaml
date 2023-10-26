@@ -42,6 +42,7 @@ dependencies:
   date_field:
   dropdown_model_list: ^1.1.5
   dropdown_plus_plus: ^0.1.0+3
+  roundcheckbox: ^2.0.5
 
 dev_dependencies:
   flutter_test:
