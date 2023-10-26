@@ -69,7 +69,7 @@ class _Home3State extends State<Home3> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 5, 8, 0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 20, 8, 0),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -168,8 +168,7 @@ class _Home3State extends State<Home3> {
                       ]),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 20),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -252,229 +251,245 @@ class _Home3State extends State<Home3> {
                         ),
                       ]),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  width: screenWidth * 0.9,
-                  decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
-                        child: GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              members = true;
-                            });
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => const Members()));
-                          },
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    width: screenWidth * 0.9,
+                    decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                members = true;
+                              });
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => const Members()));
+                            },
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  FontAwesomeIcons.userGroup,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  "Members",
+                                  style:
+                                      GoogleFonts.poppins(color: Colors.white),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
                           child: Column(
                             children: [
                               const Icon(
-                                FontAwesomeIcons.userGroup,
+                                FontAwesomeIcons.rightLeft,
                                 color: Colors.white,
                               ),
                               Text(
-                                "Members",
+                                "Transactions",
                                 style: GoogleFonts.poppins(color: Colors.white),
                               )
                             ],
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
-                        child: Column(
-                          children: [
-                            const Icon(
-                              FontAwesomeIcons.rightLeft,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "Transactions",
-                              style: GoogleFonts.poppins(color: Colors.white),
-                            )
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                FontAwesomeIcons.circleDollarToSlot,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                "Loans",
+                                style: GoogleFonts.poppins(color: Colors.white),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
-                        child: Column(
-                          children: [
-                            const Icon(
-                              FontAwesomeIcons.circleDollarToSlot,
-                              color: Colors.white,
-                            ),
-                            Text(
-                              "Loans",
-                              style: GoogleFonts.poppins(color: Colors.white),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 5,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.09,
-                      width: screenWidth * 0.22,
-                      // color: Colors.amber,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Image(
-                              image: const AssetImage(
-                                "assets/images/Awareness.png",
-                              ),
-                              width: screenWidth * 0.19,
-                              height: MediaQuery.of(context).size.height * 0.04,
-                            ),
-                          ),
-                          Text(
-                            "Awareness",
-                            style: GoogleFonts.poppins(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.09,
-                      width: screenWidth * 0.22,
-                      // color: Colors.amber,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Image(
-                              image: const AssetImage(
-                                "assets/images/Business.png",
-                              ),
-                              width: screenWidth * 0.19,
-                              height: MediaQuery.of(context).size.height * 0.04,
-                            ),
-                          ),
-                          Text(
-                            "Business",
-                            style: GoogleFonts.poppins(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.09,
-                      width: screenWidth * 0.22,
-                      // color: Colors.amber,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Image(
-                              image: const AssetImage(
-                                "assets/images/Meeting.png",
-                              ),
-                              width: screenWidth * 0.19,
-                              height: MediaQuery.of(context).size.height * 0.04,
-                            ),
-                          ),
-                          Text(
-                            "Meetings",
-                            style: GoogleFonts.poppins(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.09,
-                      width: screenWidth * 0.22,
-                      // color: Colors.amber,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Image(
-                              image: const AssetImage(
-                                "assets/images/More.png",
-                              ),
-                              width: screenWidth * 0.19,
-                              height: MediaQuery.of(context).size.height * 0.04,
-                            ),
-                          ),
-                          Text(
-                            "More",
-                            style: GoogleFonts.poppins(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                  width: screenWidth * 0.9,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.orange,
-                  ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                              child: Text(
-                                "Tip of the day",
-                                style: GoogleFonts.poppins(
-                                    color: Colors.black,
-                                    fontSize: screenWidth * 0.07,
-                                    fontWeight: FontWeight.bold),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.09,
+                        width: screenWidth * 0.22,
+                        // color: Colors.amber,
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Image(
+                                image: const AssetImage(
+                                  "assets/images/Awareness.png",
+                                ),
+                                width: screenWidth * 0.19,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
                               ),
                             ),
-                          ]),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
-                                child: Text(
-                                  "A penny saved is a penny earned",
-                                  style: GoogleFonts.poppins(
-                                      color: Colors.black,
-                                      fontSize: screenWidth * 0.035,
-                                      fontWeight: FontWeight.bold),
+                            Text(
+                              "Awareness",
+                              style: GoogleFonts.poppins(color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.09,
+                        width: screenWidth * 0.22,
+                        // color: Colors.amber,
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Image(
+                                image: const AssetImage(
+                                  "assets/images/Business.png",
                                 ),
+                                width: screenWidth * 0.19,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
                               ),
-                            ],
-                          ),
-                          Row(
-                            children: [
+                            ),
+                            Text(
+                              "Business",
+                              style: GoogleFonts.poppins(color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.09,
+                        width: screenWidth * 0.22,
+                        // color: Colors.amber,
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Image(
+                                image: const AssetImage(
+                                  "assets/images/Meeting.png",
+                                ),
+                                width: screenWidth * 0.19,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
+                              ),
+                            ),
+                            Text(
+                              "Meetings",
+                              style: GoogleFonts.poppins(color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.09,
+                        width: screenWidth * 0.22,
+                        // color: Colors.amber,
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Image(
+                                image: const AssetImage(
+                                  "assets/images/More.png",
+                                ),
+                                width: screenWidth * 0.19,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.04,
+                              ),
+                            ),
+                            Text(
+                              "More",
+                              style: GoogleFonts.poppins(color: Colors.black),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: screenWidth * 0.9,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.orange,
+                    ),
+                    child: Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                 child: Text(
-                                  "Practice thrift and save wisely. Every \npenny you save is like earning an \nextra penny, adding to your \nfinancial well-being.",
+                                  "Tip of the day",
                                   style: GoogleFonts.poppins(
                                       color: Colors.black,
-                                      fontSize: screenWidth * 0.03,
+                                      fontSize: screenWidth * 0.07,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        FontAwesomeIcons.lightbulb,
-                        size: screenWidth * 0.25,
-                      )
-                    ],
+                            ]),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 0, 6),
+                                  child: Text(
+                                    "A penny saved is a penny earned",
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.black,
+                                        fontSize: screenWidth * 0.035,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                  child: Text(
+                                    "Practice thrift and save wisely. Every \npenny you save is like earning an \nextra penny, adding to your \nfinancial well-being.",
+                                    style: GoogleFonts.poppins(
+                                        color: Colors.black,
+                                        fontSize: screenWidth * 0.03,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          FontAwesomeIcons.lightbulb,
+                          size: screenWidth * 0.25,
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Row(

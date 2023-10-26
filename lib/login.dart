@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
                           child: Center(
                             child: Text(
                               "LOGIN",
-                              style: GoogleFonts.playfairDisplay(
+                              style: GoogleFonts.poppins(
                                 color:
                                     Colors.white, // You can use your color here
                                 fontSize: 20,
