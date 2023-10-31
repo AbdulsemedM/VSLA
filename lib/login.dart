@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/createGroup.dart';
+import "package:http/http.dart" as http;
 import 'package:vsla/signup.dart';
+import 'package:vsla/utils/simplePreferences.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,8 +18,103 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool _passwordVisible = false;
+  bool loading = false;
+  TextEditingController pnumber = TextEditingController();
+  TextEditingController password = TextEditingController();
   FocusNode pinFocus = FocusNode();
   FocusNode phoneFocus = FocusNode();
+
+  login() async {
+    if (pnumber.text.length < 9 || pnumber.text == "") {
+      const message = 'Invalid phone number format';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (password.text == "") {
+      const message = 'Invalid password';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else {
+      setState(() {
+        loading = true;
+      });
+      final body = <String, String>{
+        "username": pnumber.text.toString(),
+        "password": password.text.toString(),
+      };
+      // print(body);
+      try {
+        final response = await http
+            .post(
+              Uri.http('10.1.177.121:8111', '/login'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(body),
+            )
+            .timeout(Duration(seconds: 15));
+
+        // print(response.body);
+        // print("here" + "${response.statusCode}");
+
+        if (response.statusCode == 200) {
+          // ignore: prefer_interpolation_to_compose_strings
+          final json = "[" + response.body + "]";
+          // List list = (jsonDecode(json) as List<dynamic>);
+          List<Map<String, dynamic>> dataList =
+              (jsonDecode(json) as List).cast<Map<String, dynamic>>();
+          if (dataList.isNotEmpty) {
+            Map<String, dynamic> data = dataList.first;
+            String accessToken = data['access_token'];
+            Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+            dynamic subVal = decodedToken['sub']; // Access 'sub' field
+            String sub = subVal.toString();
+            List<String> newUser = [accessToken, sub];
+            print(newUser);
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+
+            prefs.setStringList("_keyUser", newUser);
+            // List<dynamic> roles = decodedToken['roles']; // Access 'roles' field
+            // String firstRole = roles[0];
+            // dynamic expVal = decodedToken['exp']; // Access 'exp' field
+            // String exp = expVal.toString();
+          } else {
+            print('No data found in the response.');
+          }
+
+          setState(() {
+            loading = false;
+          });
+
+          // ignore: use_build_context_synchronously
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CreatGroup()));
+          setState(() {
+            loading = false;
+          });
+        } else if (response.statusCode != 200) {
+          setState(() {
+            loading = false;
+          });
+          const message = 'Invalid username or password!';
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        }
+      } catch (e) {
+        const message =
+            "Something went wrong, please Check your network connection";
+
+        // print(message);
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      } finally {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +171,7 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
+                        controller: pnumber,
                         focusNode: phoneFocus,
                         onTapOutside: (event) {
                           phoneFocus.unfocus();
@@ -112,12 +215,13 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextField(
+                        controller: password,
                         obscuringCharacter: "*",
                         focusNode: pinFocus,
                         onTapOutside: (event) {
                           pinFocus.unfocus();
                         },
-                        obscureText: true,
+                        obscureText: !_passwordVisible,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           border: InputBorder.none,
@@ -127,6 +231,21 @@ class _LoginState extends State<Login> {
                           hintText: "******",
                           hintStyle:
                               GoogleFonts.poppins(color: Colors.grey[400]),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
+                            },
+                          ),
                         ),
                         onChanged: (value) {
                           // Handle the phone number input here
@@ -137,40 +256,49 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       height: 10,
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.1,
-                        vertical: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          // login();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const CreatGroup()));
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(
-                              MediaQuery.of(context).size.height * 0.01),
-                          decoration: BoxDecoration(
-                            color: Colors.orange, // You can use your color here
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "LOGIN",
-                              style: GoogleFonts.poppins(
-                                color:
-                                    Colors.white, // You can use your color here
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                    loading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.orange,
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.1,
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.02,
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                login();
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => const CreatGroup()));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.height * 0.01),
+                                decoration: BoxDecoration(
+                                  color: Colors
+                                      .orange, // You can use your color here
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "LOGIN",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors
+                                          .white, // You can use your color here
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
                     Center(
                       child: Text(
                         "or sign in with",

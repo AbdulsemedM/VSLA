@@ -69,7 +69,7 @@ class _SignupState extends State<Signup> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
-    } else if (password.text != cpassword.text || password.text == "") {
+    } else if (password.text != cpassword.text || password.text.length < 6) {
       const message = 'Invalid password';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
