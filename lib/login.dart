@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/home1.dart';
 import 'package:vsla/createGroup.dart';
 import "package:http/http.dart" as http;
 import 'package:vsla/signup.dart';
@@ -24,6 +26,7 @@ class _LoginState extends State<Login> {
   TextEditingController password = TextEditingController();
   FocusNode pinFocus = FocusNode();
   FocusNode phoneFocus = FocusNode();
+  var registered = false;
 
   login() async {
     if (pnumber.text.length < 9 || pnumber.text == "") {
@@ -70,9 +73,19 @@ class _LoginState extends State<Login> {
             String accessToken = data['access_token'];
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
+            dynamic hasGroup = decodedToken['has-group'];
+            if (hasGroup == "NO") {
+              setState(() {
+                registered = false;
+              });
+            } else if (hasGroup == "Yes") {
+              setState(() {
+                registered = true;
+              });
+            }
+            print(decodedToken);
             String sub = subVal.toString();
             List<String> newUser = [accessToken, sub];
-            // print(newUser);
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
 
@@ -88,10 +101,13 @@ class _LoginState extends State<Login> {
           setState(() {
             loading = false;
           });
-
-          // ignore: use_build_context_synchronously
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const CreatGroup()));
+          registered
+              // ignore: use_build_context_synchronously
+              ? Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const Home1()))
+              // ignore: use_build_context_synchronously
+              : Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const CreatGroup()));
           setState(() {
             loading = false;
           });
@@ -116,263 +132,286 @@ class _LoginState extends State<Login> {
     }
   }
 
+  DateTime timeBackPressed = DateTime.now();
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    "English",
-                    style: GoogleFonts.poppins(fontSize: 15),
-                  ),
-                  const Icon(Icons.arrow_drop_down, size: 30)
-                ],
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: const Image(image: AssetImage("assets/images/vsla.png")),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Text(
-                  "Sign in to your account",
-                  style: GoogleFonts.poppins(
-                      fontSize: screenWidth * 0.07,
-                      fontWeight: FontWeight.w700),
+    return WillPopScope(
+      onWillPop: () async {
+        final difference = DateTime.now().difference(timeBackPressed);
+        final isExitWarning = difference >= Duration(seconds: 2);
+        timeBackPressed = DateTime.now();
+        if (isExitWarning) {
+          const message = 'press again to exit';
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+
+          return false;
+        } else {
+          Fluttertoast.cancel();
+          return exit(0);
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+            child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "English",
+                      style: GoogleFonts.poppins(fontSize: 15),
+                    ),
+                    const Icon(Icons.arrow_drop_down, size: 30)
+                  ],
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Phone Number",
-                    style: GoogleFonts.poppins(
-                        fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: pnumber,
-                      focusNode: phoneFocus,
-                      onTapOutside: (event) {
-                        phoneFocus.unfocus();
-                      },
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(
-                          Icons.phone_android,
-                        ),
-                        hintText: "ex: 0987654321",
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
-                      ),
-                      onChanged: (value) {
-                        // Handle the phone number input here
-                        // print('Phone Number: $value');
-                      },
-                    ),
-                  ),
-                ],
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.2,
+                child: const Image(image: AssetImage("assets/images/vsla.png")),
               ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Pin",
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.1,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    "Sign in to your account",
                     style: GoogleFonts.poppins(
-                        fontSize: 15, fontWeight: FontWeight.w600),
+                        fontSize: screenWidth * 0.07,
+                        fontWeight: FontWeight.w700),
                   ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Phone Number",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
                     ),
-                    child: TextField(
-                      controller: password,
-                      obscuringCharacter: "*",
-                      focusNode: pinFocus,
-                      onTapOutside: (event) {
-                        pinFocus.unfocus();
-                      },
-                      obscureText: !_passwordVisible,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                        ),
-                        hintText: "******",
-                        hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // Based on passwordVisible state choose the icon
-                            _passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Theme.of(context).primaryColorDark,
-                          ),
-                          onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
-                        ),
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      onChanged: (value) {
-                        // Handle the phone number input here
-                        // print('Phone Number: $value');
-                      },
+                      child: TextField(
+                        controller: pnumber,
+                        focusNode: phoneFocus,
+                        onTapOutside: (event) {
+                          phoneFocus.unfocus();
+                        },
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: const Icon(
+                            Icons.phone_android,
+                          ),
+                          hintText: "ex: 0987654321",
+                          hintStyle:
+                              GoogleFonts.poppins(color: Colors.grey[400]),
+                        ),
+                        onChanged: (value) {
+                          // Handle the phone number input here
+                          // print('Phone Number: $value');
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  loading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.orange,
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Pin",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                    Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        controller: password,
+                        obscuringCharacter: "*",
+                        focusNode: pinFocus,
+                        onTapOutside: (event) {
+                          pinFocus.unfocus();
+                        },
+                        obscureText: !_passwordVisible,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: const Icon(
+                            Icons.lock,
                           ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width * 0.1,
-                            vertical: MediaQuery.of(context).size.height * 0.02,
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              login();
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) => const CreatGroup()));
+                          hintText: "******",
+                          hintStyle:
+                              GoogleFonts.poppins(color: Colors.grey[400]),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              _passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                _passwordVisible = !_passwordVisible;
+                              });
                             },
-                            child: Container(
-                              padding: EdgeInsets.all(
-                                  MediaQuery.of(context).size.height * 0.01),
-                              decoration: BoxDecoration(
-                                color: Colors
-                                    .orange, // You can use your color here
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "LOGIN",
-                                  style: GoogleFonts.poppins(
-                                    color: Colors
-                                        .white, // You can use your color here
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          // Handle the phone number input here
+                          // print('Phone Number: $value');
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    loading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.orange,
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.1,
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.02,
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                login();
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => const CreatGroup()));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(
+                                    MediaQuery.of(context).size.height * 0.01),
+                                decoration: BoxDecoration(
+                                  color: Colors
+                                      .orange, // You can use your color here
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "LOGIN",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors
+                                          .white, // You can use your color here
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                  Center(
-                    child: Text(
-                      "or sign in with",
-                      style: GoogleFonts.poppins(
-                          color: Colors.grey[500], fontSize: 15),
+                    Center(
+                      child: Text(
+                        "or sign in with",
+                        style: GoogleFonts.poppins(
+                            color: Colors.grey[500], fontSize: 15),
+                      ),
                     ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.04,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Image(
+                        image: AssetImage(
+                      "assets/images/google.png",
+                    )),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Image(
+                        fit: BoxFit.contain,
+                        height: 60,
+                        width: 50,
+                        image: AssetImage(
+                          "assets/images/facebook.png",
+                        )),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Image(
+                        image: AssetImage(
+                      "assets/images/twitter.png",
+                    )),
                   ),
                 ],
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.04,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: const Image(
-                      image: AssetImage(
-                    "assets/images/google.png",
-                  )),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: const Image(
-                      fit: BoxFit.contain,
-                      height: 60,
-                      width: 50,
-                      image: AssetImage(
-                        "assets/images/facebook.png",
-                      )),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  width: MediaQuery.of(context).size.width * 0.15,
-                  decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: const Image(
-                      image: AssetImage(
-                    "assets/images/twitter.png",
-                  )),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.04,
-            ),
-            Center(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Signup()));
-                },
-                child: RichText(
-                    text: TextSpan(children: <TextSpan>[
-                  TextSpan(
-                      text: "Don't have an account?",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, color: Colors.grey[700])),
-                  TextSpan(
-                      text: " SIGN UP ",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, color: Colors.orange))
-                ])),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.04,
               ),
-            ),
-          ],
-        ),
-      )),
+              Center(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Signup()));
+                  },
+                  child: RichText(
+                      text: TextSpan(children: <TextSpan>[
+                    TextSpan(
+                        text: "Don't have an account?",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: Colors.grey[700])),
+                    TextSpan(
+                        text: " SIGN UP ",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: Colors.orange))
+                  ])),
+                ),
+              ),
+            ],
+          ),
+        )),
+      ),
     );
   }
 }
