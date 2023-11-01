@@ -31,7 +31,7 @@ class _SignupState extends State<Signup> {
 
 // Function to handle dropdown value changes
   void onChanged(String? value) {
-    print(value);
+    // print(value);
     setState(() {
       selectedCompany = value;
     });
@@ -74,6 +74,11 @@ class _SignupState extends State<Signup> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
+    } else if (isChecked == false) {
+      const message = 'Please agree with our policy and terms';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
     } else {
       setState(() {
         loading = true;
@@ -85,7 +90,7 @@ class _SignupState extends State<Signup> {
         "roleName": "GROUP_ADMIN",
         "companyId": selectedCompany
       };
-      print(body);
+      // print(body);
       try {
         var response = await http.post(
           Uri.http("10.1.177.121:8111", "api/v1/users"),
@@ -94,8 +99,8 @@ class _SignupState extends State<Signup> {
           },
           body: jsonEncode(body),
         );
-        print("here" + "${response.statusCode}");
-        print(response.body);
+        // print("here" + "${response.statusCode}");
+        // print(response.body);
         if (response.statusCode == 201) {
           setState(() {
             loading = false;
@@ -115,11 +120,11 @@ class _SignupState extends State<Signup> {
           final responseBody = json.decode(response.body);
           final description =
               responseBody['message']; // Extract 'description' field
-          if (description == "user already exists") {
+          if (description == "Phone number is already taken") {
             Fluttertoast.showToast(
                 msg: "This phone number is already registered", fontSize: 18);
           } else {
-            const message = 'Account Creation Faild! Try again';
+            const message = "Account creation faile please try again later.";
             Fluttertoast.showToast(msg: message, fontSize: 18);
           }
           setState(() {
@@ -136,6 +141,8 @@ class _SignupState extends State<Signup> {
       }
     }
   }
+
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -156,10 +163,10 @@ class _SignupState extends State<Signup> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.arrow_back_ios_new_sharp)),
+                      child: const Icon(Icons.arrow_back_ios_new_sharp)),
                   Image(
                       height: MediaQuery.of(context).size.height * 0.05,
-                      image: AssetImage("assets/images/vsla.png"))
+                      image: const AssetImage("assets/images/vsla.png"))
                 ],
               ),
             ),
@@ -212,7 +219,7 @@ class _SignupState extends State<Signup> {
                         ),
                         onChanged: (value) {
                           // Handle the phone number input here
-                          print('Phone Number: $value');
+                          // print('Phone Number: $value');
                         },
                       ),
                     ),
@@ -374,7 +381,7 @@ class _SignupState extends State<Signup> {
                             ),
                             onChanged: (value) {
                               // Handle the phone number input here
-                              print('Phone Number: $value');
+                              // print('Phone Number: $value');
                             },
                           ),
                         ),
@@ -438,7 +445,7 @@ class _SignupState extends State<Signup> {
                                 value: companies.companyId.toString(),
                                 child: Text(
                                   companies.companyName,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 14, color: Colors.black),
                                 ),
                               );
@@ -453,10 +460,14 @@ class _SignupState extends State<Signup> {
                 Checkbox(
                   checkColor: Colors.black,
                   activeColor: Colors.grey[200],
-                  value: true, // Initial value of the checkbox
-                  onChanged: (newValue) {
-                    newValue = false;
-                    // Handle checkbox state changes here
+                  value:
+                      isChecked, // Use the variable to determine the checkbox state
+                  onChanged: (value) {
+                    setState(() {
+                      // Use setState to rebuild the widget tree and update the UI
+                      isChecked =
+                          value!; // Update the state variable with the new checkbox state
+                    });
                   },
                 ),
                 Text(
@@ -506,7 +517,7 @@ class _SignupState extends State<Signup> {
                     GoogleFonts.poppins(color: Colors.grey[500], fontSize: 15),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
@@ -543,14 +554,14 @@ class _SignupState extends State<Signup> {
                   decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(10)),
-                  child: Image(
+                  child: const Image(
                       image: AssetImage(
                     "assets/images/twitter.png",
                   )),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: GestureDetector(
                 onTap: () {
@@ -590,7 +601,7 @@ class _SignupState extends State<Signup> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      print(data);
+      // print(data);
       List<CompanyData> newCompany = [];
 
       for (var comapany in data) {
@@ -600,10 +611,10 @@ class _SignupState extends State<Signup> {
           companyName: comapany['companyName'],
         );
         newCompany.add(companyData);
-        print(company);
+        // print(company);
       }
       company.addAll(newCompany);
-      print(company.length);
+      // print(company.length);
 
       // print(transactions[0]);
 
