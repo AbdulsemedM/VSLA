@@ -30,8 +30,8 @@ class _AddMemberState extends State<AddMember> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final String fullName = fullNameController.text;
-      final Double initialContribution =
-          initialContributionController.text as Double;
+      // final Double initialContribution =
+      // initialContributionController.text as Double;
       final String woreda = woredaController.text;
       final String phonNumber = phoneNumberController.text;
       final String kebele = kebeleController.text;
@@ -62,7 +62,7 @@ class _AddMemberState extends State<AddMember> {
         },
         body: jsonEncode(requestBody),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Home1()));
         print("saved");
@@ -529,6 +529,7 @@ class _AddMemberState extends State<AddMember> {
             ElevatedButton(
               onPressed: () {
                 // Handle form submission
+                _submitForm();
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
