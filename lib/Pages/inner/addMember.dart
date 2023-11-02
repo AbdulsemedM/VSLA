@@ -49,6 +49,7 @@ class _AddMemberState extends State<AddMember> {
           "kebele": kebele
         }
       };
+
       final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups/add-member';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
@@ -79,6 +80,17 @@ class _AddMemberState extends State<AddMember> {
   String? _validateField(String? value) {
     if (value == null || value.isEmpty) {
       return 'This field is required';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      return 'Password unmatched';
     }
     return null;
   }
@@ -396,7 +408,7 @@ class _AddMemberState extends State<AddMember> {
     final confirmpassword = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
-        validator: _validateField,
+        validator: _validateConfirmPassword,
         controller: confirmPasswordController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
