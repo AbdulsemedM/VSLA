@@ -4,6 +4,8 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/home1.dart';
 
 class AddMember extends StatefulWidget {
   const AddMember({super.key});
@@ -24,29 +26,33 @@ class _AddMemberState extends State<AddMember> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedRegion;
   String? selectedZone;
-  String? selectedProxy;
+  bool? selectedProxy;
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final String fullName = fullNameController.text;
       final Double initialContribution =
           initialContributionController.text as Double;
       final String woreda = woredaController.text;
+      final String phonNumber = phoneNumberController.text;
       final String kebele = kebeleController.text;
       final String passWord = passwordController.text;
       final Map<String, dynamic> requestBody = {
-        "groupName": groupName,
-        "groupSize": groupSize,
-        "entryFee": entryFee,
+        "fullName": fullName,
+        "password": passWord,
+        "phoneNumber": phonNumber,
+        "roleName": "USER",
+        "proxyEnabled": selectedProxy,
         "address": {
           "region": selectedRegion,
           "zone": selectedZone,
           "woreda": woreda,
-          "kebele": kebele,
+          "kebele": kebele
         }
       };
-      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
-      final String authToken =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
+      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups/add-member';
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
 
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -82,7 +88,8 @@ class _AddMemberState extends State<AddMember> {
     void valuechanged(_value) {}
     final fullName = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: fullNameController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -152,7 +159,11 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
         ],
-        onChanged: (_value) => valuechanged(_value),
+        onChanged: (value) {
+          setState(() {
+            selectedRegion = value;
+          });
+        },
         hint: Text("Select Region",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -209,7 +220,11 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
         ],
-        onChanged: (_value) => valuechanged(_value),
+        onChanged: (value) {
+          setState(() {
+            selectedZone = value;
+          });
+        },
         hint: Text("Select zone",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -217,7 +232,8 @@ class _AddMemberState extends State<AddMember> {
 
     final woreda = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: woredaController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -238,7 +254,8 @@ class _AddMemberState extends State<AddMember> {
 
     final kebele = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: kebeleController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -259,7 +276,8 @@ class _AddMemberState extends State<AddMember> {
 
     final phoneNumber = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: phoneNumberController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -321,7 +339,11 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
         ],
-        onChanged: (_value) => valuechanged(_value),
+        onChanged: (value) {
+          setState(() {
+            selectedProxy = value as bool?;
+          });
+        },
         hint: Text("yes / no",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -329,7 +351,8 @@ class _AddMemberState extends State<AddMember> {
 
     final initialContribution = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: initialContributionController,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -350,7 +373,8 @@ class _AddMemberState extends State<AddMember> {
 
     final password = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: passwordController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -371,7 +395,8 @@ class _AddMemberState extends State<AddMember> {
 
     final confirmpassword = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: confirmPasswordController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
