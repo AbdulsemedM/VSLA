@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vsla/Pages/routes/home3.dart';
-import 'package:vsla/addMember.dart';
+import 'package:vsla/Pages/inner/addMember.dart';
 
 class Members extends StatefulWidget {
   const Members({super.key});
