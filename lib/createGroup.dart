@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/home1.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,8 +42,11 @@ class _CreatGroupState extends State<CreatGroup> {
         }
       };
       final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
-      final String authToken =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
 
       final response = await http.post(
         Uri.parse(apiUrl),
