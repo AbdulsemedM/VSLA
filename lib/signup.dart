@@ -499,7 +499,7 @@ class _SignupState extends State<Signup> {
                         child: Center(
                           child: Text(
                             "SING UP",
-                            style: GoogleFonts.playfairDisplay(
+                            style: GoogleFonts.poppins(
                               color:
                                   Colors.white, // You can use your color here
                               fontSize: 20,

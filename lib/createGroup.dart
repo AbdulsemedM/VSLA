@@ -1,8 +1,12 @@
+// ignore: file_names
 import 'dart:convert';
 
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/home1.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,7 +17,27 @@ class CreatGroup extends StatefulWidget {
   State<CreatGroup> createState() => _CreatGroupState();
 }
 
+class IntervalData {
+  final int meetingIntervalId;
+  final String meetingIntervalName;
+
+  IntervalData({
+    required this.meetingIntervalId,
+    required this.meetingIntervalName,
+  });
+}
+
 class _CreatGroupState extends State<CreatGroup> {
+  String? selectedInterval;
+  void onChanged(String? value) {
+    // print(value);
+    setState(() {
+      selectedInterval = value;
+    });
+  }
+
+  String selectedDate = "";
+  List<IntervalData> interval = [];
   String? selectedRegion;
   String? selectedZone;
   TextEditingController groupNameController = new TextEditingController();
@@ -33,6 +57,8 @@ class _CreatGroupState extends State<CreatGroup> {
         "groupName": groupName,
         "groupSize": groupSize,
         "entryFee": entryFee,
+        "meetingIntervalId": selectedInterval,
+        "meetingDate": selectedDate,
         "address": {
           "region": selectedRegion,
           "zone": selectedZone,
@@ -41,8 +67,11 @@ class _CreatGroupState extends State<CreatGroup> {
         }
       };
       final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
-      final String authToken =
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
+      print(requestBody);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
 
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -52,7 +81,7 @@ class _CreatGroupState extends State<CreatGroup> {
         },
         body: jsonEncode(requestBody),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Home1()));
         print("saved");
@@ -103,6 +132,12 @@ class _CreatGroupState extends State<CreatGroup> {
     setState(() {
       groupSize--;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInterval();
   }
 
   @override
@@ -392,13 +427,17 @@ class _CreatGroupState extends State<CreatGroup> {
         ),
         mode: DateTimeFieldPickerMode.date,
         onDateSelected: (DateTime value) {
-          // Handle the selected date
+          // Format the selected date as a string
+          selectedDate = DateFormat('yyyy-MM-dd').format(value);
+          // print('Selected date: $formattedDate'); // Output: 2023-11-17
+          // Handle the formatted date as needed
         },
       ),
     );
     final meetingInterval = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
+        value: selectedInterval,
         validator: _validateField,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -423,33 +462,16 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: [
-          DropdownMenuItem<String>(
-            value: "1000",
-            child: Center(
-              child: Text('Monthly',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+        items: interval.map((IntervalData intervals) {
+          return DropdownMenuItem<String>(
+            value: intervals.meetingIntervalId.toString(),
+            child: Text(
+              intervals.meetingIntervalName,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
             ),
-          ),
-          DropdownMenuItem<String>(
-            value: "1200",
-            child: Center(
-              child: Text('Weekly',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-          DropdownMenuItem<String>(
-            value: "1300",
-            child: Center(
-              child: Text('By Weekly',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-        ],
-        onChanged: (_value) => valuechanged(_value),
+          );
+        }).toList(),
+        onChanged: onChanged,
         hint: Text("Select meeting interval",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -599,5 +621,46 @@ class _CreatGroupState extends State<CreatGroup> {
         ),
       )),
     );
+  }
+
+  Future<void> fetchInterval() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      // print(data);
+      List<IntervalData> newInterval = [];
+
+      for (var interval in data) {
+        // print(transaction.date);
+        var intervalData = IntervalData(
+          meetingIntervalId: interval['meetingIntervalId'],
+          meetingIntervalName: interval['meetingIntervalName'],
+        );
+        newInterval.add(intervalData);
+        // print(company);
+      }
+      interval.addAll(newInterval);
+      print(interval.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      var message = e.toString();
+      'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
   }
 }
