@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/home1.dart';
 
 class AddMember extends StatefulWidget {
   const AddMember({super.key});
@@ -9,14 +15,82 @@ class AddMember extends StatefulWidget {
 }
 
 class _AddMemberState extends State<AddMember> {
+  TextEditingController fullNameController = new TextEditingController();
+  TextEditingController woredaController = new TextEditingController();
+  TextEditingController kebeleController = new TextEditingController();
+  TextEditingController phoneNumberController = new TextEditingController();
+  TextEditingController initialContributionController =
+      new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
+  TextEditingController confirmPasswordController = new TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? selectedRegion;
+  String? selectedZone;
+  bool? selectedProxy;
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final String fullName = fullNameController.text;
+      final Double initialContribution =
+          initialContributionController.text as Double;
+      final String woreda = woredaController.text;
+      final String phonNumber = phoneNumberController.text;
+      final String kebele = kebeleController.text;
+      final String passWord = passwordController.text;
+      final Map<String, dynamic> requestBody = {
+        "fullName": fullName,
+        "password": passWord,
+        "phoneNumber": phonNumber,
+        "roleName": "USER",
+        "proxyEnabled": selectedProxy,
+        "address": {
+          "region": selectedRegion,
+          "zone": selectedZone,
+          "woreda": woreda,
+          "kebele": kebele
+        }
+      };
+      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups/add-member';
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestBody),
+      );
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Home1()));
+        print("saved");
+        // Successful response, handle it as needed
+        // You can navigate to a success screen or perform other actions.
+      } else {
+        print(response.body);
+        // Handle errors or failed requests
+        // You can show an error message or perform error-specific actions.
+      }
+    }
+  }
+
+  String? _validateField(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     void valuechanged(_value) {}
-    TextEditingController groupNameController = new TextEditingController();
-    final groupName = Padding(
+    final fullName = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
-        controller: groupNameController,
+      child: TextFormField(
+        validator: _validateField,
+        controller: fullNameController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
@@ -85,7 +159,11 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
         ],
-        onChanged: (_value) => valuechanged(_value),
+        onChanged: (value) {
+          setState(() {
+            selectedRegion = value;
+          });
+        },
         hint: Text("Select Region",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -142,15 +220,20 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
         ],
-        onChanged: (_value) => valuechanged(_value),
+        onChanged: (value) {
+          setState(() {
+            selectedZone = value;
+          });
+        },
         hint: Text("Select zone",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
-    TextEditingController woredaController = new TextEditingController();
+
     final woreda = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: woredaController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -168,10 +251,11 @@ class _AddMemberState extends State<AddMember> {
         ),
       ),
     );
-    TextEditingController kebeleController = new TextEditingController();
+
     final kebele = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: kebeleController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -189,10 +273,11 @@ class _AddMemberState extends State<AddMember> {
         ),
       ),
     );
-    TextEditingController phoneNumberController = new TextEditingController();
+
     final phoneNumber = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: phoneNumberController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -204,7 +289,7 @@ class _AddMemberState extends State<AddMember> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Phone number *",
+          labelText: "Phone number / Username *",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
@@ -254,16 +339,20 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
         ],
-        onChanged: (_value) => valuechanged(_value),
+        onChanged: (value) {
+          setState(() {
+            selectedProxy = value as bool?;
+          });
+        },
         hint: Text("yes / no",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
-    TextEditingController initialContributionController =
-        new TextEditingController();
+
     final initialContribution = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: initialContributionController,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -281,31 +370,11 @@ class _AddMemberState extends State<AddMember> {
         ),
       ),
     );
-    TextEditingController usernameController = new TextEditingController();
-    final username = Padding(
-      padding: const EdgeInsets.all(16),
-      child: TextField(
-        controller: usernameController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
-          ),
-          labelText: "username *",
-          labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
-        ),
-      ),
-    );
-    TextEditingController passwordController = new TextEditingController();
+
     final password = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: passwordController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -323,11 +392,11 @@ class _AddMemberState extends State<AddMember> {
         ),
       ),
     );
-    TextEditingController confirmPasswordController =
-        new TextEditingController();
+
     final confirmpassword = Padding(
       padding: const EdgeInsets.all(16),
-      child: TextField(
+      child: TextFormField(
+        validator: _validateField,
         controller: confirmPasswordController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -348,138 +417,137 @@ class _AddMemberState extends State<AddMember> {
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
+        child: Form(
+          key: _formKey,
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Icon(Icons.arrow_back_ios_new_sharp)),
+                  Image(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      image: const AssetImage("assets/images/vsla.png"))
+                ],
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(Icons.arrow_back_ios_new_sharp)),
-                Image(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    image: const AssetImage("assets/images/vsla.png"))
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
+                  child: Text(
+                    "Add Member",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
               ],
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
-                child: Text(
-                  "Add Member",
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          groupName,
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: region,
-              ),
-              const SizedBox(
-                width:
-                    1.0, // Adjust this value as needed for the gap between the widgets
-              ),
-              Expanded(
-                child: zone,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: woreda,
-              ),
-              const SizedBox(
-                width:
-                    16.0, // Adjust this value as needed for the gap between the widgets
-              ),
-              Expanded(
-                child: kebele,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          phoneNumber,
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: proxy,
-              ),
-              const SizedBox(
-                width:
-                    1.0, // Adjust this value as needed for the gap between the widgets
-              ),
-              Expanded(
-                child: initialContribution,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          username,
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          password,
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          confirmpassword,
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Handle form submission
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Color(0xFFF89520), // Text color
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              elevation: 5,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
             ),
-            child: Text(
-              "Save",
-              style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
-            ), // Button text
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-        ]),
+            fullName,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: region,
+                ),
+                const SizedBox(
+                  width:
+                      1.0, // Adjust this value as needed for the gap between the widgets
+                ),
+                Expanded(
+                  child: zone,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: woreda,
+                ),
+                const SizedBox(
+                  width:
+                      16.0, // Adjust this value as needed for the gap between the widgets
+                ),
+                Expanded(
+                  child: kebele,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: proxy,
+                ),
+                const SizedBox(
+                  width:
+                      1.0, // Adjust this value as needed for the gap between the widgets
+                ),
+                Expanded(
+                  child: initialContribution,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            phoneNumber,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            password,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            confirmpassword,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Handle form submission
+              },
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Color(0xFFF89520), // Text color
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 5,
+              ),
+              child: Text(
+                "Save",
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
+              ), // Button text
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+          ]),
+        ),
       )),
     );
   }
