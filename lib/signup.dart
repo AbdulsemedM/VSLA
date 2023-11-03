@@ -623,8 +623,8 @@ class _SignupState extends State<Signup> {
       // }
       // );
     } catch (e) {
-      var message = e.toString();
-      'Something went wrong. Please check your internet connection.';
+      var message =
+          'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }

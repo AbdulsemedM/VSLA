@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsla/Pages/home1.dart';
 
 class AddMember extends StatefulWidget {
   const AddMember({super.key});
@@ -63,10 +61,24 @@ class _AddMemberState extends State<AddMember> {
         },
         body: jsonEncode(requestBody),
       );
-      if (response.statusCode == 201) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Home1()));
+      if (response.statusCode == 200) {
+        fullNameController.clear();
+        woredaController.clear();
+        kebeleController.clear();
+        phoneNumberController.clear();
+        initialContributionController.clear();
+        passwordController.clear();
+        confirmPasswordController.clear();
+
+        // Reset dropdown selections and boolean value
+        selectedRegion = null;
+        selectedZone = null;
+        selectedProxy = null;
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => const Home1()));
         print("saved");
+        var message = 'Member added successfully!';
+        Fluttertoast.showToast(msg: message, fontSize: 18);
         // Successful response, handle it as needed
         // You can navigate to a success screen or perform other actions.
       } else {
