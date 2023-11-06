@@ -190,37 +190,43 @@ class _LoginState extends State<Login> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Phone Number",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Phone Number",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
-                      child: TextField(
-                        controller: pnumber,
-                        focusNode: phoneFocus,
-                        onTapOutside: (event) {
-                          phoneFocus.unfocus();
-                        },
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          prefixIcon: const Icon(
-                            Icons.phone_android,
-                          ),
-                          hintText: "ex: 0987654321",
-                          hintStyle:
-                              GoogleFonts.poppins(color: Colors.grey[400]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        onChanged: (value) {
-                          // Handle the phone number input here
-                          // print('Phone Number: $value');
-                        },
+                        child: TextField(
+                          controller: pnumber,
+                          focusNode: phoneFocus,
+                          onTapOutside: (event) {
+                            phoneFocus.unfocus();
+                          },
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            prefixIcon: const Icon(
+                              Icons.phone_android,
+                            ),
+                            hintText: "ex: 0987654321",
+                            hintStyle:
+                                GoogleFonts.poppins(color: Colors.grey[400]),
+                          ),
+                          onChanged: (value) {
+                            // Handle the phone number input here
+                            // print('Phone Number: $value');
+                          },
+                        ),
                       ),
                     ),
                   ],
@@ -234,54 +240,60 @@ class _LoginState extends State<Login> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Pin",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Pin",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
-                      child: TextField(
-                        controller: password,
-                        obscuringCharacter: "*",
-                        focusNode: pinFocus,
-                        onTapOutside: (event) {
-                          pinFocus.unfocus();
-                        },
-                        obscureText: !_passwordVisible,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          prefixIcon: const Icon(
-                            Icons.lock,
-                          ),
-                          hintText: "******",
-                          hintStyle:
-                              GoogleFonts.poppins(color: Colors.grey[400]),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              // Based on passwordVisible state choose the icon
-                              _passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Theme.of(context).primaryColorDark,
-                            ),
-                            onPressed: () {
-                              // Update the state i.e. toogle the state of passwordVisible variable
-                              setState(() {
-                                _passwordVisible = !_passwordVisible;
-                              });
-                            },
-                          ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        onChanged: (value) {
-                          // Handle the phone number input here
-                          // print('Phone Number: $value');
-                        },
+                        child: TextField(
+                          controller: password,
+                          obscuringCharacter: "*",
+                          focusNode: pinFocus,
+                          onTapOutside: (event) {
+                            pinFocus.unfocus();
+                          },
+                          obscureText: !_passwordVisible,
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            prefixIcon: const Icon(
+                              Icons.lock,
+                            ),
+                            hintText: "******",
+                            hintStyle:
+                                GoogleFonts.poppins(color: Colors.grey[400]),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                // Based on passwordVisible state choose the icon
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                              onPressed: () {
+                                // Update the state i.e. toogle the state of passwordVisible variable
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          onChanged: (value) {
+                            // Handle the phone number input here
+                            // print('Phone Number: $value');
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(

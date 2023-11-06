@@ -393,7 +393,7 @@ class _TransactionsState extends State<Transactions> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            " 270 Etb",
+                            " 270 ETB",
                             style: GoogleFonts.poppins(
                                 color: Colors.blue[400],
                                 fontWeight: FontWeight.w700),
@@ -493,7 +493,7 @@ class _TransactionsState extends State<Transactions> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            " 270 Etb",
+                            " 270 ETB",
                             style: GoogleFonts.poppins(
                                 color: Colors.blue[400],
                                 fontWeight: FontWeight.w700),
@@ -593,7 +593,7 @@ class _TransactionsState extends State<Transactions> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            " 270 Etb",
+                            " 270 ETB",
                             style: GoogleFonts.poppins(
                                 color: Colors.blue[400],
                                 fontWeight: FontWeight.w700),

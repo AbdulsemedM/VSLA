@@ -28,6 +28,7 @@ class _SignupState extends State<Signup> {
   late SingleValueDropDownController _cnt;
   List<CompanyData> company = [];
   String? selectedCompany;
+  String? selectedGender;
 
 // Function to handle dropdown value changes
   void onChanged(String? value) {
@@ -79,6 +80,11 @@ class _SignupState extends State<Signup> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
+    } else if (selectedGender!.isEmpty) {
+      const message = 'Gender is a mandatory field';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
     } else {
       setState(() {
         loading = true;
@@ -88,9 +94,10 @@ class _SignupState extends State<Signup> {
         "password": password.text,
         "fullName": fname.text,
         "roleName": "GROUP_ADMIN",
-        "companyId": selectedCompany
+        "companyId": selectedCompany,
+        "gender": selectedGender
       };
-      // print(body);
+      print(body);
       try {
         var response = await http.post(
           Uri.http("10.1.177.121:8111", "api/v1/users"),
@@ -188,39 +195,45 @@ class _SignupState extends State<Signup> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Name",
-                    style: GoogleFonts.poppins(
-                        fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                    child: Text(
+                      "Name",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: TextField(
-                        controller: fname,
-                        // focusNode: phoneFocus,
-                        // onTapOutside: (event) {
-                        //   phoneFocus.unfocus();
-                        // },
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          // prefixIcon: Icon(
-                          //   Icons.phone_android,
-                          // ),
-                          hintText: "ex: John Doe",
-                          hintStyle:
-                              GoogleFonts.poppins(color: Colors.grey[400]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: TextField(
+                          controller: fname,
+                          // focusNode: phoneFocus,
+                          // onTapOutside: (event) {
+                          //   phoneFocus.unfocus();
+                          // },
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            // prefixIcon: Icon(
+                            //   Icons.phone_android,
+                            // ),
+                            hintText: "ex: John Doe",
+                            hintStyle:
+                                GoogleFonts.poppins(color: Colors.grey[400]),
+                          ),
+                          onChanged: (value) {
+                            // Handle the phone number input here
+                            // print('Phone Number: $value');
+                          },
                         ),
-                        onChanged: (value) {
-                          // Handle the phone number input here
-                          // print('Phone Number: $value');
-                        },
                       ),
                     ),
                   ),
@@ -232,39 +245,128 @@ class _SignupState extends State<Signup> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Phone Number",
-                    style: GoogleFonts.poppins(
-                        fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
-                  Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(10),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                    child: Text(
+                      "Select your Gender",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: TextField(
-                        controller: pnumber,
-                        // focusNode: phoneFocus,
-                        // onTapOutside: (event) {
-                        //   phoneFocus.unfocus();
-                        // },
-                        keyboardType: TextInputType.phone,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade50),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: DropdownButtonFormField<String>(
                         decoration: InputDecoration(
-                          border: InputBorder.none,
-                          // prefixIcon: Icon(
-                          //   Icons.phone_android,
-                          // ),
-                          hintText: "ex: 0987654321",
-                          hintStyle:
-                              GoogleFonts.poppins(color: Colors.grey[400]),
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                          // labelText: "Zone/ Subcity *",
+                          // hintText: "Choose zone/subcity",
+                          labelStyle: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: const Color.fromARGB(255, 208, 208, 208)),
+                          hintStyle: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: const Color.fromARGB(255, 208, 208, 208)),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 208, 208, 208)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          filled: true,
+                          fillColor: Colors.transparent,
                         ),
-                        // onChanged: (value) {
-                        //   // Handle the phone number input here
-                        //   print('Phone Number: $value');
-                        // },
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: "MALE",
+                            child: Center(
+                              child: Text('Male',
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 14, color: Colors.black)),
+                            ),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: "FEMALE",
+                            child: Center(
+                              child: Text('Female',
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 14, color: Colors.black)),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            selectedGender = value;
+                          });
+                        },
+                        // hint: Text("Select zone",
+                        //     style: GoogleFonts.poppins(
+                        //         fontSize: 14, color: Color(0xFFF89520))),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                    child: Text(
+                      "Phone Number",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: TextField(
+                          controller: pnumber,
+                          // focusNode: phoneFocus,
+                          // onTapOutside: (event) {
+                          //   phoneFocus.unfocus();
+                          // },
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            // prefixIcon: Icon(
+                            //   Icons.phone_android,
+                            // ),
+                            hintText: "ex: 0987654321",
+                            hintStyle:
+                                GoogleFonts.poppins(color: Colors.grey[400]),
+                          ),
+                          // onChanged: (value) {
+                          //   // Handle the phone number input here
+                          //   print('Phone Number: $value');
+                          // },
+                        ),
                       ),
                     ),
                   ),
@@ -276,54 +378,60 @@ class _SignupState extends State<Signup> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Pin",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Pin",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: TextField(
-                          controller: password,
-                          obscuringCharacter: "*",
-                          // focusNode: pinFocus,
-                          // onTapOutside: (event) {
-                          //   pinFocus.unfocus();
-                          // },
-                          obscureText: !_passwordVisible,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "******",
-                            hintStyle:
-                                GoogleFonts.poppins(color: Colors.grey[400]),
-                            suffixIcon: IconButton(
-                              // tooltip: "show password",
-                              icon: Icon(
-                                // Based on passwordVisible state choose the icon
-                                _passwordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Theme.of(context).primaryColorDark,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: TextField(
+                            controller: password,
+                            obscuringCharacter: "*",
+                            // focusNode: pinFocus,
+                            // onTapOutside: (event) {
+                            //   pinFocus.unfocus();
+                            // },
+                            obscureText: !_passwordVisible,
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "******",
+                              hintStyle:
+                                  GoogleFonts.poppins(color: Colors.grey[400]),
+                              suffixIcon: IconButton(
+                                // tooltip: "show password",
+                                icon: Icon(
+                                  // Based on passwordVisible state choose the icon
+                                  _passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Theme.of(context).primaryColorDark,
+                                ),
+                                onPressed: () {
+                                  // Update the state i.e. toogle the state of passwordVisible variable
+                                  setState(() {
+                                    _passwordVisible = !_passwordVisible;
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                // Update the state i.e. toogle the state of passwordVisible variable
-                                setState(() {
-                                  _passwordVisible = !_passwordVisible;
-                                });
-                              },
                             ),
+                            // onChanged: (value) {
+                            //   // Handle the phone number input here
+                            //   print('Phone Number: $value');
+                            // },
                           ),
-                          // onChanged: (value) {
-                          //   // Handle the phone number input here
-                          //   print('Phone Number: $value');
-                          // },
                         ),
                       ),
                     ),
@@ -334,21 +442,24 @@ class _SignupState extends State<Signup> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Confirm Pin",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Confirm Pin",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: TextField(
                             controller: cpassword,
                             obscuringCharacter: "*",
@@ -364,6 +475,7 @@ class _SignupState extends State<Signup> {
                               hintStyle:
                                   GoogleFonts.poppins(color: Colors.grey[400]),
                               suffixIcon: IconButton(
+                                // tooltip: "show password",
                                 icon: Icon(
                                   // Based on passwordVisible state choose the icon
                                   _passwordVisible1
@@ -379,10 +491,10 @@ class _SignupState extends State<Signup> {
                                 },
                               ),
                             ),
-                            onChanged: (value) {
-                              // Handle the phone number input here
-                              // print('Phone Number: $value');
-                            },
+                            // onChanged: (value) {
+                            //   // Handle the phone number input here
+                            //   print('Phone Number: $value');
+                            // },
                           ),
                         ),
                       ),
@@ -394,63 +506,132 @@ class _SignupState extends State<Signup> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Select a Comapny",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(10),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Select an organization",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
                       ),
-                      child: Padding(
-                          padding: const EdgeInsets.only(left: 0),
-                          child: DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.fromLTRB(
-                                  12, 10.0, 12.0, 10.0),
-                              // labelText: "select company",
-                              // hintText: "Choose zone/subcity",
-                              // labelStyle: GoogleFonts.poppins(
-                              //     fontSize: 14, color: Color(0xFFF89520)),
-                              // hintStyle: GoogleFonts.poppins(
-                              //     fontSize: 14, color: Color(0xFFF89520)),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                            ),
-                            value:
-                                selectedCompany, // Initially selected value (can be null)
-                            onChanged:
-                                onChanged, // Function to handle value changes
-
-                            items: company.map((CompanyData companies) {
-                              return DropdownMenuItem<String>(
-                                value: companies.companyId.toString(),
-                                child: Text(
-                                  companies.companyName,
-                                  style: const TextStyle(
-                                      fontSize: 14, color: Colors.black),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade50),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.fromLTRB(
+                                    12, 10.0, 12.0, 10.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color:
+                                          Color.fromARGB(255, 208, 208, 208)),
                                 ),
-                              );
-                            }).toList(),
-                          )),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color:
+                                          Color.fromARGB(255, 208, 208, 208)),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFFF89520)),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                              ),
+                              value:
+                                  selectedCompany, // Initially selected value (can be null)
+                              onChanged:
+                                  onChanged, // Function to handle value changes
+
+                              items: company.map((CompanyData companies) {
+                                return DropdownMenuItem<String>(
+                                  value: companies.companyId.toString(),
+                                  child: Text(
+                                    companies.companyName,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                            )),
+                      ),
+                    ),
+                  ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Select a project",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade50),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.fromLTRB(
+                                    12, 10.0, 12.0, 10.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color:
+                                          Color.fromARGB(255, 208, 208, 208)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color:
+                                          Color.fromARGB(255, 208, 208, 208)),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Color(0xFFF89520)),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                              ),
+                              value:
+                                  selectedCompany, // Initially selected value (can be null)
+                              onChanged:
+                                  onChanged, // Function to handle value changes
+
+                              items: company.map((CompanyData companies) {
+                                return DropdownMenuItem<String>(
+                                  value: companies.companyId.toString(),
+                                  child: Text(
+                                    companies.companyName,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                            )),
+                      ),
                     ),
                   ]),
             ),
@@ -569,17 +750,20 @@ class _SignupState extends State<Signup> {
                     context,
                   );
                 },
-                child: RichText(
-                    text: TextSpan(children: <TextSpan>[
-                  TextSpan(
-                      text: "Have an account?",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, color: Colors.grey[700])),
-                  TextSpan(
-                      text: " SIGN IN",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, color: Colors.orange))
-                ])),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 12),
+                  child: RichText(
+                      text: TextSpan(children: <TextSpan>[
+                    TextSpan(
+                        text: "Have an account?",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: Colors.grey[700])),
+                    TextSpan(
+                        text: " SIGN IN",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: const Color(0xFFF89520)))
+                  ])),
+                ),
               ),
             ),
           ],
@@ -623,8 +807,8 @@ class _SignupState extends State<Signup> {
       // }
       // );
     } catch (e) {
-      var message = e.toString();
-      'Something went wrong. Please check your internet connection.';
+      var message =
+          'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }

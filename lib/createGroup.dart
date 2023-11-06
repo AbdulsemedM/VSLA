@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/home1.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/login.dart';
 
 class CreatGroup extends StatefulWidget {
   const CreatGroup({super.key});
@@ -478,148 +479,151 @@ class _CreatGroupState extends State<CreatGroup> {
     );
 
     return Scaffold(
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
+      body: WillPopScope(
+        onWillPop: () => _onBackButtonPressed(context),
+        child: SafeArea(
+            child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          _onBackButtonPressed(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_new_sharp)),
+                    Image(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        image: const AssetImage("assets/images/vsla.png"))
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Icon(Icons.arrow_back_ios_new_sharp)),
-                  Image(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      image: const AssetImage("assets/images/vsla.png"))
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
+                    child: Text(
+                      "Create Group",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
                 ],
               ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
-                  child: Text(
-                    "Create Group",
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            groupName,
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: region,
-                ),
-                const SizedBox(
-                  width:
-                      1.0, // Adjust this value as needed for the gap between the widgets
-                ),
-                Expanded(
-                  child: zone,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: woreda,
-                ),
-                const SizedBox(
-                  width:
-                      16.0, // Adjust this value as needed for the gap between the widgets
-                ),
-                Expanded(
-                  child: kebele,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 8, 0, 2),
-                  child: Text(
-                    "Group size *",
-                    style: GoogleFonts.poppins(
-                        fontSize: 14, color: Color(0xFFF89520)),
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: groupSizeWidget,
-                ),
-                const SizedBox(
-                  width:
-                      16.0, // Adjust this value as needed for the gap between the widgets
-                ),
-                Expanded(
-                  child: entryFee,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            firstMeetingDate,
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            meetingInterval,
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-            ElevatedButton(
-              onPressed: _submitForm,
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color(0xFFF89520), // Text color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
               ),
-              child: Text(
-                "Save",
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
-              ), // Button text
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.02,
-            ),
-          ]),
-        ),
-      )),
+              groupName,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: region,
+                  ),
+                  const SizedBox(
+                    width:
+                        1.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: zone,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: woreda,
+                  ),
+                  const SizedBox(
+                    width:
+                        16.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: kebele,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 8, 0, 2),
+                    child: Text(
+                      "Group size *",
+                      style: GoogleFonts.poppins(
+                          fontSize: 14, color: Color(0xFFF89520)),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: groupSizeWidget,
+                  ),
+                  const SizedBox(
+                    width:
+                        16.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: entryFee,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              firstMeetingDate,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              meetingInterval,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              ElevatedButton(
+                onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFFF89520), // Text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  elevation: 5,
+                ),
+                child: Text(
+                  "Save",
+                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
+                ), // Button text
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+            ]),
+          ),
+        )),
+      ),
     );
   }
 
@@ -658,9 +662,43 @@ class _CreatGroupState extends State<CreatGroup> {
       // }
       // );
     } catch (e) {
-      var message = e.toString();
-      'Something went wrong. Please check your internet connection.';
+      var message =
+          'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
+  }
+
+  Future<bool> _onBackButtonPressed(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text("Confirm Exit"),
+            content: const Text("Do you want to Logout?"),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text("No")),
+              TextButton(
+                  onPressed: () async {
+                    List<String> user = [];
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+
+                    prefs.setStringList("_keyUser", user);
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => const Login()));
+                  },
+                  child: const Text(
+                    "Yes",
+                    style: TextStyle(color: Colors.red),
+                  ))
+            ],
+          );
+        });
   }
 }
