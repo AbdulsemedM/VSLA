@@ -282,7 +282,7 @@ class _LoanState extends State<Loan> {
                                       padding: const EdgeInsets.fromLTRB(
                                           8, 0, 0, 16),
                                       child: Text(
-                                        "Lona Repayement",
+                                        "Loan Repayement",
                                         style: GoogleFonts.poppins(
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white),
@@ -431,7 +431,7 @@ class _LoanState extends State<Loan> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                         child: Text(
-                          "All Contributions",
+                          "All Transactions",
                           style: GoogleFonts.poppins(
                               fontSize: screenWidth * 0.04,
                               fontWeight: FontWeight.w700),
@@ -612,7 +612,7 @@ class _LoanState extends State<Loan> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    " 270 Etb",
+                                    " 270 ETB",
                                     style: GoogleFonts.poppins(
                                         color: Colors.blue[400],
                                         fontWeight: FontWeight.w700),
@@ -719,7 +719,7 @@ class _LoanState extends State<Loan> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    " 270 Etb",
+                                    " 270 ETB",
                                     style: GoogleFonts.poppins(
                                         color: Colors.blue[400],
                                         fontWeight: FontWeight.w700),
@@ -826,7 +826,7 @@ class _LoanState extends State<Loan> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    " 270 Etb",
+                                    " 270 ETB",
                                     style: GoogleFonts.poppins(
                                         color: Colors.blue[400],
                                         fontWeight: FontWeight.w700),

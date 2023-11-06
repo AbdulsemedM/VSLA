@@ -24,6 +24,7 @@ class _AddMemberState extends State<AddMember> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedRegion;
   String? selectedZone;
+  String? selectedGender;
   bool? selectedProxy;
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -40,6 +41,7 @@ class _AddMemberState extends State<AddMember> {
         "phoneNumber": phonNumber,
         "roleName": "USER",
         "proxyEnabled": selectedProxy,
+        "gender": selectedGender,
         "address": {
           "region": selectedRegion,
           "zone": selectedZone,
@@ -253,6 +255,59 @@ class _AddMemberState extends State<AddMember> {
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
+    final gender = Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          labelText: "Gender *",
+          hintText: "Choose gender",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        items: [
+          DropdownMenuItem<String>(
+            value: "MALE",
+            child: Center(
+              child: Text('Male',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "FEMALE",
+            child: Center(
+              child: Text('Female',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+        ],
+        onChanged: (value) {
+          setState(() {
+            selectedGender = value;
+          });
+        },
+        hint: Text("Select Gender",
+            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+      ),
+    );
 
     final woreda = Padding(
       padding: const EdgeInsets.all(16),
@@ -398,6 +453,8 @@ class _AddMemberState extends State<AddMember> {
     final password = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
+        obscureText: true,
+        obscuringCharacter: "*",
         validator: _validateField,
         controller: passwordController,
         decoration: InputDecoration(
@@ -420,6 +477,8 @@ class _AddMemberState extends State<AddMember> {
     final confirmpassword = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
+        obscureText: true,
+        obscuringCharacter: "*",
         validator: _validateConfirmPassword,
         controller: confirmPasswordController,
         decoration: InputDecoration(
@@ -484,6 +543,10 @@ class _AddMemberState extends State<AddMember> {
               height: MediaQuery.of(context).size.height * 0.02,
             ),
             fullName,
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
+            gender,
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
