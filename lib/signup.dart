@@ -28,6 +28,7 @@ class _SignupState extends State<Signup> {
   late SingleValueDropDownController _cnt;
   List<CompanyData> company = [];
   String? selectedCompany;
+  String? selectedGender;
 
 // Function to handle dropdown value changes
   void onChanged(String? value) {
@@ -79,6 +80,11 @@ class _SignupState extends State<Signup> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
+    } else if (selectedGender!.isEmpty) {
+      const message = 'Gender is a mandatory field';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
     } else {
       setState(() {
         loading = true;
@@ -88,9 +94,10 @@ class _SignupState extends State<Signup> {
         "password": password.text,
         "fullName": fname.text,
         "roleName": "GROUP_ADMIN",
-        "companyId": selectedCompany
+        "companyId": selectedCompany,
+        "gender": selectedGender
       };
-      // print(body);
+      print(body);
       try {
         var response = await http.post(
           Uri.http("10.1.177.121:8111", "api/v1/users"),
@@ -222,6 +229,81 @@ class _SignupState extends State<Signup> {
                           // print('Phone Number: $value');
                         },
                       ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Select your Gender",
+                    style: GoogleFonts.poppins(
+                        fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                        // labelText: "Zone/ Subcity *",
+                        // hintText: "Choose zone/subcity",
+                        labelStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 208, 208, 208)),
+                        hintStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Color.fromARGB(255, 208, 208, 208)),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 208, 208, 208)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(color: Color(0xFFF89520)),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(color: Color(0xFFF89520)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                      ),
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: "MALE",
+                          child: Center(
+                            child: Text('Male',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14, color: Colors.black)),
+                          ),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: "FEMALE",
+                          child: Center(
+                            child: Text('Female',
+                                style: GoogleFonts.poppins(
+                                    fontSize: 14, color: Colors.black)),
+                          ),
+                        ),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value;
+                        });
+                      },
+                      // hint: Text("Select zone",
+                      //     style: GoogleFonts.poppins(
+                      //         fontSize: 14, color: Color(0xFFF89520))),
                     ),
                   ),
                 ],
@@ -411,21 +493,15 @@ class _SignupState extends State<Signup> {
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.fromLTRB(
                                   12, 10.0, 12.0, 10.0),
-                              // labelText: "select company",
-                              // hintText: "Choose zone/subcity",
-                              // labelStyle: GoogleFonts.poppins(
-                              //     fontSize: 14, color: Color(0xFFF89520)),
-                              // hintStyle: GoogleFonts.poppins(
-                              //     fontSize: 14, color: Color(0xFFF89520)),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
+                                borderSide: const BorderSide(
+                                    color: Color.fromARGB(255, 208, 208, 208)),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
+                                borderSide: const BorderSide(
+                                    color: Color.fromARGB(255, 208, 208, 208)),
                               ),
                               focusedErrorBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -578,7 +654,7 @@ class _SignupState extends State<Signup> {
                   TextSpan(
                       text: " SIGN IN",
                       style: GoogleFonts.poppins(
-                          fontSize: 15, color: Colors.orange))
+                          fontSize: 15, color: const Color(0xFFF89520)))
                 ])),
               ),
             ),

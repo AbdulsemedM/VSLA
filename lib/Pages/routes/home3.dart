@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +9,7 @@ import 'package:vsla/Pages/inner/loan.dart';
 import 'package:vsla/Pages/inner/members.dart';
 import 'package:vsla/Pages/inner/awarness.dart';
 import 'package:vsla/login.dart';
+import 'package:http/http.dart' as http;
 
 class Home3 extends StatefulWidget {
   const Home3({super.key});
@@ -18,6 +22,17 @@ class _Home3State extends State<Home3> {
   var members = false;
   var awareness = false;
   var loan = false;
+  @override
+  void initState() {
+    super.initState();
+    fetchDashBoardData();
+  }
+
+  String groupName = "";
+  double totalAmount = 0;
+  List<int> mileStone = [];
+  List<String> tipOfTheDay = [];
+
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
@@ -57,7 +72,7 @@ class _Home3State extends State<Home3> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
                                 child: Text(
-                                  "Group A",
+                                  groupName,
                                   style: GoogleFonts.poppins(
                                       fontSize: screenWidth * 0.06,
                                       fontWeight: FontWeight.bold),
@@ -76,7 +91,7 @@ class _Home3State extends State<Home3> {
                                     fontWeight: FontWeight.w600),
                               ),
                               Text(
-                                "45,000ETB",
+                                "${totalAmount.toString()} ETB",
                                 style: GoogleFonts.poppins(
                                     fontSize: screenWidth * 0.04,
                                     fontWeight: FontWeight.w600),
@@ -291,10 +306,6 @@ class _Home3State extends State<Home3> {
                                       setState(() {
                                         members = true;
                                       });
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (context) => const Members()));
                                     },
                                     child: Column(
                                       children: [
@@ -311,32 +322,34 @@ class _Home3State extends State<Home3> {
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 7, 0, 0),
-                                  child: Column(
-                                    children: [
-                                      const Icon(
-                                        FontAwesomeIcons.rightLeft,
-                                        color: Colors.white,
-                                      ),
-                                      Text(
-                                        "Transactions",
-                                        style: GoogleFonts.poppins(
-                                            color: Colors.white),
-                                      )
-                                    ],
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      loan = true;
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 7, 0, 0),
+                                    child: Column(
+                                      children: [
+                                        const Icon(
+                                          FontAwesomeIcons.rightLeft,
+                                          color: Colors.white,
+                                        ),
+                                        Text(
+                                          "Transactions",
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 7, 0, 0),
                                   child: GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        loan = true;
-                                      });
-                                    },
                                     child: Column(
                                       children: [
                                         const Icon(
@@ -615,7 +628,7 @@ class _Home3State extends State<Home3> {
                                           children: [
                                             const Text("240.00"),
                                             Text(
-                                              " Etb",
+                                              " ETB",
                                               style: GoogleFonts.roboto(
                                                   color: Colors.grey[400],
                                                   fontSize: 10),
@@ -675,7 +688,7 @@ class _Home3State extends State<Home3> {
                                           children: [
                                             const Text("240.00"),
                                             Text(
-                                              " Etb",
+                                              " ETB",
                                               style: GoogleFonts.roboto(
                                                   color: Colors.grey[400],
                                                   fontSize: 10),
@@ -735,7 +748,7 @@ class _Home3State extends State<Home3> {
                                           children: [
                                             const Text("240.00"),
                                             Text(
-                                              " Etb",
+                                              " ETB",
                                               style: GoogleFonts.roboto(
                                                   color: Colors.grey[400],
                                                   fontSize: 10),
@@ -785,5 +798,45 @@ class _Home3State extends State<Home3> {
             ],
           );
         });
+  }
+
+  Future<void> fetchDashBoardData() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111', '/api/v1/home-page'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      Map<String, dynamic> data = jsonDecode(response.body);
+      print(response.body);
+      print("hereeeeee");
+
+      setState(() {
+        totalAmount = data['totalAmount'];
+        groupName = data['groupName'];
+        print(totalAmount);
+        print(groupName);
+        mileStone.add(data['milestone']['bronze']);
+        mileStone.add(data['milestone']['silver']);
+        mileStone.add(data['milestone']['gold']);
+        mileStone.add(data['milestone']['premium']);
+        tipOfTheDay.add(data['tipOfTheDay']["title"]);
+        tipOfTheDay.add(data['tipOfTheDay']["description"]);
+      });
+      print(tipOfTheDay);
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
   }
 }
