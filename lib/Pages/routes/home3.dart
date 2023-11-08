@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/loan.dart';
 import 'package:vsla/Pages/inner/members.dart';
@@ -18,10 +19,24 @@ class Home3 extends StatefulWidget {
   State<Home3> createState() => _Home3State();
 }
 
+class ContributionData {
+  final double amount;
+  final String contributor;
+  final String date;
+
+  ContributionData({
+    required this.amount,
+    required this.contributor,
+    required this.date,
+  });
+}
+
 class _Home3State extends State<Home3> {
+  final PageController _pageController = PageController();
   var members = false;
   var awareness = false;
   var loan = false;
+  var loading = true;
   @override
   void initState() {
     super.initState();
@@ -32,6 +47,7 @@ class _Home3State extends State<Home3> {
   double totalAmount = 0;
   List<int> mileStone = [];
   List<String> tipOfTheDay = [];
+  List<ContributionData> allContribution = [];
 
   @override
   Widget build(BuildContext context) {
@@ -111,19 +127,29 @@ class _Home3State extends State<Home3> {
                                       height: screenWidth * 0.115,
                                       width: screenWidth * 0.115,
                                       decoration: BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 138, 46, 46),
+                                          color: loading
+                                              ? Colors.grey[200]
+                                              : mileStone[0] == 2
+                                                  ? const Color.fromARGB(
+                                                      255, 138, 46, 46)
+                                                  : Colors.grey[200],
                                           border: Border.all(
                                               width: 2,
                                               color: const Color.fromARGB(
                                                   255, 138, 46, 46)),
                                           borderRadius: BorderRadius.circular(
                                               screenWidth * 0.115)),
-                                      child: const Center(
-                                          child: Icon(
-                                        Icons.done,
-                                        color: Colors.white,
-                                      )),
+                                      child: Center(
+                                          child: loading
+                                              ? Container()
+                                              : mileStone[0] == 2
+                                                  ? const Icon(
+                                                      Icons.done,
+                                                      color: Colors.white,
+                                                    )
+                                                  : const Icon(Icons.adjust,
+                                                      color: Color.fromARGB(
+                                                          255, 138, 46, 46))),
                                     ),
                                     Container(
                                       height: 3,
@@ -140,13 +166,25 @@ class _Home3State extends State<Home3> {
                                               width: 2,
                                               color: const Color.fromARGB(
                                                   255, 100, 98, 98)),
-                                          color: const Color.fromARGB(
-                                              255, 100, 98, 98),
+                                          color: loading
+                                              ? Colors.grey[200]
+                                              : mileStone[1] == 2
+                                                  ? const Color.fromARGB(
+                                                      255, 100, 98, 98)
+                                                  : Colors.grey[200],
                                           borderRadius: BorderRadius.circular(
                                               screenWidth * 0.115)),
-                                      child: const Center(
-                                        child: Icon(Icons.done,
-                                            color: Colors.white),
+                                      child: Center(
+                                        child: loading
+                                            ? Container()
+                                            : mileStone[1] == 2
+                                                ? const Icon(
+                                                    Icons.done,
+                                                    color: Colors.white,
+                                                  )
+                                                : const Icon(Icons.adjust,
+                                                    color: Color.fromARGB(
+                                                        255, 100, 98, 98)),
                                       ),
                                     ),
                                     Container(
@@ -164,16 +202,25 @@ class _Home3State extends State<Home3> {
                                               width: 2,
                                               color: const Color.fromARGB(
                                                   255, 164, 125, 8)),
-                                          color: Colors.grey[200],
+                                          color: loading
+                                              ? Colors.grey[200]
+                                              : mileStone[2] == 2
+                                                  ? const Color.fromARGB(
+                                                      255, 164, 125, 8)
+                                                  : Colors.grey[200],
                                           borderRadius: BorderRadius.circular(
                                               screenWidth * 0.115)),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.adjust,
-                                          color:
-                                              Color.fromARGB(255, 164, 125, 8),
-                                        ),
-                                      ),
+                                      child: Center(
+                                          child: loading
+                                              ? Container()
+                                              : mileStone[2] == 2
+                                                  ? const Icon(
+                                                      Icons.done,
+                                                      color: Colors.white,
+                                                    )
+                                                  : const Icon(Icons.adjust,
+                                                      color: Color.fromARGB(
+                                                          255, 164, 125, 8))),
                                     ),
                                     Container(
                                       height: 3,
@@ -190,14 +237,25 @@ class _Home3State extends State<Home3> {
                                               width: 2,
                                               color: const Color.fromARGB(
                                                   255, 8, 40, 250)),
-                                          color: Colors.grey[200],
+                                          color: loading
+                                              ? Colors.grey[200]
+                                              : mileStone[3] == 2
+                                                  ? const Color.fromARGB(
+                                                      255, 8, 40, 250)
+                                                  : Colors.grey[200],
                                           borderRadius: BorderRadius.circular(
                                               screenWidth * 0.115)),
-                                      child: const Center(
-                                        child: Icon(Icons.adjust,
-                                            color: Color.fromARGB(
-                                                255, 8, 40, 250)),
-                                      ),
+                                      child: Center(
+                                          child: loading
+                                              ? Container()
+                                              : mileStone[3] == 2
+                                                  ? const Icon(
+                                                      Icons.done,
+                                                      color: Colors.white,
+                                                    )
+                                                  : const Icon(Icons.adjust,
+                                                      color: Color.fromARGB(
+                                                          255, 8, 40, 250))),
                                     ),
                                   ],
                                 ),
@@ -530,7 +588,7 @@ class _Home3State extends State<Home3> {
                                           padding: const EdgeInsets.fromLTRB(
                                               5, 0, 0, 6),
                                           child: Text(
-                                            "A penny saved is a penny earned",
+                                            loading ? "" : tipOfTheDay[0],
                                             style: GoogleFonts.poppins(
                                                 color: Colors.black,
                                                 fontSize: screenWidth * 0.035,
@@ -545,7 +603,10 @@ class _Home3State extends State<Home3> {
                                           padding: const EdgeInsets.fromLTRB(
                                               5, 0, 0, 0),
                                           child: Text(
-                                            "Practice thrift and save wisely. Every \npenny you save is like earning an \nextra penny, adding to your \nfinancial well-being.",
+                                            loading
+                                                ? ""
+                                                : insertNewLines(
+                                                    tipOfTheDay[1]),
                                             style: GoogleFonts.poppins(
                                                 color: Colors.black,
                                                 fontSize: screenWidth * 0.03,
@@ -581,185 +642,94 @@ class _Home3State extends State<Home3> {
                             ),
                           ],
                         ),
-                        Card(
-                          child: SizedBox(
-                            height: 60,
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          width: MediaQuery.of(context).size.width * 1,
+                          child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              controller: _pageController,
+                              itemCount: allContribution.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: SizedBox(
+                                    height: 60,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        const CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          child: Icon(FontAwesomeIcons.rotate),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Abdu M.",
-                                              style: GoogleFonts.roboto(
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                const CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  child: Icon(
+                                                      FontAwesomeIcons.rotate),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      loading
+                                                          ? ""
+                                                          : allContribution[
+                                                                  index]
+                                                              .contributor,
+                                                      style: GoogleFonts.roboto(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      loading
+                                                          ? ""
+                                                          : DateFormat(
+                                                                  'MMM d-yyyy')
+                                                              .format(DateTime.parse(
+                                                                  allContribution[
+                                                                          index]
+                                                                      .date)),
+                                                      style: GoogleFonts.roboto(
+                                                        color: Colors.grey[400],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              "Oct 10,2023",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.grey[400]),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(loading
+                                                        ? ""
+                                                        : allContribution[index]
+                                                            .amount
+                                                            .toString()),
+                                                    Text(
+                                                      " ETB",
+                                                      style: GoogleFonts.roboto(
+                                                          color:
+                                                              Colors.grey[400],
+                                                          fontSize: 10),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                          )
+                                        ]),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Text("240.00"),
-                                            Text(
-                                              " ETB",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.grey[400],
-                                                  fontSize: 10),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ]),
-                          ),
-                        ),
-                        Card(
-                          child: SizedBox(
-                            height: 60,
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        const CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          child: Icon(FontAwesomeIcons.rotate),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Abdu M.",
-                                              style: GoogleFonts.roboto(
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Text(
-                                              "Oct 10,2023",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.grey[400]),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Text("240.00"),
-                                            Text(
-                                              " ETB",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.grey[400],
-                                                  fontSize: 10),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ]),
-                          ),
-                        ),
-                        Card(
-                          child: SizedBox(
-                            height: 60,
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        const CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          child: Icon(FontAwesomeIcons.rotate),
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Abdu M.",
-                                              style: GoogleFonts.roboto(
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            Text(
-                                              "Oct 10,2023",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.grey[400]),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Text("240.00"),
-                                            Text(
-                                              " ETB",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.grey[400],
-                                                  fontSize: 10),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ]),
-                          ),
+                                );
+                              }),
                         ),
                       ],
                     ),
@@ -816,27 +786,45 @@ class _Home3State extends State<Home3> {
       );
       // transactions = parseTransactions(response.body);
       Map<String, dynamic> data = jsonDecode(response.body);
-      print(response.body);
+      // print(response.body);
+      for (var recentContributions in data['recentContributions']) {
+        allContribution.add(ContributionData(
+          amount: recentContributions['amount'],
+          contributor: recentContributions['contributor'],
+          date: recentContributions['date'],
+        ));
+      }
       print("hereeeeee");
+      print(allContribution.length);
 
       setState(() {
         totalAmount = data['totalAmount'];
         groupName = data['groupName'];
-        print(totalAmount);
-        print(groupName);
+        // print(totalAmount);
+        // print(groupName);
         mileStone.add(data['milestone']['bronze']);
         mileStone.add(data['milestone']['silver']);
         mileStone.add(data['milestone']['gold']);
         mileStone.add(data['milestone']['premium']);
         tipOfTheDay.add(data['tipOfTheDay']["title"]);
         tipOfTheDay.add(data['tipOfTheDay']["description"]);
+        loading = false;
       });
-      print(tipOfTheDay);
+      // print(mileStone);
     } catch (e) {
       var message = e.toString();
-      print(e.toString());
       'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
+  }
+
+  String insertNewLines(String input) {
+    const int maxLength = 36;
+    List<String> lines = [];
+    for (int i = 0; i < input.length; i += maxLength) {
+      lines.add(input.substring(
+          i, i + maxLength > input.length ? input.length : i + maxLength));
+    }
+    return lines.join('\n');
   }
 }
