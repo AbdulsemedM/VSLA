@@ -1,65 +1,72 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class CircularPercentageWidget extends StatelessWidget {
-  final double percentage;
+  final List<double> percentages;
   final List<Color> colors;
   final String text;
 
   CircularPercentageWidget(
-      {required this.percentage, required this.colors, required this.text});
+      {required this.percentages, required this.colors, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(150, 150), // Adjust the size as needed
-      painter: CircularPercentagePainter(
-        percentage: percentage,
-        colors: colors,
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 150, // Adjust the size as needed
+            height: 150,
+            child: CustomPaint(
+              painter: CircularPercentagePainter(
+                percentages: percentages,
+                colors: colors,
+              ),
+            ),
+          ),
+          Text(
+            text,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
 }
 
 class CircularPercentagePainter extends CustomPainter {
-  final double percentage;
+  final List<double> percentages;
   final List<Color> colors;
 
-  CircularPercentagePainter({required this.percentage, required this.colors});
+  CircularPercentagePainter({required this.percentages, required this.colors});
 
   @override
   void paint(Canvas canvas, Size size) {
-    double angle = 2 * pi * (percentage / 100);
-    double radius = size.width / 2;
+    final double totalPercentage = percentages.fold(0, (a, b) => a + b);
+    final double radius = size.width / 2;
+    final double strokeWidth = 20.0;
+    double currentAngle = -pi / 2;
 
-    // Define a rectangle that represents the circle
-    Rect rect = Rect.fromCircle(center: Offset(radius, radius), radius: radius);
+    for (int i = 0; i < percentages.length; i++) {
+      final double sweepAngle = 2 * pi * (percentages[i] / totalPercentage);
+      final Paint paint = Paint()
+        ..color = colors[i]
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = strokeWidth;
 
-    // Create a Paint object for the background circle
-    Paint backgroundPaint = Paint()
-      ..color = Colors.grey
-      ..style = PaintingStyle.fill;
+      canvas.drawArc(
+        Rect.fromCircle(
+            center: Offset(radius, radius), radius: radius - strokeWidth / 2),
+        currentAngle,
+        sweepAngle,
+        false,
+        paint,
+      );
 
-    // Create a Paint object for the colored arc
-    Paint arcPaint = Paint()
-      ..shader = SweepGradient(
-        startAngle: 0.0,
-        endAngle: angle,
-        colors: colors,
-      ).createShader(rect)
-      ..style = PaintingStyle.fill;
-
-    // Draw the background circle
-    canvas.drawCircle(Offset(radius, radius), radius, backgroundPaint);
-
-    // Draw the colored arc
-    canvas.drawArc(rect, -pi / 2, angle, true, arcPaint);
+      currentAngle += sweepAngle;
+    }
   }
 
   @override

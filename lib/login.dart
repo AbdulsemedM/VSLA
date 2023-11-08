@@ -23,12 +23,15 @@ class _LoginState extends State<Login> {
   bool _passwordVisible = false;
   bool loading = false;
   TextEditingController pnumber = TextEditingController();
+
   TextEditingController password = TextEditingController();
   FocusNode pinFocus = FocusNode();
   FocusNode phoneFocus = FocusNode();
   var registered = false;
 
   login() async {
+    pnumber.text = "0912345678";
+    password.text = "123456";
     if (pnumber.text.length < 9 || pnumber.text == "") {
       const message = 'Invalid phone number format';
       Future.delayed(const Duration(milliseconds: 100), () {
