@@ -67,11 +67,12 @@ class _CreatGroupState extends State<CreatGroup> {
           "kebele": kebele,
         }
       };
-      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
       print(requestBody);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
+      final String groupId = accessToken![2];
+      final String apiUrl = 'http://10.1.177.121:8111/api/v1/$groupId/groups';
       // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
 
       final response = await http.post(

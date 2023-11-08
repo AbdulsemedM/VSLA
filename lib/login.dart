@@ -20,6 +20,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var groupId;
   bool _passwordVisible = false;
   bool loading = false;
   TextEditingController pnumber = TextEditingController();
@@ -74,6 +75,12 @@ class _LoginState extends State<Login> {
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
             dynamic hasGroup = decodedToken['has-group'];
+            dynamic group_ID = decodedToken['groupId'];
+            if (group_ID != null) {
+              setState(() {
+                groupId = group_ID;
+              });
+            }
             if (hasGroup == "NO") {
               setState(() {
                 registered = false;
@@ -85,7 +92,7 @@ class _LoginState extends State<Login> {
             }
             print(decodedToken);
             String sub = subVal.toString();
-            List<String> newUser = [accessToken, sub];
+            List<String> newUser = [accessToken, sub, groupId];
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
 
