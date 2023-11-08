@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsla/Pages/inner/loan.dart';
+import 'package:vsla/Pages/inner/transactions.dart';
 import 'package:vsla/Pages/inner/members.dart';
 import 'package:vsla/Pages/inner/awarness.dart';
 import 'package:vsla/login.dart';
