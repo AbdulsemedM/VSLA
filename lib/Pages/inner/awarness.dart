@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vsla/Pages/routes/home3.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Awarness extends StatefulWidget {
   const Awarness({super.key});
@@ -12,6 +13,7 @@ class Awarness extends StatefulWidget {
 
 class _AwarnessState extends State<Awarness> {
   var awareness = true;
+
   @override
   Widget build(BuildContext context) {
     return awareness == false
@@ -112,45 +114,68 @@ class _AwarnessState extends State<Awarness> {
                                 borderRadius: BorderRadius.circular(
                                     20), // Border radius for the curved effect
                               ),
-                              child: Column(
-                                children: <Widget>[
-                                  Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                            20), // Adjust the radius as needed
-                                        child: Image.asset(
-                                          'assets/images/Locust.jpg',
-                                          fit: BoxFit.cover,
-                                          height: 150,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Container(
                                           width: 300,
-                                        ),
-                                      )),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            'How to effectively control desert Locust swarms',
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                color: Colors.white),
+                                          child: YoutubePlayer(
+                                            controller: YoutubePlayerController(
+                                              initialVideoId: 'v=IcFW2abCl4M',
+                                              flags: YoutubePlayerFlags(
+                                                autoPlay: true,
+                                              ),
+                                            ),
+                                            showVideoProgressIndicator: true,
                                           ),
                                         ),
-                                        // const SizedBox(
-                                        //   width:
-                                        //       0.1, // Adjust this value as needed for the gap between the widgets
-                                        // ),
-                                        Expanded(
-                                            child: Icon(
-                                          Icons.play_circle_filled_rounded,
-                                          color: Colors.black,
-                                        ))
-                                      ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                              20), // Adjust the radius as needed
+                                          child: Image.asset(
+                                            'assets/images/Locust.jpg',
+                                            fit: BoxFit.cover,
+                                            height: 150,
+                                            width: 300,
+                                          ),
+                                        )),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              'How to effectively control desert Locust swarms',
+                                              style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          // const SizedBox(
+                                          //   width:
+                                          //       0.1, // Adjust this value as needed for the gap between the widgets
+                                          // ),
+                                          Expanded(
+                                              child: Icon(
+                                            Icons.play_circle_filled_rounded,
+                                            color: Colors.black,
+                                          ))
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],

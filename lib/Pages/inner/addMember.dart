@@ -402,7 +402,7 @@ class _AddMemberState extends State<AddMember> {
         ),
         items: [
           DropdownMenuItem<String>(
-            value: "1000",
+            value: 'true',
             child: Center(
               child: Text('Yes',
                   style:
@@ -410,7 +410,7 @@ class _AddMemberState extends State<AddMember> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1200",
+            value: "false",
             child: Center(
               child: Text('No',
                   style:
