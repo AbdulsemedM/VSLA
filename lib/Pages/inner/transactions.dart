@@ -3,14 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 
-class Loan extends StatefulWidget {
-  const Loan({super.key});
+class Transaction extends StatefulWidget {
+  const Transaction({super.key});
 
   @override
-  State<Loan> createState() => _LoanState();
+  State<Transaction> createState() => _TransactionState();
 }
 
-class _LoanState extends State<Loan> {
+class _TransactionState extends State<Transaction> {
   var loan = true;
   @override
   Widget build(BuildContext context) {
