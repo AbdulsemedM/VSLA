@@ -126,12 +126,13 @@ class _SignupState extends State<Signup> {
         } else if (response.statusCode != 201) {
           final responseBody = json.decode(response.body);
           final description =
-              responseBody['message']; // Extract 'description' field
+              responseBody?['message']; // Extract 'description' field
           if (description == "Phone number is already taken") {
             Fluttertoast.showToast(
                 msg: "This phone number is already registered", fontSize: 18);
           } else {
-            const message = "Account creation faile please try again later.";
+            var message =
+                description ?? "Account creation failed please try again";
             Fluttertoast.showToast(msg: message, fontSize: 18);
           }
           setState(() {
@@ -139,7 +140,8 @@ class _SignupState extends State<Signup> {
           });
         }
       } catch (e) {
-        const message = 'Please check your network connection';
+        var message = e.toString();
+        'Please check your network connection';
         Fluttertoast.showToast(msg: message, fontSize: 18);
       } finally {
         setState(() {
@@ -777,7 +779,7 @@ class _SignupState extends State<Signup> {
       // var user = await SimplePreferences().getUser();
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/companies'),
+        Uri.http('10.1.177.121:8111', '/api/v1/organizations'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

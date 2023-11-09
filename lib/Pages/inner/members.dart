@@ -19,14 +19,18 @@ class Members extends StatefulWidget {
 class MemberData {
   final int userId;
   final String fullName;
+  final String phoneNumber;
   final double loanBalance;
   final double paid;
   final double totalOwning;
   final String gender;
+  final bool proxy;
 
   MemberData(
       {required this.userId,
       required this.fullName,
+      required this.phoneNumber,
+      required this.proxy,
       required this.loanBalance,
       required this.paid,
       required this.totalOwning,
@@ -413,9 +417,10 @@ class _MembersState extends State<Members> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
+      final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/groups/members'),
+        Uri.http('10.1.177.121:8111', '/api/v1/groups/$groupId/members'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -428,6 +433,8 @@ class _MembersState extends State<Members> {
       List<MemberData> newMember = [];
       for (var member in data['memberList']) {
         newMember.add(MemberData(
+          phoneNumber: member['phoneNumber'],
+          proxy: member['proxy'],
           userId: member['userId'],
           fullName: member['fullName'],
           gender: member['gender'],
@@ -460,8 +467,9 @@ class _MembersState extends State<Members> {
   void editModal(MemberData allMember) {
     TextEditingController fullNameController = TextEditingController();
     TextEditingController phoneNumberController = TextEditingController();
-    var selectedProxy;
+    var selectedProxy = allMember.proxy;
     fullNameController.text = allMember.fullName;
+    phoneNumberController.text = allMember.phoneNumber;
     String? _validateField(String? value) {
       if (value == null || value.isEmpty) {
         return 'This field is required';
@@ -500,7 +508,7 @@ class _MembersState extends State<Members> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: DropdownButtonFormField<String>(
-                value: selectedProxy,
+                value: selectedProxy.toString(),
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   labelText: "Proxy enabled *",
@@ -544,7 +552,7 @@ class _MembersState extends State<Members> {
                 ],
                 onChanged: (value) {
                   setState(() {
-                    selectedProxy = value;
+                    selectedProxy = value as bool;
                   });
                 },
                 hint: Text("yes / no",

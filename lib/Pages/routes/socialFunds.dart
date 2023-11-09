@@ -5,14 +5,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/login.dart';
 
-class Transactions extends StatefulWidget {
-  const Transactions({super.key});
+class SocialFunds extends StatefulWidget {
+  const SocialFunds({super.key});
 
   @override
-  State<Transactions> createState() => _TransactionsState();
+  State<SocialFunds> createState() => _SocialFundsState();
 }
 
-class _TransactionsState extends State<Transactions> {
+class _SocialFundsState extends State<SocialFunds> {
   @override
   void initState() {
     super.initState();
@@ -141,7 +141,7 @@ class _TransactionsState extends State<Transactions> {
             height: MediaQuery.of(context).size.height * 0.02,
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.2,
+            height: MediaQuery.of(context).size.height * 0.22,
             width: screenWidth * 0.9,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -349,10 +349,10 @@ class _TransactionsState extends State<Transactions> {
                                     child: Container(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.04,
-                                      width: screenWidth * 0.3,
+                                              0.03,
+                                      width: screenWidth * 0.25,
                                       decoration: BoxDecoration(
-                                          color: Colors.green[200],
+                                          color: Colors.green[300],
                                           borderRadius:
                                               BorderRadius.circular(15)),
                                       child: Center(
@@ -363,6 +363,7 @@ class _TransactionsState extends State<Transactions> {
                                             const Icon(
                                               FontAwesomeIcons.userPlus,
                                               color: Colors.white,
+                                              size: 13,
                                             ),
                                             Padding(
                                               padding:
@@ -371,207 +372,8 @@ class _TransactionsState extends State<Transactions> {
                                               child: Text(
                                                 "Recieved",
                                                 style: GoogleFonts.poppins(
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            " 270 ETB",
-                            style: GoogleFonts.poppins(
-                                color: Colors.blue[400],
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ],
-                      ),
-                    )
-                  ]),
-            ),
-          ),
-          Card(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            radius: screenWidth * 0.05,
-                            backgroundColor: Colors.white,
-                            backgroundImage: const AssetImage(
-                                "assets/images/fProfilePic.jpg"),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 00, 0, 8.0),
-                                    child: Text(
-                                      "Lina Jacob",
-                                      style: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.04,
-                                      width: screenWidth * 0.3,
-                                      decoration: BoxDecoration(
-                                          color: Colors.green[200],
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              FontAwesomeIcons.userPlus,
-                                              color: Colors.white,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      10, 0, 0, 0),
-                                              child: Text(
-                                                "Recieved",
-                                                style: GoogleFonts.poppins(
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            " 270 ETB",
-                            style: GoogleFonts.poppins(
-                                color: Colors.blue[400],
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ],
-                      ),
-                    )
-                  ]),
-            ),
-          ),
-          Card(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            radius: screenWidth * 0.05,
-                            backgroundColor: Colors.white,
-                            backgroundImage: const AssetImage(
-                                "assets/images/fProfilePic.jpg"),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 00, 0, 8.0),
-                                    child: Text(
-                                      "Mahlet Demeke",
-                                      style: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.04,
-                                      width: screenWidth * 0.3,
-                                      decoration: BoxDecoration(
-                                          color: Colors.green[200],
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            const Icon(
-                                              FontAwesomeIcons.userPlus,
-                                              color: Colors.white,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      10, 0, 0, 0),
-                                              child: Text(
-                                                "Recieved",
-                                                style: GoogleFonts.poppins(
-                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
                                                     color: Colors.white),
                                               ),
                                             )

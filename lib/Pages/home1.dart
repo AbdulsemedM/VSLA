@@ -52,7 +52,7 @@ class _Home1State extends State<Home1> {
             child: visit == 0
                 ? const Home3()
                 : visit == 1
-                    ? const Transactions()
+                    ? const SocialFunds()
                     : visit == 2
                         ? const Bank_links()
                         : visit == 3
