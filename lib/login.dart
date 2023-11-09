@@ -20,6 +20,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var groupId;
   bool _passwordVisible = false;
   bool loading = false;
   TextEditingController pnumber = TextEditingController();
@@ -77,6 +78,7 @@ class _LoginState extends State<Login> {
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
             dynamic hasGroup = decodedToken['has-group'];
+            dynamic groupID = decodedToken['groupId'];
             if (hasGroup == "NO") {
               setState(() {
                 registered = false;
@@ -86,13 +88,24 @@ class _LoginState extends State<Login> {
                 registered = true;
               });
             }
-            print(decodedToken);
-            String sub = subVal.toString();
-            List<String> newUser = [accessToken, sub];
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
+            if (groupID != null) {
+              print(decodedToken);
+              groupId = groupID.toString();
+              String sub = subVal.toString();
+              List<String> newUser = [accessToken, sub, groupId];
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
 
-            prefs.setStringList("_keyUser", newUser);
+              prefs.setStringList("_keyUser", newUser);
+            } else {
+              print(decodedToken);
+              String sub = subVal.toString();
+              List<String> newUser = [accessToken, sub];
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+
+              prefs.setStringList("_keyUser", newUser);
+            }
             // List<dynamic> roles = decodedToken['roles']; // Access 'roles' field
             // String firstRole = roles[0];
             // dynamic expVal = decodedToken['exp']; // Access 'exp' field
