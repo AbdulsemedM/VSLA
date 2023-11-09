@@ -46,7 +46,7 @@ class CircularPercentagePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final double totalPercentage = percentages.fold(0, (a, b) => a + b);
     final double radius = size.width / 2;
-    final double strokeWidth = 20.0;
+    final double strokeWidth = 25.0;
     double currentAngle = -pi / 2;
 
     for (int i = 0; i < percentages.length; i++) {
