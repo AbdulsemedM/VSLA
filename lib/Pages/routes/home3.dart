@@ -600,71 +600,77 @@ class _Home3State extends State<Home3> {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.orange,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                5, 0, 0, 0),
-                                            child: Text(
-                                              "Tip of the day",
-                                              style: GoogleFonts.poppins(
-                                                  color: Colors.black,
-                                                  fontSize: screenWidth * 0.07,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ]),
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      5, 0, 0, 6),
-                                              child: Text(
-                                                loading ? "" : tipOfTheDay[0],
-                                                style: GoogleFonts.poppins(
-                                                    color: Colors.black,
-                                                    fontSize:
-                                                        screenWidth * 0.035,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(children: [
                                             Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
                                                       5, 0, 0, 0),
                                               child: Text(
-                                                loading
-                                                    ? ""
-                                                    : insertNewLines(
-                                                        tipOfTheDay[1]),
+                                                "Tip of the day",
                                                 style: GoogleFonts.poppins(
                                                     color: Colors.black,
                                                     fontSize:
-                                                        screenWidth * 0.03,
+                                                        screenWidth * 0.07,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Icon(
-                                      FontAwesomeIcons.lightbulb,
-                                      size: screenWidth * 0.25,
-                                    )
-                                  ],
+                                          ]),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        5, 0, 0, 6),
+                                                child: Text(
+                                                  loading ? "" : tipOfTheDay[0],
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.black,
+                                                      fontSize:
+                                                          screenWidth * 0.035,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        5, 0, 0, 0),
+                                                child: Text(
+                                                  loading
+                                                      ? ""
+                                                      : insertNewLines(
+                                                          tipOfTheDay[1]),
+                                                  style: GoogleFonts.poppins(
+                                                      color: Colors.black,
+                                                      fontSize:
+                                                          screenWidth * 0.03,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Icon(
+                                        FontAwesomeIcons.lightbulb,
+                                        size: screenWidth * 0.25,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
