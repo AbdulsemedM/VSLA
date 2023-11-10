@@ -467,6 +467,7 @@ class _MembersState extends State<Members> {
   void editModal(MemberData allMember) {
     TextEditingController fullNameController = TextEditingController();
     TextEditingController phoneNumberController = TextEditingController();
+    var loading1 = false;
     var selectedProxy = allMember.proxy;
     fullNameController.text = allMember.fullName;
     phoneNumberController.text = allMember.phoneNumber;
@@ -585,22 +586,208 @@ class _MembersState extends State<Members> {
             Row(
               children: [
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(); // Close the dialog when the user presses the button
+                  onPressed: () async {
+                    bool confirmDelete = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Confirm Deletion'),
+                          content: Text(
+                              'Are you sure you want to delete this user?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(
+                                    false); // User does not confirm deletion
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(true); // User confirms deletion
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    if (confirmDelete) {
+                      loading1 = true;
+                      if (fullNameController.text.isEmpty) {
+                        const message = 'Full name is mandatory';
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Fluttertoast.showToast(msg: message, fontSize: 18);
+                        });
+                      } else if (phoneNumberController.text.length != 10 ||
+                          phoneNumberController.text == "") {
+                        const message = 'Invalid phone number format';
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Fluttertoast.showToast(msg: message, fontSize: 18);
+                        });
+                      } else {
+                        setState(() {
+                          loading = true;
+                        });
+                        // final body = {
+                        //   "phoneNumber": phoneNumberController.text,
+                        //   "fullName": fullNameController.text,
+                        //   "proxyEnabled": selectedProxy
+                        // };
+                        // print(body);
+                        try {
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          var accessToken = prefs.getStringList("_keyUser");
+                          final String authToken = accessToken![0];
+                          var response = await http.delete(
+                            Uri.http("10.1.177.121:8111",
+                                "/api/v1/groups/delete-member/${allMember.userId}"),
+                            headers: <String, String>{
+                              'Content-Type': 'application/json; charset=UTF-8',
+                              'Authorization': 'Bearer $authToken',
+                            },
+                          );
+                          // print("here" + "${response.statusCode}");
+                          // print(response.body);
+                          if (response.statusCode == 200) {
+                            setState(() {
+                              loading1 = false;
+                            });
+                            const message = 'Account Deleted Successfuly!';
+                            Future.delayed(const Duration(milliseconds: 100),
+                                () {
+                              Fluttertoast.showToast(
+                                  msg: message, fontSize: 18);
+                            });
+                            Navigator.of(context)
+                                .pop(); // Close the dialog when the user presses the button
+                          } else if (response.statusCode != 200) {
+                            final responseBody = json.decode(response.body);
+                            final description = responseBody?[
+                                'message']; // Extract 'description' field
+                            if (description ==
+                                "Phone number is already taken") {
+                              Fluttertoast.showToast(
+                                  msg:
+                                      "This phone number is already registered",
+                                  fontSize: 18);
+                            } else {
+                              var message = description ??
+                                  "Account creation failed please try again";
+                              Fluttertoast.showToast(
+                                  msg: message, fontSize: 18);
+                            }
+                            setState(() {
+                              loading1 = false;
+                            });
+                          }
+                        } catch (e) {
+                          var message = e.toString();
+                          'Please check your network connection';
+                          Fluttertoast.showToast(msg: message, fontSize: 18);
+                        } finally {
+                          setState(() {
+                            loading = false;
+                          });
+                        }
+                      }
+                    }
                   },
-                  child: Text('Delete User',
-                      style: GoogleFonts.poppins(color: Colors.red)),
+                  child: loading1
+                      ? CircularProgressIndicator(
+                          color: Colors.orange,
+                        )
+                      : Text('Delete User',
+                          style: GoogleFonts.poppins(color: Colors.red)),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pop(); // Close the dialog when the user presses the button
+                  onPressed: () async {
+                    loading1 = true;
+                    if (fullNameController.text.isEmpty) {
+                      const message = 'Full name is mandatory';
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        Fluttertoast.showToast(msg: message, fontSize: 18);
+                      });
+                    } else if (phoneNumberController.text.length != 10 ||
+                        phoneNumberController.text == "") {
+                      const message = 'Invalid phone number format';
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        Fluttertoast.showToast(msg: message, fontSize: 18);
+                      });
+                    } else {
+                      setState(() {
+                        loading = true;
+                      });
+                      final body = {
+                        "phoneNumber": phoneNumberController.text,
+                        "fullName": fullNameController.text,
+                        "proxyEnabled": selectedProxy
+                      };
+                      print(body);
+                      try {
+                        final SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        var accessToken = prefs.getStringList("_keyUser");
+                        final String authToken = accessToken![0];
+                        var response = await http.put(
+                          Uri.http("10.1.177.121:8111",
+                              "/api/v1/groups/edit-member/${allMember.userId}"),
+                          headers: <String, String>{
+                            'Content-Type': 'application/json; charset=UTF-8',
+                            'Authorization': 'Bearer $authToken',
+                          },
+                          body: jsonEncode(body),
+                        );
+                        // print("here" + "${response.statusCode}");
+                        // print(response.body);
+                        if (response.statusCode == 200) {
+                          setState(() {
+                            loading1 = false;
+                          });
+                          const message = 'Account Updated Successfuly!';
+                          Future.delayed(const Duration(milliseconds: 100), () {
+                            Fluttertoast.showToast(msg: message, fontSize: 18);
+                          });
+                          Navigator.of(context)
+                              .pop(); // Close the dialog when the user presses the button
+                        } else if (response.statusCode != 200) {
+                          final responseBody = json.decode(response.body);
+                          final description = responseBody?[
+                              'message']; // Extract 'description' field
+                          if (description == "Phone number is already taken") {
+                            Fluttertoast.showToast(
+                                msg: "This phone number is already registered",
+                                fontSize: 18);
+                          } else {
+                            var message = description ??
+                                "Account creation failed please try again";
+                            Fluttertoast.showToast(msg: message, fontSize: 18);
+                          }
+                          setState(() {
+                            loading1 = false;
+                          });
+                        }
+                      } catch (e) {
+                        var message = e.toString();
+                        'Please check your network connection';
+                        Fluttertoast.showToast(msg: message, fontSize: 18);
+                      } finally {
+                        setState(() {
+                          loading = false;
+                        });
+                      }
+                    }
                   },
-                  child: Text(
-                    'Edit',
-                    style: GoogleFonts.poppins(color: Colors.green),
-                  ),
+                  child: loading1
+                      ? const CircularProgressIndicator(
+                          color: Colors.orange,
+                        )
+                      : Text(
+                          'Edit',
+                          style: GoogleFonts.poppins(color: Colors.green),
+                        ),
                 ),
               ],
             ),
