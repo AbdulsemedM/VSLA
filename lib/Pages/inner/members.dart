@@ -120,6 +120,11 @@ class _MembersState extends State<Members> {
                                 fontSize: screenWidth * 0.045,
                                 fontWeight: FontWeight.bold),
                           ),
+                          GestureDetector(
+                              onTap: () {
+                                fetchMembers();
+                              },
+                              child: const Icon(Icons.refresh, size: 25)),
                           Text(
                             allMembers.length.toString(),
                             style: GoogleFonts.poppins(
@@ -491,6 +496,7 @@ class _MembersState extends State<Members> {
         male = data['genderStatics']['male'];
         female = data['genderStatics']['female'];
       });
+      allMembers.clear();
       allMembers.addAll(newMember);
       print(allMembers.length);
 

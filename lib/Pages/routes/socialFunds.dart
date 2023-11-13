@@ -1,9 +1,13 @@
 // ignore: file_names
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/login.dart';
+import 'package:http/http.dart' as http;
 
 class SocialFunds extends StatefulWidget {
   const SocialFunds({super.key});
@@ -12,10 +16,28 @@ class SocialFunds extends StatefulWidget {
   State<SocialFunds> createState() => _SocialFundsState();
 }
 
+class SocialFundsTrnx {
+  final String amount;
+  final String name;
+  final String status;
+  final String gender;
+
+  SocialFundsTrnx({
+    required this.amount,
+    required this.name,
+    required this.gender,
+    required this.status,
+  });
+}
+
 class _SocialFundsState extends State<SocialFunds> {
+  final PageController _pageController = PageController();
+  var loading = false;
+  List<SocialFundsTrnx> allTrnx = [];
   @override
   void initState() {
     super.initState();
+    fetchSocialFundsTrnx();
   }
 
   @override
@@ -304,111 +326,197 @@ class _SocialFundsState extends State<SocialFunds> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          Card(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.1,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            radius: screenWidth * 0.05,
-                            backgroundColor: Colors.white,
-                            backgroundImage: const AssetImage(
-                                "assets/images/mProfilePic.png"),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        0, 00, 0, 8.0),
-                                    child: Text(
-                                      "Abdulsemed Mussema",
-                                      style: GoogleFonts.roboto(
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
+          loading
+              ? const Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: CircularProgressIndicator(
+                    color: Colors.orange,
+                  ),
+                )
+              : SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.38,
+                  width: MediaQuery.of(context).size.width * 1,
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: _pageController,
+                      itemCount: allTrnx.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.03,
-                                      width: screenWidth * 0.25,
-                                      decoration: BoxDecoration(
-                                          color: Colors.green[300],
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Center(
-                                        child: Row(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: screenWidth * 0.05,
+                                          backgroundColor: Colors.white,
+                                          backgroundImage: AssetImage(
+                                              "assets/images/${allTrnx[index].gender.toLowerCase() == "male" ? "male" : "female"}.png"),
+                                        ),
+                                        Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            const Icon(
-                                              FontAwesomeIcons.userPlus,
-                                              color: Colors.white,
-                                              size: 13,
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 00, 0, 8.0),
+                                                  child: Text(
+                                                    allTrnx[index].name,
+                                                    style: GoogleFonts.roboto(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      10, 0, 0, 0),
-                                              child: Text(
-                                                "Recieved",
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.white),
-                                              ),
-                                            )
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          10, 0, 10, 0),
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.03,
+                                                    width: screenWidth * 0.25,
+                                                    decoration: BoxDecoration(
+                                                        color:
+                                                            Colors.green[300],
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15)),
+                                                    child: Center(
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          const Icon(
+                                                            FontAwesomeIcons
+                                                                .userPlus,
+                                                            color: Colors.white,
+                                                            size: 13,
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    10,
+                                                                    0,
+                                                                    0,
+                                                                    0),
+                                                            child: Text(
+                                                              allTrnx[index]
+                                                                  .status,
+                                                              style: GoogleFonts.poppins(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${allTrnx[index].amount} ETB",
+                                          style: GoogleFonts.poppins(
+                                              color: Colors.blue[400],
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ]),
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            " 270 ETB",
-                            style: GoogleFonts.poppins(
-                                color: Colors.blue[400],
-                                fontWeight: FontWeight.w700),
-                          ),
-                        ],
-                      ),
-                    )
-                  ]),
-            ),
-          ),
+                        );
+                      }),
+                ),
         ],
       ),
     );
+  }
+
+  Future<void> fetchSocialFundsTrnx() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final String groupId = accessToken[2];
+
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111',
+            '/api/v1/Transactions/getAllTransactions/socialFund/$groupId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      // print(data);
+      List<SocialFundsTrnx> newTransaction = [];
+      for (var member in data) {
+        newTransaction.add(SocialFundsTrnx(
+          gender: member['gender'],
+          amount: member['amount'],
+          name: member['name'],
+          status: member['status'],
+        ));
+      }
+
+      allTrnx.addAll(newTransaction);
+      print(allTrnx.length);
+
+      // print(transactions[0]);
+
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      print(e.toString());
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
   }
 
   Future<bool> _onBackButtonPressed(BuildContext context) async {
