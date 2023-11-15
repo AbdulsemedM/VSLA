@@ -162,77 +162,82 @@ class _SocialFundsState extends State<SocialFunds> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.22,
-            width: screenWidth * 0.9,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.orange[50],
-            ),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                        child: Text(
-                          "A problem shared\n is a problem halved",
-                          style: GoogleFonts.poppins(
-                              color: Colors.black,
-                              fontSize: screenWidth * 0.06,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ]),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
-                          child: Text(
-                            "Let’s collaborate and make the \nimpossible possible.",
-                            style: GoogleFonts.poppins(
-                                color: Colors.black,
-                                fontSize: screenWidth * 0.035,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.22,
+              width: screenWidth * 0.9,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.orange[50],
+              ),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Builder(builder: (context) {
+                        return Row(children: [
                           Padding(
                             padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                             child: Text(
-                              "Add Your Contribution",
+                              "A problem shared\n is a problem halved",
                               style: GoogleFonts.poppins(
-                                  color: Colors.orange,
-                                  fontSize: screenWidth * 0.045,
+                                  color: Colors.black,
+                                  fontSize: screenWidth * 0.06,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                            child: Icon(
-                              FontAwesomeIcons.plus,
-                              color: Colors.orange,
+                        ]);
+                      }),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 6),
+                            child: Text(
+                              "Let’s collaborate and make the \nimpossible possible.",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.black,
+                                  fontSize: screenWidth * 0.035,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          )
+                          ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                Icon(
-                  FontAwesomeIcons.handshakeAngle,
-                  size: screenWidth * 0.18,
-                  color: Colors.orange,
-                )
-              ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                              child: Text(
+                                "Add Your Contribution",
+                                style: GoogleFonts.poppins(
+                                    color: Colors.orange,
+                                    fontSize: screenWidth * 0.045,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                              child: Icon(
+                                FontAwesomeIcons.plus,
+                                color: Colors.orange,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    FontAwesomeIcons.handshakeAngle,
+                    size: screenWidth * 0.18,
+                    color: Colors.orange,
+                  )
+                ],
+              ),
             ),
           ),
           SizedBox(
@@ -329,8 +334,10 @@ class _SocialFundsState extends State<SocialFunds> {
           loading
               ? const Padding(
                   padding: EdgeInsets.all(20.0),
-                  child: CircularProgressIndicator(
-                    color: Colors.orange,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.orange,
+                    ),
                   ),
                 )
               : SizedBox(
