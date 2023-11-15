@@ -65,7 +65,7 @@ class _Home3State extends State<Home3> {
                 : transaction == true
                     ? const Loan()
                     : trnx == true
-                        ? const AllTrnx()
+                        ? const AllTrnx(payment: "roundPayment")
                         : SingleChildScrollView(
                             child: Column(
                               children: [
