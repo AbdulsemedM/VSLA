@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/Pages/routes/socialFunds.dart';
 
 class AllTrnx extends StatefulWidget {
   final String payment;
@@ -35,6 +36,7 @@ class MemberData {
 
 class _AllTrnxState extends State<AllTrnx> {
   var members = true;
+  var social = true;
   @override
   void initState() {
     super.initState();
@@ -52,201 +54,223 @@ class _AllTrnxState extends State<AllTrnx> {
     var screenWidth = MediaQuery.of(context).size.width;
     return members == false
         ? const Home3()
-        : WillPopScope(
-            onWillPop: () async {
-              if (members) {
-                // Set the new state outside onWillPop
-                setState(() {
-                  members = false;
-                });
-                // Allow back navigation
-                return false;
-              } else {
-                // Set the new state outside onWillPop
-                members = true;
-                // Prevent back navigation
-                return false;
-              }
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                members = false;
-                              });
-                            },
-                            child: const Icon(Icons.arrow_back_ios_new_sharp)),
-                        Image(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            image: const AssetImage("assets/images/vsla.png"))
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 15, 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Total members",
-                          style: GoogleFonts.poppins(
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        GestureDetector(
-                            onTap: () {
-                              fetchMembers();
-                            },
-                            child: const Icon(Icons.refresh, size: 25)),
-                        Text(
-                          allMembers.length.toString(),
-                          style: GoogleFonts.poppins(
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  loading
-                      ? const SizedBox(
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.orange,
-                            ),
-                          ),
-                        )
-                      : SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.76,
-                          width: MediaQuery.of(context).size.width * 1,
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            controller: _pageController,
-                            itemCount: allMembers.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
+        : social == false
+            ? const SocialFunds()
+            : WillPopScope(
+                onWillPop: () async {
+                  if (members) {
+                    // Set the new state outside onWillPop
+                    setState(() {
+                      widget.payment == "roundPayment"
+                          ? members = false
+                          : widget.payment == "socialFund"
+                              ? social = false
+                              : null;
+                    });
+                    // Allow back navigation
+                    return false;
+                  } else {
+                    // Set the new state outside onWillPop
+                    social = true;
+                    members = true;
+                    // Prevent back navigation
+                    return false;
+                  }
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
                                 onTap: () {
-                                  allMembers[index].proxy.toLowerCase() ==
-                                          "true"
-                                      ? editModal(allMembers[index])
-                                      : null;
+                                  setState(() {
+                                    widget.payment == "roundPayment"
+                                        ? members = false
+                                        : widget.payment == "socialFund"
+                                            ? social = false
+                                            : null;
+                                  });
                                 },
-                                child: Card(
-                                  // shadowColor: Colors.white,
-                                  color: Colors.white,
-                                  surfaceTintColor: Colors.white,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.09,
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: screenWidth * 0.05,
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: allMembers[
-                                                                  index]
-                                                              .gender
-                                                              .toLowerCase() ==
-                                                          "male"
-                                                      ? const AssetImage(
-                                                          "assets/images/male.png")
-                                                      : const AssetImage(
-                                                          "assets/images/female.png"),
-                                                ),
-                                                Column(
+                                child:
+                                    const Icon(Icons.arrow_back_ios_new_sharp)),
+                            Image(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
+                                image:
+                                    const AssetImage("assets/images/vsla.png"))
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 15, 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Total members",
+                              style: GoogleFonts.poppins(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  fetchMembers();
+                                },
+                                child: const Icon(Icons.refresh, size: 25)),
+                            Text(
+                              allMembers.length.toString(),
+                              style: GoogleFonts.poppins(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      loading
+                          ? const SizedBox(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.76,
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                controller: _pageController,
+                                itemCount: allMembers.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      allMembers[index].proxy.toLowerCase() ==
+                                              "true"
+                                          ? editModal(allMembers[index])
+                                          : null;
+                                    },
+                                    child: Card(
+                                      // shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      surfaceTintColor: Colors.white,
+                                      child: SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.09,
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                      MainAxisAlignment.start,
                                                   children: [
-                                                    Row(
+                                                    CircleAvatar(
+                                                      radius:
+                                                          screenWidth * 0.05,
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      backgroundImage: allMembers[
+                                                                      index]
+                                                                  .gender
+                                                                  .toLowerCase() ==
+                                                              "male"
+                                                          ? const AssetImage(
+                                                              "assets/images/male.png")
+                                                          : const AssetImage(
+                                                              "assets/images/female.png"),
+                                                    ),
+                                                    Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .start,
+                                                              .center,
                                                       children: [
-                                                        Text(
-                                                          allMembers[index]
-                                                              .fullName,
-                                                          style: GoogleFonts
-                                                              .roboto(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              allMembers[index]
+                                                                  .fullName,
+                                                              style: GoogleFonts
+                                                                  .roboto(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Column(
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text("Round",
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Text("Round",
+                                                              style: GoogleFonts
+                                                                  .poppins(
+                                                                      color: Colors
+                                                                              .orange[
+                                                                          900])),
+                                                        ),
+                                                        Text(
+                                                          " ${allMembers[index].round.toString()}",
                                                           style: GoogleFonts
-                                                              .poppins(
-                                                                  color: Colors
-                                                                          .orange[
-                                                                      900])),
+                                                              .roboto(
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                      " ${allMembers[index].round.toString()}",
-                                                      style: GoogleFonts.roboto(
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
+                                                    // Container(
+                                                    //   height: screenWidth * 0.05,
+                                                    //   width: screenWidth * 0.05,
+                                                    //   color: Colors.orange,
+                                                    //   child: Icon(
+                                                    //     FontAwesomeIcons
+                                                    //         .diagramProject,
+                                                    //     size: screenWidth * 0.04,
+                                                    //   ),
+                                                    // )
                                                   ],
                                                 ),
-                                                // Container(
-                                                //   height: screenWidth * 0.05,
-                                                //   width: screenWidth * 0.05,
-                                                //   color: Colors.orange,
-                                                //   child: Icon(
-                                                //     FontAwesomeIcons
-                                                //         .diagramProject,
-                                                //     size: screenWidth * 0.04,
-                                                //   ),
-                                                // )
-                                              ],
-                                            ),
-                                          )
-                                        ]),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                ],
-              ),
-            ),
-          );
+                                              )
+                                            ]),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+              );
   }
 
   Future<void> fetchMembers() async {
