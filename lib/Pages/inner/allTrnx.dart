@@ -159,7 +159,9 @@ class _AllTrnxState extends State<AllTrnx> {
                                     },
                                     child: Card(
                                       // shadowColor: Colors.white,
-                                      color: Colors.white,
+                                      color: allMembers[index].proxy == "true"
+                                          ? Colors.white
+                                          : Colors.grey[50],
                                       surfaceTintColor: Colors.white,
                                       child: SizedBox(
                                         height:
@@ -421,115 +423,120 @@ class _AllTrnxState extends State<AllTrnx> {
             ),
             Row(
               children: [
-                TextButton(
-                  onPressed: () async {
-                    bool confirmDelete = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Confirm Payment'),
-                          content: Text(
-                              'Are you sure you want to add ${amountController.text} Birr to ${allMember.fullName}?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(
-                                    false); // User does not confirm deletion
-                              },
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
+                loading1
+                    ? const CircularProgressIndicator(
+                        color: Colors.orange,
+                      )
+                    : TextButton(
+                        onPressed: () async {
+                          bool confirmDelete = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Confirm Payment'),
+                                content: Text(
+                                    'Are you sure you want to add ${amountController.text} Birr to ${allMember.fullName}?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(
+                                          false); // User does not confirm deletion
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(true); // User confirms deletion
+                                    },
+                                    child: Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          if (confirmDelete) {
+                            setState(() {
+                              loading1 = true;
+                            });
+                            final body = {
+                              "groupId": group,
+                              "payerId": allMember.userId,
+                              "payementTypeId": widget.payment == "roundPayment"
+                                  ? 1
+                                  : widget.payment == "socialFund"
+                                      ? 4
+                                      : 2,
+                              "amount": amountController.text,
+                              "round": roundController.text
+                            };
+                            print(body);
+                            try {
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              var accessToken = prefs.getStringList("_keyUser");
+                              final String authToken = accessToken![0];
+                              var response = await http.post(
+                                Uri.http("10.1.177.121:8111",
+                                    "/api/v1/Transactions/addTransaction"),
+                                headers: <String, String>{
+                                  'Content-Type':
+                                      'application/json; charset=UTF-8',
+                                  'Authorization': 'Bearer $authToken',
+                                },
+                                body: jsonEncode(body),
+                              );
+                              // print("here" + "${response.statusCode}");
+                              // print(response.body);
+                              if (response.statusCode == 200) {
+                                setState(() {
+                                  loading1 = false;
+                                });
+                                const message = 'Payment added Successfuly!';
+                                Future.delayed(
+                                    const Duration(milliseconds: 100), () {
+                                  Fluttertoast.showToast(
+                                      msg: message, fontSize: 18);
+                                });
                                 Navigator.of(context)
-                                    .pop(true); // User confirms deletion
-                              },
-                              child: Text('Yes'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    if (confirmDelete) {
-                      loading1 = true;
-
-                      setState(() {
-                        loading1 = true;
-                      });
-                      final body = {
-                        "groupId": group,
-                        "payerId": allMember.userId,
-                        "payementTypeId": widget.payment == "roundPayment"
-                            ? 1
-                            : widget.payment == "socialFund"
-                                ? 2
-                                : 3,
-                        "amount": amountController.text,
-                        "round": roundController.text
-                      };
-                      print(body);
-                      try {
-                        final SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        var accessToken = prefs.getStringList("_keyUser");
-                        final String authToken = accessToken![0];
-                        var response = await http.post(
-                          Uri.http("10.1.177.121:8111",
-                              "/api/v1/Transactions/addTransaction"),
-                          headers: <String, String>{
-                            'Content-Type': 'application/json; charset=UTF-8',
-                            'Authorization': 'Bearer $authToken',
-                          },
-                          body: jsonEncode(body),
-                        );
-                        // print("here" + "${response.statusCode}");
-                        // print(response.body);
-                        if (response.statusCode == 200) {
-                          setState(() {
-                            loading1 = false;
-                          });
-                          const message = 'Payment added Successfuly!';
-                          Future.delayed(const Duration(milliseconds: 100), () {
-                            Fluttertoast.showToast(msg: message, fontSize: 18);
-                          });
-                          Navigator.of(context)
-                              .pop(); // Close the dialog when the user presses the button
-                        } else if (response.statusCode != 200) {
-                          final responseBody = json.decode(response.body);
-                          final description = responseBody?[
-                              'message']; // Extract 'description' field
-                          if (description == "Phone number is already taken") {
-                            Fluttertoast.showToast(
-                                msg: "This phone number is already registered",
-                                fontSize: 18);
-                          } else {
-                            var message = description ??
-                                "payment process failed; please try again";
-                            Fluttertoast.showToast(msg: message, fontSize: 18);
+                                    .pop(); // Close the dialog when the user presses the button
+                              } else if (response.statusCode != 200) {
+                                final responseBody = json.decode(response.body);
+                                final description = responseBody?[
+                                    'message']; // Extract 'description' field
+                                if (description ==
+                                    "Phone number is already taken") {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "This phone number is already registered",
+                                      fontSize: 18);
+                                } else {
+                                  var message = description ??
+                                      "payment process failed; please try again";
+                                  Fluttertoast.showToast(
+                                      msg: message, fontSize: 18);
+                                }
+                                setState(() {
+                                  loading1 = false;
+                                });
+                              }
+                            } catch (e) {
+                              var message = e.toString();
+                              'Please check your network connection';
+                              Fluttertoast.showToast(
+                                  msg: message, fontSize: 18);
+                            } finally {
+                              setState(() {
+                                loading1 = false;
+                              });
+                            }
                           }
-                          setState(() {
-                            loading1 = false;
-                          });
-                        }
-                      } catch (e) {
-                        var message = e.toString();
-                        'Please check your network connection';
-                        Fluttertoast.showToast(msg: message, fontSize: 18);
-                      } finally {
-                        setState(() {
-                          loading = false;
-                        });
-                      }
-                    }
-                  },
-                  child: loading1
-                      ? const CircularProgressIndicator(
-                          color: Colors.orange,
-                        )
-                      : Text(
+                        },
+                        child: Text(
                           'Add',
-                          style: GoogleFonts.poppins(color: Colors.green),
+                          style: GoogleFonts.poppins(color: Colors.orange),
                         ),
-                ),
+                      ),
               ],
             ),
           ],
