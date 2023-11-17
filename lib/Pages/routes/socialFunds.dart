@@ -1,4 +1,6 @@
 // ignore: file_names
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -116,22 +118,27 @@ class _SocialFundsState extends State<SocialFunds> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Column(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          width: screenWidth * 0.2,
-                          decoration: BoxDecoration(
-                              color: Colors.pink[400],
-                              borderRadius: BorderRadius.circular(10)),
-                          child: const Center(
-                              child: Icon(
-                            FontAwesomeIcons.handHoldingHeart,
-                            color: Colors.white,
-                          )),
-                        ),
-                        const Text("Wedding")
-                      ],
+                    GestureDetector(
+                      onTap: () {
+                        donate(type: "wedding");
+                      },
+                      child: Column(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            width: screenWidth * 0.2,
+                            decoration: BoxDecoration(
+                                color: Colors.pink[400],
+                                borderRadius: BorderRadius.circular(10)),
+                            child: const Center(
+                                child: Icon(
+                              FontAwesomeIcons.handHoldingHeart,
+                              color: Colors.white,
+                            )),
+                          ),
+                          const Text("Wedding")
+                        ],
+                      ),
                     ),
                     Column(
                       children: [
@@ -591,9 +598,7 @@ class _SocialFundsState extends State<SocialFunds> {
                     List<String> user = [];
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
-
                     prefs.setStringList("_keyUser", user);
-                    // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));
                   },
@@ -606,7 +611,7 @@ class _SocialFundsState extends State<SocialFunds> {
         });
   }
 
-  Future<void> fetchMembers() async {
+  Future fetchMembers() async {
     try {
       // var user = await SimplePreferences().getUser();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -649,5 +654,266 @@ class _SocialFundsState extends State<SocialFunds> {
           'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
+  }
+
+  Future donate({required String type}) async {
+    String? selectedMember;
+    var loading1 = false;
+    TextEditingController amountController = TextEditingController();
+    TextEditingController descController = TextEditingController();
+    void onChanged(String? value) {
+      // print(value);
+      setState(() {
+        selectedMember = value;
+      });
+    }
+
+    String? _validateField(String? value) {
+      if (value == null || value.isEmpty) {
+        return 'This field is required';
+      }
+      return null;
+    }
+
+    showDialog(
+      context: context, // Pass the BuildContext to showDialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+
+          title: Text(
+            'Despers Fund for $type',
+            style:
+                GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+          ), // Set your dialog title
+          // content: Text(allMember.fullName), // Set your dialog content
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                      child: Text(
+                        "Select a member",
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade50),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.fromLTRB(
+                                    12, 10.0, 12.0, 10.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color:
+                                          Color.fromARGB(255, 208, 208, 208)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color:
+                                          Color.fromARGB(255, 208, 208, 208)),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                              ),
+                              value:
+                                  selectedMember, // Initially selected value (can be null)
+                              onChanged:
+                                  onChanged, // Function to handle value changes
+
+                              items: allMembers.map((MemberData members) {
+                                return DropdownMenuItem<String>(
+                                  value: members.userId.toString(),
+                                  child: Text(
+                                    members.fullName,
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                            )),
+                      ),
+                    ),
+                  ]),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                validator: _validateField,
+                controller: amountController,
+                decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
+                  ),
+                  labelText: "Amount *",
+                  labelStyle: GoogleFonts.poppins(
+                      fontSize: 14, color: const Color(0xFFF89520)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextFormField(
+                // keyboardType: TextInputType.number,
+                validator: _validateField,
+                controller: descController,
+                decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
+                  ),
+                  labelText: "Description",
+                  labelStyle: GoogleFonts.poppins(
+                      fontSize: 14, color: const Color(0xFFF89520)),
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                loading1
+                    ? const CircularProgressIndicator(
+                        color: Colors.orange,
+                      )
+                    : TextButton(
+                        onPressed: () async {
+                          bool confirmDelete = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Confirm Despers'),
+                                content: Text(
+                                    'Are you sure you despers to ${amountController.text} Birr to selectedMember?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(
+                                          false); // User does not confirm deletion
+                                    },
+                                    child: Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(true); // User confirms deletion
+                                    },
+                                    child: Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          if (confirmDelete) {
+                            setState(() {
+                              loading1 = true;
+                            });
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            var accessToken = prefs.getStringList("_keyUser");
+                            final String authToken = accessToken![0];
+                            final String groupId = accessToken[1];
+                            final body = {
+                              "groupId": groupId,
+                              "payeeId": selectedMember,
+                              "payementTypeId": 4,
+                              "amount": amountController.text,
+                              "description": descController.text
+                            };
+                            print(body);
+                            try {
+                              var response = await http.post(
+                                Uri.http("10.1.177.121:8111",
+                                    "/api/v1/socialFunds/addSocialFunds"),
+                                headers: <String, String>{
+                                  'Content-Type':
+                                      'application/json; charset=UTF-8',
+                                  'Authorization': 'Bearer $authToken',
+                                },
+                                body: jsonEncode(body),
+                              );
+                              // print("here" + "${response.statusCode}");
+                              // print(response.body);
+                              if (response.statusCode == 200) {
+                                setState(() {
+                                  loading1 = false;
+                                });
+                                const message = 'Payment added Successfuly!';
+                                Future.delayed(
+                                    const Duration(milliseconds: 100), () {
+                                  Fluttertoast.showToast(
+                                      msg: message, fontSize: 18);
+                                });
+                                Navigator.of(context)
+                                    .pop(); // Close the dialog when the user presses the button
+                              } else if (response.statusCode != 200) {
+                                final responseBody = json.decode(response.body);
+                                final description = responseBody?[
+                                    'message']; // Extract 'description' field
+                                if (description ==
+                                    "Phone number is already taken") {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "This phone number is already registered",
+                                      fontSize: 18);
+                                } else {
+                                  var message = description ??
+                                      "payment process failed; please try again";
+                                  Fluttertoast.showToast(
+                                      msg: message, fontSize: 18);
+                                }
+                                setState(() {
+                                  loading1 = false;
+                                });
+                              }
+                            } catch (e) {
+                              var message = e.toString();
+                              'Please check your network connection';
+                              Fluttertoast.showToast(
+                                  msg: message, fontSize: 18);
+                            } finally {
+                              setState(() {
+                                loading1 = false;
+                              });
+                            }
+                          }
+                        },
+                        child: Text(
+                          'Add',
+                          style: GoogleFonts.poppins(color: Colors.orange),
+                        ),
+                      ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }
