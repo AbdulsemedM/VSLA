@@ -31,15 +31,38 @@ class SocialFundsTrnx {
   });
 }
 
+class MemberData {
+  final int userId;
+  final String fullName;
+  final String phoneNumber;
+  final double loanBalance;
+  final double paid;
+  final double totalOwning;
+  final String gender;
+  final bool proxy;
+
+  MemberData(
+      {required this.userId,
+      required this.fullName,
+      required this.phoneNumber,
+      required this.proxy,
+      required this.loanBalance,
+      required this.paid,
+      required this.totalOwning,
+      required this.gender});
+}
+
 class _SocialFundsState extends State<SocialFunds> {
   final PageController _pageController = PageController();
   var loading = false;
   var payment = false;
   List<SocialFundsTrnx> allTrnx = [];
+  List<MemberData> allMembers = [];
   @override
   void initState() {
     super.initState();
     fetchSocialFundsTrnx();
+    fetchMembers();
   }
 
   @override
@@ -581,5 +604,50 @@ class _SocialFundsState extends State<SocialFunds> {
             ],
           );
         });
+  }
+
+  Future<void> fetchMembers() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final String groupId = accessToken[2];
+
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111', '/api/v1/groups/$groupId/members'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      var data = jsonDecode(response.body);
+
+      List<MemberData> newMember = [];
+      for (var member in data['memberList']) {
+        newMember.add(MemberData(
+          phoneNumber: member['phoneNumber'],
+          proxy: member['proxy'],
+          userId: member['userId'],
+          fullName: member['fullName'],
+          gender: member['gender'],
+          loanBalance: member['loanBalance'],
+          paid: member['paid'],
+          totalOwning: member['totalOwning'],
+        ));
+      }
+
+      allMembers.clear();
+      allMembers.addAll(newMember);
+
+      setState(() {
+        loading = false;
+      });
+    } catch (e) {
+      print(e.toString());
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
   }
 }
