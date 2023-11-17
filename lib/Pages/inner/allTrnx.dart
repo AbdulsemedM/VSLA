@@ -470,64 +470,76 @@ class _AllTrnxState extends State<AllTrnx> {
                               "round": roundController.text
                             };
                             print(body);
-                            try {
-                              final SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              var accessToken = prefs.getStringList("_keyUser");
-                              final String authToken = accessToken![0];
-                              var response = await http.post(
-                                Uri.http("10.1.177.121:8111",
-                                    "/api/v1/Transactions/addTransaction"),
-                                headers: <String, String>{
-                                  'Content-Type':
-                                      'application/json; charset=UTF-8',
-                                  'Authorization': 'Bearer $authToken',
-                                },
-                                body: jsonEncode(body),
-                              );
-                              // print("here" + "${response.statusCode}");
-                              // print(response.body);
-                              if (response.statusCode == 200) {
-                                setState(() {
-                                  loading1 = false;
-                                });
-                                const message = 'Payment added Successfuly!';
-                                Future.delayed(
-                                    const Duration(milliseconds: 100), () {
-                                  Fluttertoast.showToast(
-                                      msg: message, fontSize: 18);
-                                });
-                                Navigator.of(context)
-                                    .pop(); // Close the dialog when the user presses the button
-                              } else if (response.statusCode != 200) {
-                                final responseBody = json.decode(response.body);
-                                final description = responseBody?[
-                                    'message']; // Extract 'description' field
-                                if (description ==
-                                    "Phone number is already taken") {
-                                  Fluttertoast.showToast(
-                                      msg:
-                                          "This phone number is already registered",
-                                      fontSize: 18);
-                                } else {
-                                  var message = description ??
-                                      "payment process failed; please try again";
-                                  Fluttertoast.showToast(
-                                      msg: message, fontSize: 18);
+                            // ignore: unnecessary_null_comparison
+                            if (amountController.text == null){
+                               const message = 'Please enter an amount!';
+                                  Future.delayed(
+                                      const Duration(milliseconds: 100), () {
+                                    Fluttertoast.showToast(
+                                        msg: message, fontSize: 18);
+                                  });
+                            } else {
+                              try {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                var accessToken =
+                                    prefs.getStringList("_keyUser");
+                                final String authToken = accessToken![0];
+                                var response = await http.post(
+                                  Uri.http("10.1.177.121:8111",
+                                      "/api/v1/Transactions/addTransaction"),
+                                  headers: <String, String>{
+                                    'Content-Type':
+                                        'application/json; charset=UTF-8',
+                                    'Authorization': 'Bearer $authToken',
+                                  },
+                                  body: jsonEncode(body),
+                                );
+                                // print("here" + "${response.statusCode}");
+                                // print(response.body);
+                                if (response.statusCode == 200) {
+                                  setState(() {
+                                    loading1 = false;
+                                  });
+                                  const message = 'Payment added Successfuly!';
+                                  Future.delayed(
+                                      const Duration(milliseconds: 100), () {
+                                    Fluttertoast.showToast(
+                                        msg: message, fontSize: 18);
+                                  });
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog when the user presses the button
+                                } else if (response.statusCode != 200) {
+                                  final responseBody =
+                                      json.decode(response.body);
+                                  final description = responseBody?[
+                                      'message']; // Extract 'description' field
+                                  if (description ==
+                                      "Phone number is already taken") {
+                                    Fluttertoast.showToast(
+                                        msg:
+                                            "This phone number is already registered",
+                                        fontSize: 18);
+                                  } else {
+                                    var message = description ??
+                                        "payment process failed; please try again";
+                                    Fluttertoast.showToast(
+                                        msg: message, fontSize: 18);
+                                  }
+                                  setState(() {
+                                    loading1 = false;
+                                  });
                                 }
+                              } catch (e) {
+                                var message = e.toString();
+                                'Please check your network connection';
+                                Fluttertoast.showToast(
+                                    msg: message, fontSize: 18);
+                              } finally {
                                 setState(() {
                                   loading1 = false;
                                 });
                               }
-                            } catch (e) {
-                              var message = e.toString();
-                              'Please check your network connection';
-                              Fluttertoast.showToast(
-                                  msg: message, fontSize: 18);
-                            } finally {
-                              setState(() {
-                                loading1 = false;
-                              });
                             }
                           }
                         },
