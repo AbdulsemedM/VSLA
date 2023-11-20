@@ -79,6 +79,7 @@ class _LoginState extends State<Login> {
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
             dynamic hasGroup = decodedToken['has-group'];
             dynamic groupID = decodedToken['groupId'];
+            dynamic orgId = decodedToken['orgId'];
             if (hasGroup == "NO") {
               setState(() {
                 registered = false;
@@ -92,7 +93,7 @@ class _LoginState extends State<Login> {
               print(decodedToken);
               groupId = groupID.toString();
               String sub = subVal.toString();
-              List<String> newUser = [accessToken, sub, groupId];
+              List<String> newUser = [accessToken, sub, groupId, orgId.toString()];
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 
@@ -100,7 +101,7 @@ class _LoginState extends State<Login> {
             } else {
               print(decodedToken);
               String sub = subVal.toString();
-              List<String> newUser = [accessToken, sub];
+              List<String> newUser = [accessToken, sub, orgId.toString()];
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 

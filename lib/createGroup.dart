@@ -28,8 +28,29 @@ class IntervalData {
   });
 }
 
+class GroupData {
+  final int groupTypeId;
+  final String groupTypeName;
+
+  GroupData({
+    required this.groupTypeId,
+    required this.groupTypeName,
+  });
+}
+
+class ProjectData {
+  final int projectId;
+  final String projectName;
+
+  ProjectData({
+    required this.projectId,
+    required this.projectName,
+  });
+}
+
 class _CreatGroupState extends State<CreatGroup> {
   String? selectedInterval;
+  String? selectedGroup;
   void onChanged(String? value) {
     // print(value);
     setState(() {
@@ -37,8 +58,17 @@ class _CreatGroupState extends State<CreatGroup> {
     });
   }
 
+  void onChangedGroup(String? value) {
+    // print(value);
+    setState(() {
+      selectedGroup = value;
+    });
+  }
+
   String selectedDate = "";
   List<IntervalData> interval = [];
+  List<GroupData> groupTypes = [];
+  List<ProjectData> project = [];
   String? selectedRegion;
   String? selectedZone;
   TextEditingController groupNameController = new TextEditingController();
@@ -147,6 +177,8 @@ class _CreatGroupState extends State<CreatGroup> {
   void initState() {
     super.initState();
     fetchInterval();
+    fetchGroup();
+    // fetchProject();
   }
 
   @override
@@ -485,6 +517,88 @@ class _CreatGroupState extends State<CreatGroup> {
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
     );
+    final groupType = Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<String>(
+        value: selectedInterval,
+        validator: _validateField,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          labelText: "Group Type *",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        items: groupTypes.map((GroupData intervals) {
+          return DropdownMenuItem<String>(
+            value: intervals.groupTypeId.toString(),
+            child: Text(
+              intervals.groupTypeName,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          );
+        }).toList(),
+        onChanged: onChangedGroup,
+        hint: Text("Group Type",
+            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+      ),
+    );
+    final project = Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<String>(
+        value: selectedInterval,
+        validator: _validateField,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          labelText: "Select Project *",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        items: interval.map((IntervalData intervals) {
+          return DropdownMenuItem<String>(
+            value: intervals.meetingIntervalId.toString(),
+            child: Text(
+              intervals.meetingIntervalName,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
+        hint: Text("Select Project",
+            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+      ),
+    );
 
     return Scaffold(
       body: WillPopScope(
@@ -536,6 +650,20 @@ class _CreatGroupState extends State<CreatGroup> {
               groupName,
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: project,
+                  ),
+                  const SizedBox(
+                    width:
+                        1.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: groupType,
+                  ),
+                ],
               ),
               Row(
                 children: [
@@ -662,6 +790,100 @@ class _CreatGroupState extends State<CreatGroup> {
       }
       interval.addAll(newInterval);
       print(interval.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchGroup() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      print(accessToken);
+      final String authToken = accessToken![0];
+      final String orgId = accessToken[2];
+      final response = await http.get(
+        Uri.http(
+            '10.1.177.121:8111', '/api/v1/group-types/by-organization/$orgId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      // print(data);
+      List<GroupData> newGroupType = [];
+
+      for (var groupType in data) {
+        // print(transaction.date);
+        var groupTypeData = GroupData(
+          groupTypeId: groupType['groupTypeId'],
+          groupTypeName: groupType['groupTypeName'],
+        );
+        newGroupType.add(groupTypeData);
+        // print(company);
+      }
+      groupTypes.addAll(newGroupType);
+      print(groupTypes.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      print(e.toString());
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchProject() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final String orgId = accessToken[3];
+      final response = await http.get(
+        Uri.http(
+            '10.1.177.121:8111', '/api/v1/projects/by-organization/$orgId'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      // print(data);
+      List<ProjectData> newProject = [];
+
+      for (var project in data) {
+        // print(transaction.date);
+        var intervalData = ProjectData(
+          projectId: project['projectId'],
+          projectName: project['projectName'],
+        );
+        newProject.add(intervalData);
+        // print(company);
+      }
+      project.addAll(newProject);
+      print(project.length);
 
       // print(transactions[0]);
 
