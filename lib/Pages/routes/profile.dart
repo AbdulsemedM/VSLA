@@ -34,9 +34,25 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          CircleAvatar(
-              radius: MediaQuery.of(context).size.height * 0.1,
-              child: Image(image: AssetImage("assets/images/male.png"))),
+          Stack(
+            children: [
+              CircleAvatar(
+                  radius: MediaQuery.of(context).size.height * 0.1,
+                  child: Image(image: AssetImage("assets/images/male.png"))),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.07,
+                height: MediaQuery.of(context).size.height * 0.08,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.width * 0.08),
+                    color: Colors.grey[100]),
+                child: const Icon(
+                  FontAwesomeIcons.pencil,
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
