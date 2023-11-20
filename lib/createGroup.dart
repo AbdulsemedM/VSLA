@@ -51,6 +51,7 @@ class ProjectData {
 class _CreatGroupState extends State<CreatGroup> {
   String? selectedInterval;
   String? selectedGroup;
+  String? selectedProject;
   void onChanged(String? value) {
     // print(value);
     setState(() {
@@ -65,10 +66,17 @@ class _CreatGroupState extends State<CreatGroup> {
     });
   }
 
+  void onChangedProject(String? value) {
+    // print(value);
+    setState(() {
+      selectedProject = value;
+    });
+  }
+
   String selectedDate = "";
   List<IntervalData> interval = [];
   List<GroupData> groupTypes = [];
-  List<ProjectData> project = [];
+  List<ProjectData> projects = [];
   String? selectedRegion;
   String? selectedZone;
   TextEditingController groupNameController = new TextEditingController();
@@ -89,6 +97,8 @@ class _CreatGroupState extends State<CreatGroup> {
         "groupSize": groupSize,
         "entryFee": entryFee,
         "meetingIntervalId": selectedInterval,
+        "projectId": selectedProject,
+        "groupTypeId": selectedGroup,
         "meetingDate": selectedDate,
         "address": {
           "region": selectedRegion,
@@ -102,6 +112,7 @@ class _CreatGroupState extends State<CreatGroup> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String phone = accessToken[1];
+      final String orgId = accessToken[2];
       // final String groupId = accessToken[2];
       final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
       // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
@@ -117,7 +128,7 @@ class _CreatGroupState extends State<CreatGroup> {
       if (response.statusCode == 201) {
         var data = jsonDecode(response.body);
         var groupId = data['groupId'];
-        List<String> newUser = [authToken, phone, groupId.toString()];
+        List<String> newUser = [authToken, phone, groupId.toString(), orgId];
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setStringList("_keyUser", newUser);
         print(newUser);
@@ -178,7 +189,7 @@ class _CreatGroupState extends State<CreatGroup> {
     super.initState();
     fetchInterval();
     fetchGroup();
-    // fetchProject();
+    fetchProject();
   }
 
   @override
@@ -520,7 +531,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final groupType = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
-        value: selectedInterval,
+        value: selectedGroup,
         validator: _validateField,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -561,7 +572,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final project = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
-        value: selectedInterval,
+        value: selectedProject,
         validator: _validateField,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -585,16 +596,16 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: interval.map((IntervalData intervals) {
+        items: projects.map((ProjectData intervals) {
           return DropdownMenuItem<String>(
-            value: intervals.meetingIntervalId.toString(),
+            value: intervals.projectId.toString(),
             child: Text(
-              intervals.meetingIntervalName,
+              intervals.projectName,
               style: const TextStyle(fontSize: 14, color: Colors.black),
             ),
           );
         }).toList(),
-        onChanged: onChanged,
+        onChanged: onChangedProject,
         hint: Text("Select Project",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -858,7 +869,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
-      final String orgId = accessToken[3];
+      final String orgId = accessToken[2];
       final response = await http.get(
         Uri.http(
             '10.1.177.121:8111', '/api/v1/projects/by-organization/$orgId'),
@@ -882,8 +893,8 @@ class _CreatGroupState extends State<CreatGroup> {
         newProject.add(intervalData);
         // print(company);
       }
-      project.addAll(newProject);
-      print(project.length);
+      projects.addAll(newProject);
+      print(projects.length);
 
       // print(transactions[0]);
 
@@ -892,6 +903,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // }
       // );
     } catch (e) {
+      print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);

@@ -93,7 +93,12 @@ class _LoginState extends State<Login> {
               print(decodedToken);
               groupId = groupID.toString();
               String sub = subVal.toString();
-              List<String> newUser = [accessToken, sub, groupId, orgId.toString()];
+              List<String> newUser = [
+                accessToken,
+                sub,
+                groupId,
+                orgId.toString()
+              ];
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 
@@ -136,6 +141,7 @@ class _LoginState extends State<Login> {
           Fluttertoast.showToast(msg: message, fontSize: 18);
         }
       } catch (e) {
+        print(e.toString());
         const message =
             "Something went wrong, please Check your network connection";
 
