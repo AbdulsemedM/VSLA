@@ -517,7 +517,7 @@ class _MembersState extends State<Members> {
     TextEditingController fullNameController = TextEditingController();
     TextEditingController phoneNumberController = TextEditingController();
     var loading1 = false;
-    var selectedProxy = allMember.proxy;
+    bool selectedProxy = allMember.proxy;
     fullNameController.text = allMember.fullName;
     phoneNumberController.text = allMember.phoneNumber;
     String? _validateField(String? value) {
@@ -557,8 +557,8 @@ class _MembersState extends State<Members> {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: DropdownButtonFormField<String>(
-                value: selectedProxy.toString(),
+              child: DropdownButtonFormField<bool>(
+                value: selectedProxy,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   labelText: "Proxy enabled *",
@@ -583,16 +583,16 @@ class _MembersState extends State<Members> {
                   fillColor: Colors.transparent,
                 ),
                 items: [
-                  DropdownMenuItem<String>(
-                    value: "true",
+                  DropdownMenuItem<bool>(
+                    value: true,
                     child: Center(
                       child: Text('Yes',
                           style: GoogleFonts.poppins(
                               fontSize: 14, color: Colors.black)),
                     ),
                   ),
-                  DropdownMenuItem<String>(
-                    value: "false",
+                  DropdownMenuItem<bool>(
+                    value: false,
                     child: Center(
                       child: Text('No',
                           style: GoogleFonts.poppins(
@@ -602,7 +602,9 @@ class _MembersState extends State<Members> {
                 ],
                 onChanged: (value) {
                   setState(() {
-                    selectedProxy = value as bool;
+                    selectedProxy = value!;
+                    print("herrreree");
+                    print(selectedProxy);
                   });
                 },
                 hint: Text("yes / no",

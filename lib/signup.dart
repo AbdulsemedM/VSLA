@@ -94,8 +94,9 @@ class _SignupState extends State<Signup> {
         "password": password.text,
         "fullName": fname.text,
         "roleName": "GROUP_ADMIN",
-        "companyId": selectedCompany,
-        "gender": selectedGender
+        "organizationId": selectedCompany,
+        "gender": selectedGender,
+        "proxyEnabled": false
       };
       print(body);
       try {
@@ -570,73 +571,6 @@ class _SignupState extends State<Signup> {
                     ),
                   ]),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                      child: Text(
-                        "Select a project",
-                        style: GoogleFonts.poppins(
-                            fontSize: 15, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade50),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                            padding: const EdgeInsets.only(left: 0),
-                            child: DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.fromLTRB(
-                                    12, 10.0, 12.0, 10.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color:
-                                          Color.fromARGB(255, 208, 208, 208)),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color:
-                                          Color.fromARGB(255, 208, 208, 208)),
-                                ),
-                                focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color: Color(0xFFF89520)),
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                              ),
-                              value:
-                                  selectedCompany, // Initially selected value (can be null)
-                              onChanged:
-                                  onChanged, // Function to handle value changes
-
-                              items: company.map((CompanyData companies) {
-                                return DropdownMenuItem<String>(
-                                  value: companies.companyId.toString(),
-                                  child: Text(
-                                    companies.companyName,
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                            )),
-                      ),
-                    ),
-                  ]),
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -793,8 +727,8 @@ class _SignupState extends State<Signup> {
       for (var comapany in data) {
         // print(transaction.date);
         var companyData = CompanyData(
-          companyId: comapany['companyId'],
-          companyName: comapany['companyName'],
+          companyId: comapany['organizationId'],
+          companyName: comapany['organizationName'],
         );
         newCompany.add(companyData);
         // print(company);
@@ -809,6 +743,7 @@ class _SignupState extends State<Signup> {
       // }
       // );
     } catch (e) {
+      print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
