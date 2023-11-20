@@ -39,7 +39,9 @@ class _AllTrnxState extends State<AllTrnx> {
   @override
   void initState() {
     super.initState();
-    fetchMembers();
+    widget.payment == "roundPayment"
+        ? fetchMembersRound()
+        : fetchMembersSocial();
   }
 
   List<MemberData> allMembers = [];
@@ -118,7 +120,9 @@ class _AllTrnxState extends State<AllTrnx> {
                             ),
                             GestureDetector(
                                 onTap: () {
-                                  fetchMembers();
+                                  widget.payment == "roundPayment"
+                                      ? fetchMembersRound()
+                                      : fetchMembersSocial();
                                 },
                                 child: const Icon(Icons.refresh, size: 25)),
                             Text(
@@ -274,7 +278,7 @@ class _AllTrnxState extends State<AllTrnx> {
               );
   }
 
-  Future<void> fetchMembers() async {
+  Future<void> fetchMembersSocial() async {
     try {
       // var user = await SimplePreferences().getUser();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -283,7 +287,61 @@ class _AllTrnxState extends State<AllTrnx> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/groups/$groupId/contributors'),
+        Uri.http('10.1.177.121:8111',
+            '/api/v1/groups/$groupId/contributors/socialFund'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      // final json = "[" + response.body + "]";
+      var data = jsonDecode(response.body);
+
+      List<MemberData> newMember = [];
+      for (var member in data) {
+        newMember.add(MemberData(
+          round: member['round'],
+          proxy: member['proxy'],
+          userId: member['userId'],
+          fullName: member['fullName'],
+          gender: member['gender'],
+        ));
+      }
+
+      // setState(() {
+      //   male = data['genderStatics']['male'];
+      //   female = data['genderStatics']['female'];
+      // });
+      allMembers.clear();
+      allMembers.addAll(newMember);
+      print(allMembers.length);
+
+      // print(transactions[0]);
+
+      setState(() {
+        loading = false;
+        group = groupId;
+      });
+    } catch (e) {
+      print(e.toString());
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchMembersRound() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final String groupId = accessToken[2];
+
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111',
+            '/api/v1/groups/$groupId/constributors/roundPayment'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -471,13 +529,13 @@ class _AllTrnxState extends State<AllTrnx> {
                             };
                             print(body);
                             // ignore: unnecessary_null_comparison
-                            if (amountController.text == null){
-                               const message = 'Please enter an amount!';
-                                  Future.delayed(
-                                      const Duration(milliseconds: 100), () {
-                                    Fluttertoast.showToast(
-                                        msg: message, fontSize: 18);
-                                  });
+                            if (amountController.text == null) {
+                              const message = 'Please enter an amount!';
+                              Future.delayed(const Duration(milliseconds: 100),
+                                  () {
+                                Fluttertoast.showToast(
+                                    msg: message, fontSize: 18);
+                              });
                             } else {
                               try {
                                 final SharedPreferences prefs =

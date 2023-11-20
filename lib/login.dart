@@ -31,8 +31,8 @@ class _LoginState extends State<Login> {
   var registered = false;
 
   login() async {
-    pnumber.text = "0912345678";
-    password.text = "123456";
+    // pnumber.text = "0912345678";
+    // password.text = "123456";
     if (pnumber.text.length < 9 || pnumber.text == "") {
       const message = 'Invalid phone number format';
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
             dynamic hasGroup = decodedToken['has-group'];
             dynamic groupID = decodedToken['groupId'];
             dynamic orgId = decodedToken['orgId'];
-            if (hasGroup == "NO") {
+            if (hasGroup == "No") {
               setState(() {
                 registered = false;
               });
