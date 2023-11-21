@@ -747,7 +747,7 @@ class _Home3State extends State<Home3> {
                                       MainAxisAlignment.spaceAround,
                                   children: [
                                     Text(
-                                      "Recent Contributions",
+                                      "Recent Updates",
                                       style: GoogleFonts.poppins(
                                           fontSize: screenWidth * 0.05,
                                           fontWeight: FontWeight.w700),

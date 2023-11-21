@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:vsla/Pages/inner/applyLoan.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/utils/circleWidget.dart';
 
@@ -14,6 +15,7 @@ class _LoanState extends State<Loan> {
   var loan = true;
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
     return loan == false
         ? const Home3()
         : WillPopScope(
@@ -78,7 +80,7 @@ class _LoanState extends State<Loan> {
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CircularPercentageWidget(
                         percentages: [
@@ -101,7 +103,7 @@ class _LoanState extends State<Loan> {
                           Text(
                             "Pending 25%",
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -135,7 +137,7 @@ class _LoanState extends State<Loan> {
                           Text(
                             "Active 30%",
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -169,7 +171,7 @@ class _LoanState extends State<Loan> {
                           Text(
                             "Repaid 20%",
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -203,7 +205,7 @@ class _LoanState extends State<Loan> {
                           Text(
                             "Lost 25%",
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -238,6 +240,87 @@ class _LoanState extends State<Loan> {
                       )
                     ],
                   ),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.068,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              side: BorderSide.none,
+                              shape: const StadiumBorder()),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ApplyLoan()),
+                            );
+                          },
+                          child: Text(
+                            "Apply for Loan",
+                            style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ))),
+                  Card(
+                    child: SizedBox(
+                      height: 60,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  CircleAvatar(
+                                    radius: screenWidth * 0.05,
+                                    backgroundColor: Colors.white,
+                                    backgroundImage: const AssetImage(
+                                        "assets/images/male.png"),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Abduse",
+                                        style: GoogleFonts.roboto(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Nov 12 2023",
+                                        style: GoogleFonts.roboto(
+                                          color: Colors.grey[400],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text("230"),
+                                      Text(
+                                        " ETB",
+                                        style: GoogleFonts.roboto(
+                                            color: Colors.grey[400],
+                                            fontSize: 10),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          ]),
+                    ),
+                  )
                 ],
               ),
             ),

@@ -41,7 +41,9 @@ class _AllTrnxState extends State<AllTrnx> {
     super.initState();
     widget.payment == "roundPayment"
         ? fetchMembersRound()
-        : fetchMembersSocial();
+        : widget.payment == "socialFund"
+            ? fetchMembersSocial()
+            : null;
   }
 
   List<MemberData> allMembers = [];
@@ -406,7 +408,9 @@ class _AllTrnxState extends State<AllTrnx> {
           backgroundColor: Colors.white,
 
           title: Text(
-            'Add Round Payment',
+            widget.payment == "roundPayment"
+                ? "Add Round Payment"
+                : "Add Social Fund",
             style:
                 GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
           ), // Set your dialog title

@@ -518,6 +518,7 @@ class _MembersState extends State<Members> {
     TextEditingController phoneNumberController = TextEditingController();
     var loading1 = false;
     bool selectedProxy = allMember.proxy;
+    print(selectedProxy);
     fullNameController.text = allMember.fullName;
     phoneNumberController.text = allMember.phoneNumber;
     String? _validateField(String? value) {
