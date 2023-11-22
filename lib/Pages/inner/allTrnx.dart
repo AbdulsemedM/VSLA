@@ -171,7 +171,7 @@ class _AllTrnxState extends State<AllTrnx> {
                                       child: SizedBox(
                                         height:
                                             MediaQuery.of(context).size.height *
-                                                0.09,
+                                                0.11,
                                         child: Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,

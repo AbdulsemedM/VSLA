@@ -30,8 +30,12 @@ class MemberData {
 
 class _ApplyLoanState extends State<ApplyLoan> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<MemberData> allMembers = [];
   TextEditingController loanAmountController = new TextEditingController();
+  TextEditingController loanDescController = new TextEditingController();
+  TextEditingController loanInterestController = new TextEditingController();
+  TextEditingController repaymentPlanController = new TextEditingController();
+  late String selectedPlan;
+  List<MemberData> allMembers = [];
   String? selectedMember;
   var loading = false;
   void onChanged(String? value) {
@@ -54,6 +58,106 @@ class _ApplyLoanState extends State<ApplyLoan> {
     fetchMembersRound();
   }
 
+  apply() async {
+    // print(pnumber);
+    if (selectedMember == null) {
+      const message = 'please select a member';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (loanAmountController.text == "") {
+      const message = 'please enter a loan amount';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (loanInterestController.text == "") {
+      const message = 'please enter an interest amount';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (loanDescController.text == "") {
+      const message = 'Please enter a description';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (selectedPlan.isEmpty) {
+      const message = 'please select a plan';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else {
+      setState(() {
+        loading = true;
+      });
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final body = {
+        "amount": loanAmountController.text,
+        "interest": double.parse(loanInterestController.text) / 100,
+        "description": loanDescController.text,
+      };
+      print(body);
+      try {
+        var response = await http.post(
+          Uri.http("10.1.177.121:8111", "api/v1/Loan/Add/$selectedMember"),
+          headers: <String, String>{
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(body),
+        );
+        // print("here" + "${response.statusCode}");
+        // print(response.body);
+        if (response.statusCode == 200) {
+          setState(() {
+            loading = false;
+            loanAmountController.clear();
+            loanDescController.clear();
+            loanInterestController.clear();
+            // selectedMember = "";
+            // selectedPlan = "";
+          });
+          const message = 'Loan applied successfully';
+          Future.delayed(const Duration(milliseconds: 100), () {
+            Fluttertoast.showToast(msg: message, fontSize: 18);
+          });
+
+          // ignore: use_build_context_synchronously
+
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => const Otp()));
+          setState(() {
+            loading = false;
+          });
+        } else if (response.statusCode != 201) {
+          final responseBody = json.decode(response.body);
+          final description =
+              responseBody?['message']; // Extract 'description' field
+          if (description == "Phone number is already taken") {
+            Fluttertoast.showToast(
+                msg: "This phone number is already registered", fontSize: 18);
+          } else {
+            var message =
+                description ?? "Account creation failed please try again";
+            Fluttertoast.showToast(msg: message, fontSize: 18);
+          }
+          setState(() {
+            loading = false;
+          });
+        }
+      } catch (e) {
+        var message = e.toString();
+        'Please check your network connection';
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      } finally {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loanAmount = Padding(
@@ -72,8 +176,34 @@ class _ApplyLoanState extends State<ApplyLoan> {
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Loan Amount *",
-          labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          labelStyle: GoogleFonts.poppins(
+            fontSize: 14,
+          ),
+        ),
+      ),
+    );
+    final loanDescription = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        validator: _validateField,
+        controller: loanDescController,
+        maxLines: 3,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText:
+              " Please briefly describe the specific\n reason for this loan request *",
+          labelStyle: GoogleFonts.poppins(
+            // height: 14,
+            fontSize: 14,
+          ),
         ),
       ),
     );
@@ -81,7 +211,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       padding: const EdgeInsets.all(16),
       child: TextFormField(
         validator: _validateField,
-        controller: loanAmountController,
+        controller: loanInterestController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
@@ -93,13 +223,84 @@ class _ApplyLoanState extends State<ApplyLoan> {
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Loan Interest % *",
-          labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          labelStyle: GoogleFonts.poppins(
+            fontSize: 14,
+          ),
         ),
       ),
     );
+    final repaymentPlan = Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<String>(
+        validator: _validateField,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          labelText: "Repayment plan *",
+          // hintText: "Choose zone/subcity",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          hintStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(color: Color(0xFFF89520)),
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
+        ),
+        items: [
+          DropdownMenuItem<String>(
+            value: "1000",
+            child: Center(
+              child: Text('2 Weeks',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "1200",
+            child: Center(
+              child: Text('1 Month',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "1300",
+            child: Center(
+              child: Text('3 Months',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "1400",
+            child: Center(
+              child: Text('5 Months',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+        ],
+        onChanged: (value) {
+          setState(() {
+            selectedPlan = value!;
+          });
+        },
+        //   hint: Text("Select zone",
+        //       style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+      ),
+    );
     final fullName = Padding(
-      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
       child: Container(
         height: 50,
         decoration: BoxDecoration(
@@ -109,6 +310,10 @@ class _ApplyLoanState extends State<ApplyLoan> {
         child: Padding(
             padding: const EdgeInsets.only(left: 0),
             child: DropdownButtonFormField<String>(
+              hint: Text(
+                "Select a Member",
+                style: GoogleFonts.poppins(),
+              ),
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.fromLTRB(12, 10.0, 12.0, 10.0),
                 enabledBorder: OutlineInputBorder(
@@ -161,18 +366,6 @@ class _ApplyLoanState extends State<ApplyLoan> {
                   ],
                 ),
               ),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 0, 8),
-                    child: Text(
-                      "Select a member",
-                      style: GoogleFonts.poppins(
-                          fontSize: 15, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ],
-              ),
               fullName,
               Row(
                 children: [
@@ -188,6 +381,37 @@ class _ApplyLoanState extends State<ApplyLoan> {
                   ),
                 ],
               ),
+              loanDescription,
+              Row(
+                children: [
+                  Expanded(
+                    child: repaymentPlan,
+                  ),
+                  const SizedBox(
+                    width:
+                        1.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: Container(),
+                  ),
+                ],
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.068,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          side: BorderSide.none,
+                          shape: const StadiumBorder()),
+                      onPressed: () {
+                        apply();
+                      },
+                      child: Text(
+                        "Apply",
+                        style: GoogleFonts.poppins(
+                            color: Colors.white, fontWeight: FontWeight.w700),
+                      ))),
             ])),
       )),
     );
