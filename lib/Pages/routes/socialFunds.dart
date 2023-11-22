@@ -706,7 +706,7 @@ class _SocialFundsState extends State<SocialFunds> {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade50),
+                          border: Border.all(color: Colors.orange),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Padding(
@@ -717,15 +717,13 @@ class _SocialFundsState extends State<SocialFunds> {
                                     12, 10.0, 12.0, 10.0),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color:
-                                          Color.fromARGB(255, 208, 208, 208)),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade100),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color:
-                                          Color.fromARGB(255, 208, 208, 208)),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade100),
                                 ),
                                 filled: true,
                                 fillColor: Colors.transparent,
@@ -772,6 +770,76 @@ class _SocialFundsState extends State<SocialFunds> {
                       fontSize: 14, color: const Color(0xFFF89520)),
                 ),
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 25).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("25"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 50).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("50"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 100).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("100"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 200).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("200"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 500).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("500"),
+                  ),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(16),

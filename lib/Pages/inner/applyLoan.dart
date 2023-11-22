@@ -19,16 +19,25 @@ class MemberData {
   final String gender;
   final String proxy;
   final String round;
+  final String maxAmount;
 
   MemberData(
       {required this.userId,
       required this.fullName,
+      required this.maxAmount,
       required this.round,
       required this.proxy,
       required this.gender});
 }
 
 class _ApplyLoanState extends State<ApplyLoan> {
+  var selectedUser = MemberData(
+      userId: "",
+      fullName: "",
+      maxAmount: "",
+      round: "",
+      proxy: "",
+      gender: "");
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController loanAmountController = new TextEditingController();
   TextEditingController loanDescController = new TextEditingController();
@@ -37,6 +46,8 @@ class _ApplyLoanState extends State<ApplyLoan> {
   late String selectedPlan;
   List<MemberData> allMembers = [];
   String? selectedMember;
+  MemberData? maxAmount;
+  String? selectedAmount;
   var loading = false;
   void onChanged(String? value) {
     // print(value);
@@ -47,6 +58,15 @@ class _ApplyLoanState extends State<ApplyLoan> {
 
   String? _validateField(String? value) {
     if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  }
+
+  String? _validateAmountField(String? value) {
+    if (double.parse(value!) > double.parse(maxAmount!.maxAmount)) {
+      return 'Your maximum loan amount is ${maxAmount!.maxAmount}';
+    } else if (value.isEmpty) {
       return 'This field is required';
     }
     return null;
@@ -67,6 +87,12 @@ class _ApplyLoanState extends State<ApplyLoan> {
       });
     } else if (loanAmountController.text == "") {
       const message = 'please enter a loan amount';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (double.parse(loanAmountController.text) >
+        double.parse(maxAmount!.maxAmount)) {
+      var message = 'The max amount of loan is ${maxAmount!.maxAmount}';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
@@ -96,6 +122,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
         "amount": loanAmountController.text,
         "interest": double.parse(loanInterestController.text) / 100,
         "description": loanDescController.text,
+        "days": int.parse(selectedPlan)
       };
       print(body);
       try {
@@ -163,7 +190,8 @@ class _ApplyLoanState extends State<ApplyLoan> {
     final loanAmount = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
-        validator: _validateField,
+        onChanged: (value) {},
+        validator: _validateAmountField,
         controller: loanAmountController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -258,7 +286,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
         ),
         items: [
           DropdownMenuItem<String>(
-            value: "1000",
+            value: "14",
             child: Center(
               child: Text('2 Weeks',
                   style:
@@ -266,7 +294,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1200",
+            value: "30",
             child: Center(
               child: Text('1 Month',
                   style:
@@ -274,7 +302,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1300",
+            value: "90",
             child: Center(
               child: Text('3 Months',
                   style:
@@ -282,7 +310,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1400",
+            value: "150",
             child: Center(
               child: Text('5 Months',
                   style:
@@ -329,7 +357,15 @@ class _ApplyLoanState extends State<ApplyLoan> {
                 fillColor: Colors.transparent,
               ),
               value: selectedMember, // Initially selected value (can be null)
-              onChanged: onChanged, // Function to handle value changes
+              onChanged: (value) {
+                setState(() {
+                  selectedMember = value;
+                  maxAmount = allMembers.firstWhere(
+                    (member) => member.userId == selectedMember,
+                  );
+                  print(maxAmount!.maxAmount);
+                });
+              }, // Function to handle value changes
 
               items: allMembers.map((MemberData members) {
                 return DropdownMenuItem<String>(
@@ -444,6 +480,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       for (var member in data) {
         newMember.add(MemberData(
           round: member['round'],
+          maxAmount: member['maxAmount'],
           proxy: member['proxy'],
           userId: member['userId'],
           fullName: member['fullName'],

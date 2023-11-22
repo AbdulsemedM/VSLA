@@ -407,12 +407,21 @@ class _AllTrnxState extends State<AllTrnx> {
         return AlertDialog(
           backgroundColor: Colors.white,
 
-          title: Text(
-            widget.payment == "roundPayment"
-                ? "Add Round Payment"
-                : "Add Social Fund",
-            style:
-                GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                widget.payment == "roundPayment"
+                    ? "Add Round Payment"
+                    : "Add Social Fund",
+                style: GoogleFonts.poppins(
+                    fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              CircleAvatar(
+                backgroundColor: Colors.orange,
+                child: Text(allMember.round.toString()),
+              )
+            ],
           ), // Set your dialog title
           // content: Text(allMember.fullName), // Set your dialog content
           actions: <Widget>[
@@ -438,31 +447,32 @@ class _AllTrnxState extends State<AllTrnx> {
                 ),
               ),
             ),
+            // Padding(
+            //   padding: const EdgeInsets.all(16),
+            //   child: TextFormField(
+            //     readOnly: true,
+            //     controller: roundController,
+            //     decoration: InputDecoration(
+            //       contentPadding:
+            //           const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+            //       enabledBorder: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(10.0),
+            //         borderSide: const BorderSide(color: Color(0xFFF89520)),
+            //       ),
+            //       focusedBorder: OutlineInputBorder(
+            //         borderRadius: BorderRadius.circular(10.0),
+            //         borderSide: const BorderSide(color: Color(0xFFF89520)),
+            //       ),
+            //       labelText: "Round *",
+            //       labelStyle: GoogleFonts.poppins(
+            //           fontSize: 14, color: const Color(0xFFF89520)),
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextFormField(
-                readOnly: true,
-                controller: roundController,
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: Color(0xFFF89520)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: Color(0xFFF89520)),
-                  ),
-                  labelText: "Round *",
-                  labelStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: const Color(0xFFF89520)),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
+                keyboardType: TextInputType.number,
                 validator: _validateField,
                 controller: amountController,
                 decoration: InputDecoration(
@@ -481,6 +491,76 @@ class _AllTrnxState extends State<AllTrnx> {
                       fontSize: 14, color: const Color(0xFFF89520)),
                 ),
               ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 25).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("25"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 50).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("50"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 100).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("100"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 200).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("200"),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      int currentAmount =
+                          int.tryParse(amountController.text) ?? 0;
+                      amountController.text = (currentAmount + 500).toString();
+                    });
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.orange,
+                    child: Text("500"),
+                  ),
+                ),
+              ],
             ),
             Row(
               children: [
