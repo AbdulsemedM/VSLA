@@ -23,6 +23,9 @@ class LoanData {
   final String? status;
   final String? requester;
   final String? gender;
+  final String? loanId;
+  final String? amountToBePaid;
+  final String? dueDate;
 
   LoanData({
     required this.amount,
@@ -30,6 +33,9 @@ class LoanData {
     required this.updatedDate,
     required this.status,
     required this.gender,
+    required this.dueDate,
+    required this.amountToBePaid,
+    required this.loanId,
   });
 }
 
@@ -408,89 +414,103 @@ class _LoanState extends State<Loan> {
                           color: Colors.orange,
                         )
                       : SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.36,
+                          height: MediaQuery.of(context).size.height * 0.27,
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
                               controller: _pageController,
                               itemCount: filteredLoans.length,
                               itemBuilder: (context, index) {
-                                return Card(
-                                  child: SizedBox(
-                                    height: 60,
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: screenWidth * 0.05,
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: filteredLoans[
-                                                                  index]
-                                                              .gender!
-                                                              .toLowerCase() ==
-                                                          "male"
-                                                      ? const AssetImage(
-                                                          "assets/images/male.png")
-                                                      : const AssetImage(
-                                                          "assets/images/female.png"),
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      filteredLoans[index]
-                                                          .requester
-                                                          .toString(),
-                                                      style: GoogleFonts.roboto(
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                return GestureDetector(
+                                  onTap: () {
+                                    viewModal(filteredLoans[index]);
+                                  },
+                                  child: Card(
+                                    child: SizedBox(
+                                      height: 60,
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: screenWidth * 0.05,
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    backgroundImage: filteredLoans[
+                                                                    index]
+                                                                .gender!
+                                                                .toLowerCase() ==
+                                                            "male"
+                                                        ? const AssetImage(
+                                                            "assets/images/male.png")
+                                                        : const AssetImage(
+                                                            "assets/images/female.png"),
+                                                  ),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        filteredLoans[index]
+                                                            .requester
+                                                            .toString(),
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      DateFormat('MMM d-yyyy')
-                                                          .format(DateTime.parse(
-                                                              filteredLoans[
-                                                                      index]
-                                                                  .updatedDate)),
-                                                      style: GoogleFonts.roboto(
-                                                        color: Colors.grey[400],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(filteredLoans[index]
-                                                        .amount),
-                                                    Text(
-                                                      " ETB",
-                                                      style: GoogleFonts.roboto(
+                                                      Text(
+                                                        DateFormat('MMM d-yyyy')
+                                                            .format(DateTime.parse(
+                                                                filteredLoans[
+                                                                        index]
+                                                                    .updatedDate)),
+                                                        style:
+                                                            GoogleFonts.roboto(
                                                           color:
                                                               Colors.grey[400],
-                                                          fontSize: 10),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          )
-                                        ]),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Text(filteredLoans[index]
+                                                          .amount),
+                                                      Text(
+                                                        " ETB",
+                                                        style:
+                                                            GoogleFonts.roboto(
+                                                                color: Colors
+                                                                    .grey[400],
+                                                                fontSize: 10),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ]),
+                                    ),
                                   ),
                                 );
                               }),
@@ -526,6 +546,9 @@ class _LoanState extends State<Loan> {
       List<LoanData> newTransaction = [];
       for (var loan in data['loanListDtos']) {
         newTransaction.add(LoanData(
+          dueDate: loan['dueDate'],
+          loanId: loan['loanId'],
+          amountToBePaid: loan['amountToBePaid'],
           requester: loan['requester'],
           gender: loan['gender'],
           amount: loan['amount'],
@@ -546,7 +569,7 @@ class _LoanState extends State<Loan> {
         lost.add(data['lostValue']);
       });
       allLoans.addAll(newTransaction);
-      filteredLoans = allLoans;
+      filteredLoans.addAll(allLoans);
       print(allLoans.length);
 
       // print(transactions[0]);
@@ -559,6 +582,202 @@ class _LoanState extends State<Loan> {
       var message =
           'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  void viewModal(LoanData loanDetail) {
+    showDialog(
+      context: context, // Pass the BuildContext to showDialog
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              'View Loan Details',
+              style: GoogleFonts.poppins(
+                  fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+          ), // Set your dialog title
+          // content: Text(allMember.fullName), // Set your dialog content
+          actions: <Widget>[
+            Row(
+              children: [
+                Text(
+                  "Requester:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  loanDetail.requester.toString(),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Amount:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  "${loanDetail.amount.toString()} ETB",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Status:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  loanDetail.status.toString(),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Repayment Amount:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  "${loanDetail.amountToBePaid} ETB",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "Due Date:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(parseDate(loanDetail.dueDate.toString()),
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w800)),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "As of:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  parseDate(loanDetail.updatedDate),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () async {},
+                  child: Text('Done',
+                      style: GoogleFonts.poppins(color: Colors.orange)),
+                ),
+                loanDetail.status == "pending"
+                    ? TextButton(
+                        onPressed: () async {
+                          bool approveLoan = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Confirm Payment'),
+                                content: Text(
+                                    "Are you sure you want to approve ${loanDetail.requester}'s loan?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(
+                                          false); // User does not confirm deletion
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(true); // User confirms deletion
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          if (approveLoan) {
+                            setState(() {
+                              loading = true;
+                            });
+                            try {
+                              var response = await http.put(
+                                Uri.http("10.1.177.121:8111",
+                                    "/api/v1/Loan/edit/${loanDetail.loanId}"),
+                                headers: <String, String>{
+                                  'Content-Type':
+                                      'application/json; charset=UTF-8',
+                                },
+                              );
+                              if (response.statusCode == 200) {
+                                setState(() {
+                                  loading = false;
+                                });
+                                const message = 'Loan approved Successfuly!';
+                                Future.delayed(
+                                    const Duration(milliseconds: 100), () {
+                                  Fluttertoast.showToast(
+                                      msg: message, fontSize: 18);
+                                });
+                                Navigator.of(context).pop();
+                              } else {
+                                final responseBody = json.decode(response.body);
+                                final description = responseBody?['message'];
+                                var message = description ??
+                                    "Loan approval failed; please try again";
+                                Fluttertoast.showToast(
+                                    msg: message, fontSize: 18);
+                                setState(() {
+                                  loading = false;
+                                });
+                              }
+                            } catch (e) {
+                              var message =
+                                  'Please check your network connection';
+                              Fluttertoast.showToast(
+                                  msg: message, fontSize: 18);
+                            } finally {
+                              setState(() {
+                                loading = false;
+                              });
+                            }
+                          }
+                        },
+                        child: Text(
+                          'Approve',
+                          style: GoogleFonts.poppins(color: Colors.green),
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  parseDate(dateToBeCahnged) {
+    try {
+      String formattedDate = DateFormat('MMM d-yyyy').format(
+        DateTime.parse(dateToBeCahnged),
+      );
+      return formattedDate;
+    } catch (e) {
+      // Handle the exception (e.g., log the error, set a default date)
+      print('Error parsing date: $e');
+      String formattedDate =
+          '-'; // Set a default value or handle the error in another way
+      return formattedDate;
     }
   }
 }
