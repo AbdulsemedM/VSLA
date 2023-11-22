@@ -582,7 +582,7 @@ class _Home3State extends State<Home3> {
                                                 ),
                                               ),
                                               Text(
-                                                "Payement",
+                                                "Payment",
                                                 style: GoogleFonts.poppins(
                                                     color: Colors.black),
                                               )

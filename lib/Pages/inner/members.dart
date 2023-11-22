@@ -260,7 +260,7 @@ class _MembersState extends State<Members> {
                                     child: SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.1,
+                                              0.13,
                                       child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
