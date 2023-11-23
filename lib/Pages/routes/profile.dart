@@ -1,8 +1,12 @@
+// import 'dart:convert';
+
 import 'package:flutter/material.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/login.dart';
+// import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -12,6 +16,9 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  var loading = false;
+  var groupName = "";
+  var phoneNumber = "";
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -40,8 +47,8 @@ class _ProfileState extends State<Profile> {
                   radius: MediaQuery.of(context).size.height * 0.1,
                   child: Image(image: AssetImage("assets/images/male.png"))),
               Container(
-                width: MediaQuery.of(context).size.width * 0.07,
-                height: MediaQuery.of(context).size.height * 0.08,
+                width: MediaQuery.of(context).size.width * 0.08,
+                height: MediaQuery.of(context).size.height * 0.04,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
                         MediaQuery.of(context).size.width * 0.08),
@@ -207,4 +214,37 @@ class myTiles extends StatelessWidget {
       ),
     );
   }
+
+  // Future<void> fetchDashBoardData() async {
+  //   try {
+
+  //     // var user = await SimplePreferences().getUser();
+  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     var accessToken = prefs.getStringList("_keyUser");
+  //     final String authToken = accessToken![0];
+  //     final String Phone = accessToken[1];
+
+  //     final response = await http.get(
+  //       Uri.http('10.1.177.121:8111', '/api/v1/home-page'),
+  //       headers: <String, String>{
+  //         'Authorization': 'Bearer $authToken',
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //     );
+  //     // transactions = parseTransactions(response.body);
+  //     Map<String, dynamic> data = jsonDecode(response.body);
+  //     // print(response.body);
+
+  //     setState(() {
+  //       groupName = data['groupName'];
+  //       PhoneNumber = Phone;
+  //       loading = false;
+  //     });
+  //     // print(mileStone);
+  //   } catch (e) {
+  //     var message = e.toString();
+  //     'Something went wrong. Please check your internet connection.';
+  //     Fluttertoast.showToast(msg: message, fontSize: 18);
+  //   }
+  // }
 }

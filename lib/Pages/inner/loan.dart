@@ -329,6 +329,7 @@ class _LoanState extends State<Loan> {
                                 fontWeight: FontWeight.w700),
                           ))),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -407,6 +408,14 @@ class _LoanState extends State<Loan> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                        child: GestureDetector(
+                            onTap: () {
+                              fetchLoans();
+                            },
+                            child: const Icon(Icons.refresh)),
+                      )
                     ],
                   ),
                   loading
@@ -559,16 +568,22 @@ class _LoanState extends State<Loan> {
 
       setState(() {
         total = data['totalValue'];
+        pending.clear();
         pending.add(data['pendingPercent']);
         pending.add(data['pendingValue']);
+        active.clear();
         active.add(data['activePercent']);
         active.add(data['activeValue']);
+        repaid.clear();
         repaid.add(data['repaidPercent']);
         repaid.add(data['repaidValue']);
+        lost.clear();
         lost.add(data['lostPercent']);
         lost.add(data['lostValue']);
       });
+      allLoans.clear();
       allLoans.addAll(newTransaction);
+      filteredLoans.clear();
       filteredLoans.addAll(allLoans);
       print(allLoans.length);
 
@@ -757,7 +772,90 @@ class _LoanState extends State<Loan> {
                           style: GoogleFonts.poppins(color: Colors.green),
                         ),
                       )
-                    : Container(),
+                    : loanDetail.status!.toLowerCase() == "active"
+                        ? TextButton(
+                            onPressed: () async {
+                              bool approveRepayment = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Confirm Payment'),
+                                    content: Text(
+                                        "Are you sure you want to repay ${loanDetail.requester}'s loan?"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(
+                                              false); // User does not confirm deletion
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(
+                                              true); // User confirms deletion
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              if (approveRepayment) {
+                                setState(() {
+                                  loading = true;
+                                });
+                                try {
+                                  var response = await http.put(
+                                    Uri.http("10.1.177.121:8111",
+                                        "/api/v1/Loan/edit/repay/${loanDetail.loanId}"),
+                                    headers: <String, String>{
+                                      'Content-Type':
+                                          'application/json; charset=UTF-8',
+                                    },
+                                  );
+                                  if (response.statusCode == 200) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                    const message = 'Loan repaid Successfuly!';
+                                    Future.delayed(
+                                        const Duration(milliseconds: 100), () {
+                                      Fluttertoast.showToast(
+                                          msg: message, fontSize: 18);
+                                    });
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    final responseBody =
+                                        json.decode(response.body);
+                                    final description =
+                                        responseBody?['message'];
+                                    var message = description ??
+                                        "Loan repayment failed; please try again";
+                                    Fluttertoast.showToast(
+                                        msg: message, fontSize: 18);
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  }
+                                } catch (e) {
+                                  var message =
+                                      'Please check your network connection';
+                                  Fluttertoast.showToast(
+                                      msg: message, fontSize: 18);
+                                } finally {
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                }
+                              }
+                            },
+                            child: Text(
+                              'Repay',
+                              style: GoogleFonts.poppins(color: Colors.green),
+                            ),
+                          )
+                        : Container(),
               ],
             ),
           ],

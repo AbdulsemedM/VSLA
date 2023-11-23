@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/routes/bank_links.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/routes/profile.dart';
-import 'package:vsla/Pages/routes/settings.dart';
+// import 'package:vsla/Pages/routes/settings.dart';
 import 'package:vsla/Pages/routes/socialFunds.dart';
 import 'package:vsla/login.dart';
 
@@ -31,10 +31,10 @@ class _Home1State extends State<Home1> {
       icon: FontAwesomeIcons.link,
       // title: 'Wishlist',
     ),
-    TabItem(
-      icon: FontAwesomeIcons.gear,
-      // title: 'Cart',
-    ),
+    // TabItem(
+    //   icon: FontAwesomeIcons.gear,
+    //   // title: 'Cart',
+    // ),
     TabItem(
       icon: FontAwesomeIcons.user,
       // title: 'profile',
@@ -55,8 +55,8 @@ class _Home1State extends State<Home1> {
                     ? const SocialFunds()
                     : visit == 2
                         ? const Bank_links()
-                        : visit == 3
-                            ? const Settings()
+                        // : visit == 3
+                        //     ? const Settings()
                             : const Profile()),
         bottomNavigationBar: BottomBarInspiredFancy(
             iconSize: 20,
