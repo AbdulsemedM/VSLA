@@ -340,37 +340,37 @@ class _MembersState extends State<Members> {
                                                           ),
                                                         ],
                                                       ),
-                                                      // Row(
-                                                      //   children: [
-                                                      //     Padding(
-                                                      //       padding:
-                                                      //           const EdgeInsets
-                                                      //               .fromLTRB(
-                                                      //               10,
-                                                      //               0,
-                                                      //               10,
-                                                      //               0),
-                                                      //       child: Text(
-                                                      //         " Paid",
-                                                      //         style: GoogleFonts
-                                                      //             .roboto(
-                                                      //                 color: Colors
-                                                      //                         .blue[
-                                                      //                     400]),
-                                                      //       ),
-                                                      //     ),
-                                                      //     Text(
-                                                      //       allMembers[index]
-                                                      //           .
-                                                      //           .toString(),
-                                                      //       style: GoogleFonts
-                                                      //           .roboto(
-                                                      //               color: Colors
-                                                      //                       .blue[
-                                                      //                   400]),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
+                                                      Row(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .fromLTRB(
+                                                                    10,
+                                                                    0,
+                                                                    10,
+                                                                    0),
+                                                            child: Text(
+                                                              " Paid",
+                                                              style: GoogleFonts
+                                                                  .roboto(
+                                                                      color: Colors
+                                                                              .blue[
+                                                                          400]),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            allMembers[index]
+                                                                .loanBalance
+                                                                .toString(),
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        400]),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ],
                                                   ),
                                                 ],
