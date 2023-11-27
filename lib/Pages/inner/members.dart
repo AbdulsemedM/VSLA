@@ -331,7 +331,7 @@ class _MembersState extends State<Members> {
                                                           ),
                                                           Text(
                                                             allMembers[index]
-                                                                .phoneNumber
+                                                                .loanBalance
                                                                 .toString(),
                                                             style: GoogleFonts
                                                                 .roboto(
