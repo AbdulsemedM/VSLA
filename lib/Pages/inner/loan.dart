@@ -131,7 +131,7 @@ class _LoanState extends State<Loan> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 8),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 8),
                         child: Text(
                           "Loans",
                           style: GoogleFonts.poppins(
@@ -156,7 +156,7 @@ class _LoanState extends State<Loan> {
                           loading ? 0 : double.parse(repaid[0]),
                           loading ? 0 : double.parse(lost[0])
                         ], // Change these to your desired percentages
-                        colors: [
+                        colors: const [
                           Colors.green,
                           Colors.purple,
                           Colors.orange,
@@ -181,7 +181,7 @@ class _LoanState extends State<Loan> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.rectangle,
                                 color: Colors.green,
                               ),
@@ -215,7 +215,7 @@ class _LoanState extends State<Loan> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.rectangle,
                                 color: Colors.purple,
                               ),
@@ -249,7 +249,7 @@ class _LoanState extends State<Loan> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.rectangle,
                                 color: Colors.orange,
                               ),
@@ -283,7 +283,7 @@ class _LoanState extends State<Loan> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.rectangle,
                                 color: Colors.blue,
                               ),
@@ -698,7 +698,7 @@ class _LoanState extends State<Loan> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Confirm Payment'),
+                                title: const Text('Confirm Payment'),
                                 content: Text(
                                     "Are you sure you want to approve ${loanDetail.requester}'s loan?"),
                                 actions: <Widget>[
@@ -779,7 +779,7 @@ class _LoanState extends State<Loan> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Confirm Payment'),
+                                    title: const Text('Confirm Payment'),
                                     content: Text(
                                         "Are you sure you want to repay ${loanDetail.requester}'s loan?"),
                                     actions: <Widget>[
