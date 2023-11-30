@@ -538,18 +538,18 @@ class _MembersState extends State<Members> {
                 validator: _validateField,
                 controller: fullNameController,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   labelText: "Full name *",
                   labelStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: Color(0xFFF89520)),
+                      fontSize: 14, color: const Color(0xFFF89520)),
                 ),
               ),
             ),
@@ -558,24 +558,24 @@ class _MembersState extends State<Members> {
               child: DropdownButtonFormField<bool>(
                 value: selectedProxy,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   labelText: "Proxy enabled *",
                   hintText: "yes / no",
                   labelStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: Color(0xFFF89520)),
+                      fontSize: 14, color: const Color(0xFFF89520)),
                   hintStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: Color(0xFFF89520)),
+                      fontSize: 14, color: const Color(0xFFF89520)),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   focusedErrorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
@@ -640,8 +640,8 @@ class _MembersState extends State<Members> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Confirm Deletion'),
-                          content: Text(
+                          title: const Text('Confirm Deletion'),
+                          content: const Text(
                               'Are you sure you want to delete this user?'),
                           actions: <Widget>[
                             TextButton(
@@ -649,14 +649,14 @@ class _MembersState extends State<Members> {
                                 Navigator.of(context).pop(
                                     false); // User does not confirm deletion
                               },
-                              child: Text('Cancel'),
+                              child: const Text('Cancel'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context)
                                     .pop(true); // User confirms deletion
                               },
-                              child: Text('Delete'),
+                              child: const Text('Delete'),
                             ),
                           ],
                         );
@@ -745,7 +745,7 @@ class _MembersState extends State<Members> {
                     }
                   },
                   child: loading1
-                      ? CircularProgressIndicator(
+                      ? const CircularProgressIndicator(
                           color: Colors.orange,
                         )
                       : Text('Delete User',
