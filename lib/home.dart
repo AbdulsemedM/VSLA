@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
