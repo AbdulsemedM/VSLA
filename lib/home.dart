@@ -37,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Container(
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: const Image(
                         image: AssetImage("assets/images/vsla.png")),
