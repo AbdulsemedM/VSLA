@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,14 +14,13 @@ class AddMember extends StatefulWidget {
 }
 
 class _AddMemberState extends State<AddMember> {
-  TextEditingController fullNameController = new TextEditingController();
-  TextEditingController woredaController = new TextEditingController();
-  TextEditingController kebeleController = new TextEditingController();
-  TextEditingController phoneNumberController = new TextEditingController();
-  TextEditingController initialContributionController =
-      new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
-  TextEditingController confirmPasswordController = new TextEditingController();
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController woredaController = TextEditingController();
+  TextEditingController kebeleController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController initialContributionController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedRegion;
   String? selectedZone;
@@ -50,7 +50,7 @@ class _AddMemberState extends State<AddMember> {
         }
       };
 
-      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups/add-member';
+      const String apiUrl = 'http://10.1.177.121:8111/api/v1/groups/add-member';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
@@ -118,18 +118,18 @@ class _AddMemberState extends State<AddMember> {
         validator: _validateField,
         controller: fullNameController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Full name *",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
       ),
     );
@@ -137,24 +137,24 @@ class _AddMemberState extends State<AddMember> {
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           labelText: "Region *",
           hintText: "Choose Region",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           hintStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           filled: true,
           fillColor: Colors.transparent,
@@ -191,31 +191,32 @@ class _AddMemberState extends State<AddMember> {
           });
         },
         hint: Text("Select Region",
-            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+            style: GoogleFonts.poppins(
+                fontSize: 14, color: const Color(0xFFF89520))),
       ),
     );
     final zone = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           labelText: "Zone/ Subcity *",
           hintText: "Choose zone/subcity",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           hintStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           filled: true,
           fillColor: Colors.transparent,
@@ -252,31 +253,32 @@ class _AddMemberState extends State<AddMember> {
           });
         },
         hint: Text("Select zone",
-            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+            style: GoogleFonts.poppins(
+                fontSize: 14, color: const Color(0xFFF89520))),
       ),
     );
     final gender = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           labelText: "Gender *",
           hintText: "Choose gender",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           hintStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           filled: true,
           fillColor: Colors.transparent,
@@ -305,7 +307,8 @@ class _AddMemberState extends State<AddMember> {
           });
         },
         hint: Text("Select Gender",
-            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+            style: GoogleFonts.poppins(
+                fontSize: 14, color: const Color(0xFFF89520))),
       ),
     );
 
@@ -315,18 +318,18 @@ class _AddMemberState extends State<AddMember> {
         validator: _validateField,
         controller: woredaController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Woreda *",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
       ),
     );
@@ -337,18 +340,18 @@ class _AddMemberState extends State<AddMember> {
         validator: _validateField,
         controller: kebeleController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Kebele *",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
       ),
     );
@@ -359,18 +362,18 @@ class _AddMemberState extends State<AddMember> {
         validator: _validateField,
         controller: phoneNumberController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "Phone number / Username *",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
       ),
     );
@@ -378,24 +381,24 @@ class _AddMemberState extends State<AddMember> {
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           labelText: "Proxy enabled *",
           hintText: "yes / no",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           hintStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           filled: true,
           fillColor: Colors.transparent,
