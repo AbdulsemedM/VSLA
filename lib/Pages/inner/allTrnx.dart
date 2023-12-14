@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -394,6 +395,7 @@ class _AllTrnxState extends State<AllTrnx> {
     roundController.text = allMember.round;
     fullNameController.text = allMember.fullName;
 
+    // ignore: no_leading_underscores_for_local_identifiers
     String? _validateField(String? value) {
       if (value == null || value.isEmpty) {
         return 'This field is required';
@@ -432,18 +434,19 @@ class _AllTrnxState extends State<AllTrnx> {
                 controller: fullNameController,
                 validator: _validateField,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Color(0xFFF89520)),
+                    borderSide: const BorderSide(color: Color(0xFFF89520)),
                   ),
                   labelText: "Full name *",
                   labelStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: Color(0xFFF89520)),
+                      fontSize: 14, color: const Color(0xFFF89520)),
                 ),
               ),
             ),
@@ -649,6 +652,7 @@ class _AllTrnxState extends State<AllTrnx> {
                                     Fluttertoast.showToast(
                                         msg: message, fontSize: 18);
                                   });
+                                  // ignore: use_build_context_synchronously
                                   Navigator.of(context)
                                       .pop(); // Close the dialog when the user presses the button
                                 } else if (response.statusCode != 200) {

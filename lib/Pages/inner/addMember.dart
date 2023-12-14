@@ -427,7 +427,8 @@ class _AddMemberState extends State<AddMember> {
           });
         },
         hint: Text("yes / no",
-            style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
+            style: GoogleFonts.poppins(
+                fontSize: 14, color: const Color(0xFFF89520))),
       ),
     );
 
@@ -448,7 +449,7 @@ class _AddMemberState extends State<AddMember> {
           ),
           labelText: "Initial contribution",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
       ),
     );
@@ -461,18 +462,18 @@ class _AddMemberState extends State<AddMember> {
         validator: _validateField,
         controller: passwordController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "password *",
           labelStyle:
-              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
       ),
     );
@@ -485,14 +486,14 @@ class _AddMemberState extends State<AddMember> {
         validator: _validateConfirmPassword,
         controller: confirmPasswordController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
           labelText: "confirm password *",
           labelStyle:
@@ -531,7 +532,7 @@ class _AddMemberState extends State<AddMember> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 0, 8),
                   child: Text(
                     "Add Member",
                     style: GoogleFonts.poppins(
@@ -623,7 +624,7 @@ class _AddMemberState extends State<AddMember> {
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Color(0xFFF89520), // Text color
+                backgroundColor: const Color(0xFFF89520), // Text color
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
