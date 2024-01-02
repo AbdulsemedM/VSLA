@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/allTrnx.dart';
 import 'package:vsla/Pages/inner/loan.dart';
+import 'package:vsla/Pages/inner/meetings.dart';
 import 'package:vsla/Pages/inner/transactions.dart';
 import 'package:vsla/Pages/inner/members.dart';
 import 'package:vsla/Pages/inner/awarness.dart';
@@ -596,26 +597,35 @@ class _Home3State extends State<Home3> {
                                                 0.09,
                                         width: screenWidth * 0.22,
                                         // color: Colors.amber,
-                                        child: Column(
-                                          children: [
-                                            Center(
-                                              child: Image(
-                                                image: const AssetImage(
-                                                  "assets/images/Meeting.png",
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Meetings()));
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Center(
+                                                child: Image(
+                                                  image: const AssetImage(
+                                                    "assets/images/Meeting.png",
+                                                  ),
+                                                  width: screenWidth * 0.19,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.04,
                                                 ),
-                                                width: screenWidth * 0.19,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.04,
                                               ),
-                                            ),
-                                            Text(
-                                              "Meetings",
-                                              style: GoogleFonts.poppins(
-                                                  color: Colors.black),
-                                            )
-                                          ],
+                                              Text(
+                                                "Meetings",
+                                                style: GoogleFonts.poppins(
+                                                    color: Colors.black),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       SizedBox(

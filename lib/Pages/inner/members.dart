@@ -331,7 +331,7 @@ class _MembersState extends State<Members> {
                                                           ),
                                                           Text(
                                                             allMembers[index]
-                                                                .loanBalance
+                                                                .phoneNumber
                                                                 .toString(),
                                                             style: GoogleFonts
                                                                 .roboto(
@@ -351,7 +351,7 @@ class _MembersState extends State<Members> {
                                                                     10,
                                                                     0),
                                                             child: Text(
-                                                              " Paid",
+                                                              " Proxy: ",
                                                               style: GoogleFonts
                                                                   .roboto(
                                                                       color: Colors
@@ -361,8 +361,9 @@ class _MembersState extends State<Members> {
                                                           ),
                                                           Text(
                                                             allMembers[index]
-                                                                .loanBalance
-                                                                .toString(),
+                                                                    .proxy
+                                                                ? "Yes"
+                                                                : "No",
                                                             style: GoogleFonts
                                                                 .roboto(
                                                                     color: Colors
@@ -538,7 +539,8 @@ class _MembersState extends State<Members> {
                 validator: _validateField,
                 controller: fullNameController,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Color(0xFFF89520)),
@@ -558,7 +560,8 @@ class _MembersState extends State<Members> {
               child: DropdownButtonFormField<bool>(
                 value: selectedProxy,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   labelText: "Proxy enabled *",
                   hintText: "yes / no",
                   labelStyle: GoogleFonts.poppins(

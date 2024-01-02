@@ -101,7 +101,6 @@ class _LoginState extends State<Login> {
               ];
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
-
               prefs.setStringList("_keyUser", newUser);
             } else {
               print(decodedToken);
