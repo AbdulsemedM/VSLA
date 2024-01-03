@@ -785,9 +785,10 @@ class _CreatGroupState extends State<CreatGroup> {
         },
       );
       // transactions = parseTransactions(response.body);
+      print("interval.length");
       var data = jsonDecode(response.body);
 
-      // print(data);
+      print(data);
       List<IntervalData> newInterval = [];
 
       for (var interval in data) {
@@ -801,6 +802,7 @@ class _CreatGroupState extends State<CreatGroup> {
       }
       interval.addAll(newInterval);
       print(interval.length);
+      print("interval.length");
 
       // print(transactions[0]);
 
