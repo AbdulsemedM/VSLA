@@ -78,7 +78,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
     fetchMembersRound();
   }
 
-  apply() async {
+  Future<void> apply() async {
     // print(pnumber);
     if (selectedMember == null) {
       const message = 'please select a member';
@@ -440,8 +440,8 @@ class _ApplyLoanState extends State<ApplyLoan> {
                           backgroundColor: Colors.orange,
                           side: BorderSide.none,
                           shape: const StadiumBorder()),
-                      onPressed: () {
-                        apply();
+                      onPressed: () async {
+                        await apply();
                       },
                       child: Text(
                         "Apply",

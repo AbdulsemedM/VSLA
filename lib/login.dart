@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
             dynamic hasGroup = decodedToken['has-group'];
             dynamic groupID = decodedToken['groupId'];
-            dynamic orgId = decodedToken['orgId'];
+            dynamic orgId = decodedToken['org_id'];
             if (hasGroup == "No") {
               setState(() {
                 registered = false;
@@ -111,10 +111,6 @@ class _LoginState extends State<Login> {
 
               prefs.setStringList("_keyUser", newUser);
             }
-            // List<dynamic> roles = decodedToken['roles']; // Access 'roles' field
-            // String firstRole = roles[0];
-            // dynamic expVal = decodedToken['exp']; // Access 'exp' field
-            // String exp = expVal.toString();
           } else {
             // print('No data found in the response.');
           }
