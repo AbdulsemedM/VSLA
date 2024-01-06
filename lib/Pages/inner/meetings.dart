@@ -19,15 +19,21 @@ class Meetings extends StatefulWidget {
 
 class _MeetingsState extends State<Meetings>
     with SingleTickerProviderStateMixin {
+  List<MeetingTypeData> meetingTypes = [];
+  List<MeetingIntevalData> meetingIntervals = [];
   TextEditingController currentRound = new TextEditingController();
   TextEditingController meetingReason = new TextEditingController();
   String? meeetingType;
   String? meetingInterval;
+  String? meeetingTypeId;
+  String? meetingIntervalId;
   String? nextMeetingDate;
+  String? intervalDays;
   final GlobalKey<FormState> myKey = GlobalKey();
   TabController? _tabController;
   var loading = false;
   String selectedDate = "";
+  bool? done;
 
   final List<Tab> _tabs = const [
     Tab(text: "Active"),
@@ -39,6 +45,8 @@ class _MeetingsState extends State<Meetings>
   ];
   void initState() {
     super.initState();
+    fetchMeetingTypes();
+    fetchMeetingIntervals();
     _tabController = TabController(length: _tabs.length, vsync: this);
   }
 
@@ -112,306 +120,299 @@ class _MeetingsState extends State<Meetings>
                       // content: Text(""),
                       content: SingleChildScrollView(
                         child: Form(
+                            key: myKey,
                             child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                  child: DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          12.0, 10.0, 12.0, 10.0),
-                                      labelText: "Meeting Type*",
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color(0xFFF89520)),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color(0xFFF89520)),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color(0xFFF89520)),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.transparent,
-                                    ),
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: "all",
-                                        child: Center(
-                                          child: Text('Round',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "active",
-                                        child: Center(
-                                          child: Text('Social',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "pending",
-                                        child: Center(
-                                          child: Text('Emergency',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "repaid",
-                                        child: Center(
-                                          child: Text('Final',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "lost",
-                                        child: Center(
-                                          child: Text('Lost',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        meeetingType = value;
-                                      });
-                                    },
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return "Meeting type is required.";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: TextFormField(
-                                  // validator: _validateAmountField,
-                                  controller: meetingReason,
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.fromLTRB(
-                                        12.0, 10.0, 12.0, 10.0),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFF89520)),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFF89520)),
-                                    ),
-                                    labelText: "Meeting Reason",
-                                    labelStyle: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                  child: DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.fromLTRB(
-                                          12.0, 10.0, 12.0, 10.0),
-                                      labelText: "Meeting Interval*",
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color(0xFFF89520)),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color(0xFFF89520)),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Color(0xFFF89520)),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.transparent,
-                                    ),
-                                    items: [
-                                      DropdownMenuItem<String>(
-                                        value: "all",
-                                        child: Center(
-                                          child: Text('Round',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "active",
-                                        child: Center(
-                                          child: Text('Social',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "pending",
-                                        child: Center(
-                                          child: Text('Emergency',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "repaid",
-                                        child: Center(
-                                          child: Text('Final',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: "lost",
-                                        child: Center(
-                                          child: Text('Lost',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  color: Colors.black)),
-                                        ),
-                                      ),
-                                    ],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        meetingInterval = value;
-                                      });
-                                    },
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return "Meeting inteval is required.";
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: DateTimeFormField(
-                                  // validator: _validateDate,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.fromLTRB(
-                                        12.0, 10.0, 12.0, 10.0),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: Color(0xFFF89520)),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: Color(0xFFF89520)),
-                                    ),
-                                    labelText: "Next Meeting Date *",
-                                    labelStyle: GoogleFonts.poppins(
-                                        fontSize: 14, color: Color(0xFFF89520)),
-                                    hintText: "Select next Meeting Date",
-                                  ),
-                                  mode: DateTimeFieldPickerMode.date,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "Next date is required.";
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  onDateSelected: (DateTime value) {
-                                    // Format the selected date as a string
-                                    nextMeetingDate =
-                                        DateFormat('yyyy-MM-dd').format(value);
-                                    print(
-                                        'Selected date: $nextMeetingDate'); // Output: 2023-11-17
-                                    // Handle the formatted date as needed
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: TextFormField(
-                                  controller: currentRound,
-                                  validator: (value) {},
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.fromLTRB(
-                                        12.0, 10.0, 12.0, 10.0),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: Color(0xFFF89520)),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: Color(0xFFF89520)),
-                                    ),
-                                    labelText: "Current Round*",
-                                    labelStyle: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Row(
+                              child: Column(
                                 children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(
-                                          false); // User does not confirm deletion
-                                    },
-                                    child: const Text('Cancel'),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  12.0, 10.0, 12.0, 10.0),
+                                          labelText: "Meeting Type*",
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                                color: Color(0xFFF89520)),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                                color: Color(0xFFF89520)),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                                color: Color(0xFFF89520)),
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.transparent,
+                                        ),
+                                        items: meetingTypes
+                                            .map((MeetingTypeData meetTs) {
+                                          return DropdownMenuItem<String>(
+                                            value:
+                                                meetTs.meetingTypeId.toString(),
+                                            child: Text(
+                                              meetTs.meetingTypeName,
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            meeetingTypeId = value;
+                                            MeetingTypeData
+                                                selectedMeetingType =
+                                                meetingTypes.firstWhere(
+                                                    (meetTs) =>
+                                                        meetTs.meetingTypeId
+                                                            .toString() ==
+                                                        value);
+                                            meeetingType = selectedMeetingType
+                                                .meetingTypeName
+                                                .toString();
+                                          });
+                                        },
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return "Meeting type is required.";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(true); // User confirms deletion
-                                    },
-                                    child: const Text('Yes'),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: TextFormField(
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return null;
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      controller: meetingReason,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.fromLTRB(
+                                            12.0, 10.0, 12.0, 10.0),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFF89520)),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFF89520)),
+                                        ),
+                                        labelText: "Meeting Reason",
+                                        labelStyle: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.05,
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  12.0, 10.0, 12.0, 10.0),
+                                          labelText: "Meeting Interval*",
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                                color: Color(0xFFF89520)),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                                color: Color(0xFFF89520)),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: const BorderSide(
+                                                color: Color(0xFFF89520)),
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.transparent,
+                                        ),
+                                        items: meetingIntervals
+                                            .map((MeetingIntevalData meetIs) {
+                                          return DropdownMenuItem<String>(
+                                            value: meetIs.meetingIntervalId
+                                                .toString(),
+                                            child: Text(
+                                              meetIs.meetingIntervalName,
+                                              style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            meetingIntervalId = value;
+                                            MeetingIntevalData
+                                                selectedMeetingInterval =
+                                                meetingIntervals.firstWhere(
+                                                    (meetIs) =>
+                                                        meetIs.meetingIntervalId
+                                                            .toString() ==
+                                                        value);
+                                            intervalDays =
+                                                selectedMeetingInterval
+                                                    .intervalInDays
+                                                    .toString();
+                                            meetingInterval =
+                                                selectedMeetingInterval
+                                                    .meetingIntervalName
+                                                    .toString();
+                                          });
+                                        },
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return "Meeting inteval is required.";
+                                          } else {
+                                            return null;
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: DateTimeFormField(
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                12.0, 10.0, 12.0, 10.0),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFFF89520)),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFFF89520)),
+                                        ),
+                                        labelText: "Next Meeting Date *",
+                                        labelStyle: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            color: Color(0xFFF89520)),
+                                        hintText: "Select next Meeting Date",
+                                      ),
+                                      mode: DateTimeFieldPickerMode.date,
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return "Next date is required.";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      onDateSelected: (DateTime value) {
+                                        // Format the selected date as a string
+                                        nextMeetingDate =
+                                            DateFormat('yyyy-MM-dd')
+                                                .format(value);
+                                        print(
+                                            'Selected date: $nextMeetingDate'); // Output: 2023-11-17
+                                        // Handle the formatted date as needed
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: TextFormField(
+                                      controller: currentRound,
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return null;
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.fromLTRB(
+                                                12.0, 10.0, 12.0, 10.0),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFFF89520)),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                              color: Color(0xFFF89520)),
+                                        ),
+                                        labelText: "Current Round*",
+                                        labelStyle: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop(
+                                              false); // User does not confirm deletion
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await apply();
+                                          if (done == true) {
+                                            Navigator.of(context).pop(
+                                                true); // User confirms deletion
+                                          } else {
+                                            const message =
+                                                'Please check your network connection';
+                                            Fluttertoast.showToast(
+                                                msg: message, fontSize: 18);
+                                          }
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        )),
+                            )),
                       ),
                     );
                   },
@@ -439,9 +440,8 @@ class _MeetingsState extends State<Meetings>
   }
 
   Future<void> apply() async {
-    // print(pnumber);
+    print("mybodyyyyy");
     if (myKey.currentState!.validate()) {
-    } else {
       setState(() {
         loading = true;
       });
@@ -451,13 +451,17 @@ class _MeetingsState extends State<Meetings>
       final String groupId = accessToken[2];
       final body = {
         "currentRound": int.parse(currentRound.text),
-        "nextMeetingDate": "nextMeetingDate",
-        "meetingInterval": 'meetingInterval',
-        "intervalDays": "meetingIntervalDays",
-        "meetingType": "meetingType",
-        "meetingReason": "meetingreason",
+        "nextMeetingDate": DateFormat("yyyy-MM-ddTHH:mm:ss")
+            .format(DateTime.parse(nextMeetingDate!)),
+        "meetingInterval": meetingInterval,
+        "meetingIntervalId": meetingIntervalId,
+        "intervalDays": intervalDays,
+        "meetingType": meeetingType,
+        "meetingTypeId": meeetingTypeId,
+        "meetingReason": meetingReason.text,
         "group": {"groupId": groupId}
       };
+      print("mybodyyyyy");
       print(body);
       try {
         var response = await http.post(
@@ -473,13 +477,14 @@ class _MeetingsState extends State<Meetings>
         if (response.statusCode == 200) {
           setState(() {
             loading = false;
+            done = true;
             // currentRound.clear();
             // loanDescController.clear();
             // loanInterestController.clear();
             // selectedMember = "";
             // selectedPlan = "";
           });
-          const message = 'Loan applied successfully';
+          const message = 'Meeting created successfully';
           Future.delayed(const Duration(milliseconds: 100), () {
             Fluttertoast.showToast(msg: message, fontSize: 18);
           });
@@ -509,6 +514,7 @@ class _MeetingsState extends State<Meetings>
         }
       } catch (e) {
         var message = e.toString();
+        print(e.toString());
         'Please check your network connection';
         Fluttertoast.showToast(msg: message, fontSize: 18);
       } finally {
@@ -516,6 +522,97 @@ class _MeetingsState extends State<Meetings>
           loading = false;
         });
       }
+    }
+  }
+
+  Future<void> fetchMeetingTypes() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111', '/api/v1/meeting-types/getAll/App'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      print(data);
+      List<MeetingTypeData> newMeeting = [];
+
+      for (var meet in data) {
+        // print(transaction.date);
+        var meetings = MeetingTypeData(
+            meetingTypeId: meet['meetingTypeId'].toString(),
+            meetingTypeName: meet['meetingTypeName']);
+        newMeeting.add(meetings);
+        // print(company);
+      }
+      meetingTypes.addAll(newMeeting);
+      print("meetingTypes");
+      print(meetingTypes.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      print(e.toString());
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchMeetingIntervals() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals/getAll/App'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      print(data);
+      List<MeetingIntevalData> newMeeting = [];
+
+      for (var meet in data) {
+        // print(transaction.date);
+        var meetings = MeetingIntevalData(
+            meetingIntervalId: meet['meetingIntervalId'].toString(),
+            meetingIntervalName: meet['meetingIntervalName'],
+            intervalInDays: meet['intervalInDays']);
+        newMeeting.add(meetings);
+        // print(company);
+      }
+      meetingIntervals.addAll(newMeeting);
+      print("meetingInterval");
+      print(meetingIntervals.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      print(e.toString());
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }
 }
