@@ -30,6 +30,17 @@ class MemberData {
       required this.gender});
 }
 
+class LoanReasonData {
+  final String loanReasonId;
+  final String title;
+  final String loanDescription;
+
+  LoanReasonData(
+      {required this.loanReasonId,
+      required this.title,
+      required this.loanDescription});
+}
+
 class _ApplyLoanState extends State<ApplyLoan> {
   var selectedUser = MemberData(
       userId: "",
@@ -40,7 +51,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       gender: "");
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController loanAmountController = new TextEditingController();
-  TextEditingController loanDescController = new TextEditingController();
+  String? loanDescController;
   TextEditingController loanInterestController = new TextEditingController();
   TextEditingController repaymentPlanController = new TextEditingController();
   late String selectedPlan;
@@ -72,10 +83,13 @@ class _ApplyLoanState extends State<ApplyLoan> {
     return null;
   }
 
+  List<LoanReasonData> newLoanReasons = [];
+
   @override
   void initState() {
     super.initState();
     fetchMembersRound();
+    fetchLoanReasons();
   }
 
   Future<void> apply() async {
@@ -101,7 +115,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
-    } else if (loanDescController.text == "") {
+    } else if (loanDescController == null) {
       const message = 'Please enter a description';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -121,7 +135,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       final body = {
         "amount": loanAmountController.text,
         "interest": double.parse(loanInterestController.text) / 100,
-        "description": loanDescController.text,
+        "description": loanDescController.toString(),
         "days": int.parse(selectedPlan)
       };
       print(body);
@@ -140,7 +154,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
           setState(() {
             loading = false;
             loanAmountController.clear();
-            loanDescController.clear();
+            loanDescController = "";
             loanInterestController.clear();
             // selectedMember = "";
             // selectedPlan = "";
@@ -190,6 +204,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
     final loanAmount = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         onChanged: (value) {},
         validator: _validateAmountField,
         controller: loanAmountController,
@@ -211,33 +226,60 @@ class _ApplyLoanState extends State<ApplyLoan> {
       ),
     );
     final loanDescription = Padding(
-      padding: const EdgeInsets.all(16),
-      child: TextFormField(
-        validator: _validateField,
-        controller: loanDescController,
-        maxLines: 3,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
-          ),
-          labelText:
-              " Please briefly describe the specific\n reason for this loan request *",
-          labelStyle: GoogleFonts.poppins(
-            // height: 14,
-            fontSize: 14,
-          ),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+      child: Container(
+        height: 50,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.orange),
+          borderRadius: BorderRadius.circular(10),
         ),
+        child: Padding(
+            padding: const EdgeInsets.only(left: 0),
+            child: DropdownButtonFormField<String>(
+              hint: Text(
+                "Loan Description",
+                style: GoogleFonts.poppins(),
+              ),
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(12, 10.0, 12.0, 10.0),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: const BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: const BorderSide(
+                      color: Color.fromARGB(255, 208, 208, 208)),
+                ),
+                filled: true,
+                fillColor: Colors.transparent,
+              ),
+              // value: loanDes, // Initially selected value (can be null)
+              onChanged: (value) {
+                setState(() {
+                  loanDescController = value;
+                  // maxAmount = allMembers.firstWhere(
+                  //   (member) => member.userId == selectedMember,
+                  // );
+                });
+              }, // Function to handle value changes
+
+              items: newLoanReasons.map((LoanReasonData reason) {
+                return DropdownMenuItem<String>(
+                  value: reason.loanReasonId.toString(),
+                  child: Text(
+                    reason.loanDescription,
+                    style: const TextStyle(fontSize: 14, color: Colors.black),
+                  ),
+                );
+              }).toList(),
+            )),
       ),
     );
     final loanInterest = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         validator: _validateField,
         controller: loanInterestController,
         decoration: InputDecoration(
@@ -380,6 +422,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       ),
     );
     return Scaffold(
+      // backgroundColor: Colors.black,
       body: SafeArea(
           child: SingleChildScrollView(
         child: Form(
@@ -506,6 +549,48 @@ class _ApplyLoanState extends State<ApplyLoan> {
       setState(() {
         loading = false;
       });
+      print(e.toString());
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchLoanReasons() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+      final response = await http.get(
+        Uri.http('10.1.177.121:8111', '/api/v1/loanReason/getAll'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      // print(data);
+      newLoanReasons.clear();
+      List<LoanReasonData> allreason = [];
+      for (var reason in data) {
+        allreason.add(LoanReasonData(
+            loanReasonId: reason['loanReasonId'].toString(),
+            title: reason['title'],
+            loanDescription: reason['loanDescription']));
+      }
+      newLoanReasons.addAll(allreason);
+      print(newLoanReasons.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
       print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';

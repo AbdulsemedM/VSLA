@@ -31,6 +31,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
   var loading = false;
   List<MeetingData> newMeeting = [];
   bool? done;
+  bool? done2;
   final PageController _pageController = PageController();
   void initState() {
     super.initState();
@@ -58,6 +59,10 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
               itemCount: newMeeting.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
+                  onLongPress: () async {
+                    await activateMeeting(newMeeting[index].meetingId,
+                        newMeeting[index].currentRound);
+                  },
                   onTap: () {
                     print(newMeeting[index].meetingTypeId);
                     editModal(newMeeting[index]);
@@ -66,7 +71,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.13,
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -93,9 +98,12 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            newMeeting[index]
-                                                .meetingReason
-                                                .toString(),
+                                            truncateText(
+                                              newMeeting[index]
+                                                  .meetingReason
+                                                  .toString(),
+                                              20, // Set the maximum length you want before truncating
+                                            ),
                                             style: GoogleFonts.roboto(
                                                 color: Colors.black),
                                           ),
@@ -131,6 +139,21 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                                   ),
                                 ],
                               ),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                await activateMeeting(
+                                    newMeeting[index].meetingId,
+                                    newMeeting[index].currentRound);
+                                // if (done2) {}
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_box_outlined),
+                                  Text("Activate")
+                                ],
+                              ),
                             )
                           ]),
                     ),
@@ -139,6 +162,14 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
               },
             ),
           );
+  }
+
+  String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return text.substring(0, maxLength) + '...';
+    }
   }
 
   Future<void> fetchMeetings() async {
@@ -298,12 +329,12 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
     meetingReason.text = allMeeting.meetingReason;
     nextMeetingDate = DateFormat("MMMM d, y")
         .format(DateTime.parse(allMeeting.nextMeetingDate));
-    print(nextMeetingDate);
     meetingIntervalId = allMeeting.meetingIntervalId;
     meeetingTypeId = allMeeting.meetingTypeId;
     meeetingType = allMeeting.meetingType;
     meetingInterval = allMeeting.meetingInterval;
     intervalDays = allMeeting.intervalDays;
+    print(meeetingTypeId);
     showDialog(
       context: context, // Pass the BuildContext to showDialog
       builder: (BuildContext context) {
@@ -563,6 +594,22 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                           },
                           child: const Text('Edit'),
                         ),
+                        // TextButton(
+                        //   onPressed: () async {
+                        //     await activateMeeting(
+                        //         allMeeting.meetingId, allMeeting.currentRound);
+                        //     if (done == true) {
+                        //       Navigator.of(context)
+                        //           .pop(true); // User confirms deletion
+                        //     } else {
+                        //       const message =
+                        //           'Please check your network connection';
+                        //       Fluttertoast.showToast(
+                        //           msg: message, fontSize: 18);
+                        //     }
+                        //   },
+                        //   child: const Text('Activate'),
+                        // ),
                       ],
                     ),
                   ],
@@ -656,6 +703,70 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
           loading = false;
         });
       }
+    }
+  }
+
+  Future<void> activateMeeting(String meetingId, String round) async {
+    print(meetingId);
+    setState(() {
+      loading = true;
+    });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+    // final String groupId = accessToken[2];
+
+    try {
+      var response = await http.put(
+        Uri.http("10.1.177.121:8111",
+            "api/v1/meetings/continueMeeting/$meetingId/$round"),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          loading = false;
+          // fetchMeetings();
+          // done2 = true;
+        });
+        const message = 'Meeting activated successfully';
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        });
+
+        // ignore: use_build_context_synchronously
+
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => const Otp()));
+        setState(() {
+          loading = false;
+        });
+      } else if (response.statusCode != 201) {
+        final responseBody = json.decode(response.body);
+        final description =
+            responseBody?['message']; // Extract 'description' field
+        if (description == "Something went wron, please try again") {
+          Fluttertoast.showToast(
+              msg: "Something went wron, please try again", fontSize: 18);
+        } else {
+          var message = description ?? "Something went wrong, please try again";
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        }
+        setState(() {
+          loading = false;
+        });
+      }
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      'Please check your network connection';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
   }
 }
