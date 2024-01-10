@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/home1.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/Pages/inner/meeting_tabs/active.dart';
 import 'package:vsla/login.dart';
 
 class CreatGroup extends StatefulWidget {
@@ -74,7 +75,7 @@ class _CreatGroupState extends State<CreatGroup> {
   }
 
   String selectedDate = "";
-  List<IntervalData> interval = [];
+  List<MeetingIntevalData> interval = [];
   List<GroupData> groupTypes = [];
   List<ProjectData> projects = [];
   String? selectedRegion;
@@ -187,7 +188,7 @@ class _CreatGroupState extends State<CreatGroup> {
   @override
   void initState() {
     super.initState();
-    fetchInterval();
+    fetchMeetingIntervals();
     fetchGroup();
     fetchProject();
   }
@@ -514,7 +515,7 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: interval.map((IntervalData intervals) {
+        items: interval.map((MeetingIntevalData intervals) {
           return DropdownMenuItem<String>(
             value: intervals.meetingIntervalId.toString(),
             child: Text(
@@ -774,35 +775,37 @@ class _CreatGroupState extends State<CreatGroup> {
     );
   }
 
-  Future<void> fetchInterval() async {
+  Future<void> fetchMeetingIntervals() async {
     try {
       // var user = await SimplePreferences().getUser();
-
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals'),
+        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
       // transactions = parseTransactions(response.body);
-      print("interval.length");
       var data = jsonDecode(response.body);
 
       print(data);
-      List<IntervalData> newInterval = [];
+      List<MeetingIntevalData> newMeeting = [];
 
-      for (var interval in data) {
+      for (var meet in data) {
         // print(transaction.date);
-        var intervalData = IntervalData(
-          meetingIntervalId: interval['meetingIntervalId'],
-          meetingIntervalName: interval['meetingIntervalName'],
-        );
-        newInterval.add(intervalData);
+        var meetings = MeetingIntevalData(
+            meetingIntervalId: meet['meetingIntervalId'].toString(),
+            meetingIntervalName: meet['meetingIntervalName'],
+            intervalInDays: meet['intervalInDays']);
+        newMeeting.add(meetings);
         // print(company);
       }
-      interval.addAll(newInterval);
+      interval.addAll(newMeeting);
+      print("meetingInterval");
       print(interval.length);
-      print("interval.length");
 
       // print(transactions[0]);
 
@@ -811,6 +814,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // }
       // );
     } catch (e) {
+      print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -826,8 +830,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String orgId = accessToken[2];
       final response = await http.get(
-        Uri.http(
-            '10.1.177.121:8111', '/api/v1/group-types/by-organization/$orgId'),
+        Uri.http('10.1.177.121:8111', '/api/v1/group-types/by-organization'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -836,7 +839,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      // print(data);
+      print(data);
       List<GroupData> newGroupType = [];
 
       for (var groupType in data) {
@@ -873,8 +876,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String orgId = accessToken[2];
       final response = await http.get(
-        Uri.http(
-            '10.1.177.121:8111', '/api/v1/projects/by-organization/$orgId'),
+        Uri.http('10.1.177.121:8111', '/api/v1/projects/by-organization'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -883,7 +885,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      // print(data);
+      print(data);
       List<ProjectData> newProject = [];
 
       for (var project in data) {
