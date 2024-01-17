@@ -119,8 +119,7 @@ class _SignupState extends State<Signup> {
           });
 
           // ignore: use_build_context_synchronously
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Otp()));
+          Navigator.pop(context);
           setState(() {
             loading = false;
           });

@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/inner/awarness.dart';
 import 'package:vsla/Pages/inner/video_list.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class YoutubePlayerMy extends StatefulWidget {
   final String videoId;
+  final List<String> ids;
 
-  const YoutubePlayerMy({
-    Key? key,
-    required this.videoId,
-  }) : super(key: key);
+  const YoutubePlayerMy({Key? key, required this.videoId, required this.ids})
+      : super(key: key);
   @override
   _YoutubePlayerMyState createState() => _YoutubePlayerMyState();
 }
@@ -27,16 +32,17 @@ class _YoutubePlayerMyState extends State<YoutubePlayerMy> {
   bool _isPlayerReady = false;
 
   final List<String> _ids = [
-    'nPt8bK2gbaU',
-    'gQDByCdjUXw',
-    'iLnmTe5Q2Qw',
-    '_WoCV4c6XOE',
-    'KmzdUe0RSJo',
-    '6jZDSSZZxjQ',
-    'p2lYr3vM_1w',
-    '7QUtEmBT_-w',
-    '34_PXCzGw1M',
+    // 'nPt8bK2gbaU',
+    // 'gQDByCdjUXw',
+    // 'iLnmTe5Q2Qw',
+    // '_WoCV4c6XOE',
+    // 'KmzdUe0RSJo',
+    // '6jZDSSZZxjQ',
+    // 'p2lYr3vM_1w',
+    // '7QUtEmBT_-w',
+    // '34_PXCzGw1M',
   ];
+  var loading = false;
 
   @override
   void initState() {
@@ -132,7 +138,7 @@ class _YoutubePlayerMyState extends State<YoutubePlayerMy> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: Image.asset(
-              'assets/ypf.png',
+              'assets/images/vsla.png',
               fit: BoxFit.fitWidth,
             ),
           ),
@@ -140,17 +146,17 @@ class _YoutubePlayerMyState extends State<YoutubePlayerMy> {
             'Youtube Player Flutter',
             style: TextStyle(color: Colors.white),
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.video_library),
-              onPressed: () => Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => VideoList(),
-                ),
-              ),
-            ),
-          ],
+          // actions: [
+          //   IconButton(
+          //     icon: const Icon(Icons.video_library),
+          //     onPressed: () => Navigator.push(
+          //       context,
+          //       CupertinoPageRoute(
+          //         builder: (context) => VideoList(),
+          //       ),
+          //     ),
+          //   ),
+          // ],
         ),
         body: ListView(
           children: [
@@ -181,88 +187,88 @@ class _YoutubePlayerMyState extends State<YoutubePlayerMy> {
                     ],
                   ),
                   _space,
-                  TextField(
-                    enabled: _isPlayerReady,
-                    controller: _idController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter youtube \<video id\> or \<link\>',
-                      fillColor: Colors.blueAccent.withAlpha(20),
-                      filled: true,
-                      hintStyle: const TextStyle(
-                        fontWeight: FontWeight.w300,
-                        color: Colors.blueAccent,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () => _idController.clear(),
-                      ),
-                    ),
-                  ),
+                  // TextField(
+                  //   enabled: _isPlayerReady,
+                  //   controller: _idController,
+                  //   decoration: InputDecoration(
+                  //     border: InputBorder.none,
+                  //     hintText: 'Enter youtube \<video id\> or \<link\>',
+                  //     fillColor: Colors.blueAccent.withAlpha(20),
+                  //     filled: true,
+                  //     hintStyle: const TextStyle(
+                  //       fontWeight: FontWeight.w300,
+                  //       color: Colors.blueAccent,
+                  //     ),
+                  //     suffixIcon: IconButton(
+                  //       icon: const Icon(Icons.clear),
+                  //       onPressed: () => _idController.clear(),
+                  //     ),
+                  //   ),
+                  // ),
                   _space,
-                  Row(
-                    children: [
-                      _loadCueButton(context, 'LOAD'),
-                      const SizedBox(width: 10.0),
-                      _loadCueButton(context, 'CUE'),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     _loadCueButton(context, 'LOAD'),
+                  //     const SizedBox(width: 10.0),
+                  //     _loadCueButton(context, 'CUE'),
+                  //   ],
+                  // ),
                   _space,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.skip_previous),
-                        onPressed: _isPlayerReady
-                            ? () => _controller.load(_ids[
-                                (_ids.indexOf(_controller.metadata.videoId) -
-                                        1) %
-                                    _ids.length])
-                            : null,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          _controller.value.isPlaying
-                              ? Icons.pause
-                              : Icons.play_arrow,
-                        ),
-                        onPressed: _isPlayerReady
-                            ? () {
-                                _controller.value.isPlaying
-                                    ? _controller.pause()
-                                    : _controller.play();
-                                setState(() {});
-                              }
-                            : null,
-                      ),
-                      IconButton(
-                        icon: Icon(_muted ? Icons.volume_off : Icons.volume_up),
-                        onPressed: _isPlayerReady
-                            ? () {
-                                _muted
-                                    ? _controller.unMute()
-                                    : _controller.mute();
-                                setState(() {
-                                  _muted = !_muted;
-                                });
-                              }
-                            : null,
-                      ),
-                      FullScreenButton(
-                        controller: _controller,
-                        color: Colors.blueAccent,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.skip_next),
-                        onPressed: _isPlayerReady
-                            ? () => _controller.load(_ids[
-                                (_ids.indexOf(_controller.metadata.videoId) +
-                                        1) %
-                                    _ids.length])
-                            : null,
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: [
+                  //     IconButton(
+                  //       icon: const Icon(Icons.skip_previous),
+                  //       onPressed: _isPlayerReady
+                  //           ? () => _controller.load(_ids[
+                  //               (_ids.indexOf(_controller.metadata.videoId) -
+                  //                       1) %
+                  //                   _ids.length])
+                  //           : null,
+                  //     ),
+                  //     IconButton(
+                  //       icon: Icon(
+                  //         _controller.value.isPlaying
+                  //             ? Icons.pause
+                  //             : Icons.play_arrow,
+                  //       ),
+                  //       onPressed: _isPlayerReady
+                  //           ? () {
+                  //               _controller.value.isPlaying
+                  //                   ? _controller.pause()
+                  //                   : _controller.play();
+                  //               setState(() {});
+                  //             }
+                  //           : null,
+                  //     ),
+                  //     IconButton(
+                  //       icon: Icon(_muted ? Icons.volume_off : Icons.volume_up),
+                  //       onPressed: _isPlayerReady
+                  //           ? () {
+                  //               _muted
+                  //                   ? _controller.unMute()
+                  //                   : _controller.mute();
+                  //               setState(() {
+                  //                 _muted = !_muted;
+                  //               });
+                  //             }
+                  //           : null,
+                  //     ),
+                  //     FullScreenButton(
+                  //       controller: _controller,
+                  //       color: Colors.blueAccent,
+                  //     ),
+                  //     IconButton(
+                  //       icon: const Icon(Icons.skip_next),
+                  //       onPressed: _isPlayerReady
+                  //           ? () => _controller.load(_ids[
+                  //               (_ids.indexOf(_controller.metadata.videoId) +
+                  //                       1) %
+                  //                   _ids.length])
+                  //           : null,
+                  //     ),
+                  //   ],
+                  // ),
                   _space,
                   Row(
                     children: <Widget>[
@@ -417,4 +423,69 @@ class _YoutubePlayerMyState extends State<YoutubePlayerMy> {
   }
 
   Widget get _space => const SizedBox(height: 10);
+  // Future<void> fetchAwareness() async {
+  //   setState(() {
+  //     loading = true;
+  //   });
+  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   var accessToken = prefs.getStringList("_keyUser");
+  //   final String authToken = accessToken![0];
+
+  //   try {
+  //     var response = await http.get(
+  //       Uri.http("10.1.177.121:8111", "api/v1/awareness/by-group"),
+  //       headers: <String, String>{
+  //         'Authorization': 'Bearer $authToken',
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //     );
+  //     var data = jsonDecode(response.body);
+  //     print(data);
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         for (var aware in data) {
+  //           // print(transaction.date);
+  //           List<AwarenessData> awarenesses = [];
+  //           var myAware = AwarenessData(
+  //               title: aware['title'],
+  //               description: aware['description'],
+  //               imageUrl: aware['imageUrl'],
+  //               videoUrl: aware['videoUrl']);
+  //           awarenesses.add(myAware);
+  //           print(myAware.videoUrl as YoutubePlayerController);
+  //           _ids.add(myAware.videoUrl);
+  //         }
+
+  //         loading = false;
+  //       });
+
+  //       setState(() {
+  //         loading = false;
+  //       });
+  //     } else if (response.statusCode != 201) {
+  //       final responseBody = json.decode(response.body);
+  //       final description =
+  //           responseBody?['message']; // Extract 'description' field
+  //       if (description == "Something went wron, please try again") {
+  //         Fluttertoast.showToast(
+  //             msg: "Something went wron, please try again", fontSize: 18);
+  //       } else {
+  //         var message = description ?? "Something went wrong, please try again";
+  //         Fluttertoast.showToast(msg: message, fontSize: 18);
+  //       }
+  //       setState(() {
+  //         loading = false;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     var message = e.toString();
+  //     print(e.toString());
+  //     'Please check your network connection';
+  //     Fluttertoast.showToast(msg: message, fontSize: 18);
+  //   } finally {
+  //     setState(() {
+  //       loading = false;
+  //     });
+  //   }
+  // }
 }

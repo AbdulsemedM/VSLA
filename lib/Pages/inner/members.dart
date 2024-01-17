@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/inner/profit.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/inner/addMember.dart';
 import 'package:http/http.dart' as http;
@@ -449,6 +450,29 @@ class _MembersState extends State<Members> {
                     ),
                     child: const Center(
                       child: Icon(FontAwesomeIcons.plus),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 16.0, // Adjust this value as needed
+                left: 16.0, // Adjust this value as needed
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Profits()),
+                    );
+                  },
+                  child: Container(
+                    height: screenWidth * 0.12,
+                    width: screenWidth * 0.12,
+                    decoration: BoxDecoration(
+                      color: Colors.orange,
+                      borderRadius: BorderRadius.circular(screenWidth * 0.12),
+                    ),
+                    child: const Center(
+                      child: Icon(FontAwesomeIcons.rectangleList),
                     ),
                   ),
                 ),

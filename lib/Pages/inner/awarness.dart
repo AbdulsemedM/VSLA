@@ -39,36 +39,36 @@ class _AwarnessState extends State<Awarness> {
   late TextEditingController _idController;
   late TextEditingController _seekToController;
 
-  late PlayerState _playerState;
-  late YoutubeMetaData _videoMetaData;
-  double _volume = 100;
-  bool _muted = false;
-  bool _isPlayerReady = false;
-  final List<String> _ids = [
-    'nPt8bK2gbaU',
-    'gQDByCdjUXw',
-    'iLnmTe5Q2Qw',
-    '_WoCV4c6XOE',
-    'KmzdUe0RSJo',
-    '6jZDSSZZxjQ',
-    'p2lYr3vM_1w',
-    '7QUtEmBT_-w',
-    '34_PXCzGw1M',
-  ];
+  // late PlayerState _playerState;
+  // late YoutubeMetaData _videoMetaData;
+  // double _volume = 100;
+  // bool _muted = false;
+  // bool _isPlayerReady = false;
+  // final List<String> _ids = [
+  //   'nPt8bK2gbaU',
+  //   'gQDByCdjUXw',
+  //   'iLnmTe5Q2Qw',
+  //   '_WoCV4c6XOE',
+  //   'KmzdUe0RSJo',
+  //   '6jZDSSZZxjQ',
+  //   'p2lYr3vM_1w',
+  //   '7QUtEmBT_-w',
+  //   '34_PXCzGw1M',
+  // ];
   @override
   void initState() {
     super.initState();
     fetchAwareness();
   }
 
-  void listener() {
-    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
-      setState(() {
-        _playerState = _controller.value.playerState;
-        _videoMetaData = _controller.metadata;
-      });
-    }
-  }
+  // void listener() {
+  //   if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+  //     setState(() {
+  //       _playerState = _controller.value.playerState;
+  //       _videoMetaData = _controller.metadata;
+  //     });
+  //   }
+  // }
 
   @override
   void deactivate() {
@@ -84,6 +84,8 @@ class _AwarnessState extends State<Awarness> {
     _seekToController.dispose();
     super.dispose();
   }
+
+  List<String> ids = [];
 
   @override
   Widget build(BuildContext context) {
@@ -325,7 +327,7 @@ class _AwarnessState extends State<Awarness> {
                           itemCount: awarenesses
                               .length, // Replace yourItemList with the list of items
                           options: CarouselOptions(
-                            height: MediaQuery.of(context).size.height * 0.3,
+                            height: MediaQuery.of(context).size.height * 0.35,
                             aspectRatio: 16 / 9,
                             viewportFraction: 0.8,
                             initialPage: 0,
@@ -351,12 +353,15 @@ class _AwarnessState extends State<Awarness> {
                               ),
                               child: GestureDetector(
                                 onTap: () {
+                                  print(awarenesses[index].videoUrl);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const YoutubePlayerMy(
-                                                  videoId: "s")));
+                                          builder: (context) => YoutubePlayerMy(
+                                                videoId:
+                                                    awarenesses[index].videoUrl,
+                                                ids: ids,
+                                              )));
                                   // showDialog(
                                   //   context: context,
                                   //   builder: (context) {
@@ -392,24 +397,42 @@ class _AwarnessState extends State<Awarness> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Row(
+                                      child: Column(
                                         children: [
-                                          Expanded(
-                                            child: Text(
-                                              awarenesses[index]
-                                                  .title, // Replace with your title
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                color: Colors.white,
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  awarenesses[index]
+                                                      .title, // Replace with your title
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                              Expanded(
+                                                child: Icon(
+                                                  Icons
+                                                      .play_circle_filled_rounded,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Expanded(
-                                            child: Icon(
-                                              Icons.play_circle_filled_rounded,
-                                              color: Colors.black,
+                                          Text(
+                                            awarenesses[index]
+                                                        .description
+                                                        .length >
+                                                    30
+                                                ? '${awarenesses[index].description.substring(0, 70)}...'
+                                                : awarenesses[index]
+                                                    .description,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              color: Colors.white,
                                             ),
-                                          ),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -568,6 +591,7 @@ class _AwarnessState extends State<Awarness> {
                 imageUrl: aware['imageUrl'],
                 videoUrl: aware['videoUrl']);
             awarenesses.add(myAware);
+            ids.add(myAware.videoUrl);
           }
           print(awarenesses.length);
           loading = false;
