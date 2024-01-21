@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/login.dart';
+import 'package:vsla/utils/role.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -58,6 +59,7 @@ class _SettingsState extends State<Settings> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));

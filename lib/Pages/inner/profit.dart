@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/inner/addMember.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
 
 class Profits extends StatefulWidget {
   const Profits({super.key});
@@ -276,8 +277,7 @@ class _ProfitsState extends State<Profits> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/Transactions/getAllTransactions/report'),
+        Uri.https(baseUrl, '/api/v1/Transactions/getAllTransactions/report'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

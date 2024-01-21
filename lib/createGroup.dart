@@ -11,6 +11,8 @@ import 'package:vsla/Pages/home1.dart';
 import 'package:http/http.dart' as http;
 import 'package:vsla/Pages/inner/meeting_tabs/active.dart';
 import 'package:vsla/login.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class CreatGroup extends StatefulWidget {
   const CreatGroup({super.key});
@@ -114,22 +116,29 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String phone = accessToken[1];
       final String orgId = accessToken[2];
+      final String role = accessToken[3];
       // final String groupId = accessToken[2];
-      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
+      // const String apiUrl = 'https://$baseUrl/api/v1/groups';
       // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
 
       final response = await http.post(
-        Uri.parse(apiUrl),
+        Uri.https(baseUrl, '/api/v1/groups'),
         headers: {
           'Authorization': 'Bearer $authToken',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(requestBody),
       );
       if (response.statusCode == 201) {
         var data = jsonDecode(response.body);
         var groupId = data['groupId'];
-        List<String> newUser = [authToken, phone, groupId.toString(), orgId];
+        List<String> newUser = [
+          authToken,
+          phone,
+          groupId.toString(),
+          orgId,
+          role
+        ];
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setStringList("_keyUser", newUser);
         print(newUser);
@@ -248,7 +257,7 @@ class _CreatGroupState extends State<CreatGroup> {
         ),
         items: [
           DropdownMenuItem<String>(
-            value: "1000",
+            value: "Oromia",
             child: Center(
               child: Text('Oromia',
                   style:
@@ -256,7 +265,7 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1200",
+            value: "Amhara",
             child: Center(
               child: Text('Amhara',
                   style:
@@ -264,7 +273,7 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1300",
+            value: "Addis Ababa",
             child: Center(
               child: Text('Addis Ababa',
                   style:
@@ -311,7 +320,7 @@ class _CreatGroupState extends State<CreatGroup> {
         ),
         items: [
           DropdownMenuItem<String>(
-            value: "1000",
+            value: "Arsi",
             child: Center(
               child: Text('Arsi',
                   style:
@@ -319,7 +328,7 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1200",
+            value: "Adama",
             child: Center(
               child: Text('Adama',
                   style:
@@ -327,9 +336,17 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1300",
+            value: "Jimma",
             child: Center(
               child: Text('Jimma',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "Illu Ababor",
+            child: Center(
+              child: Text('Illu Ababor',
                   style:
                       GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
@@ -782,7 +799,7 @@ class _CreatGroupState extends State<CreatGroup> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals/getAll/App'),
+        Uri.https(baseUrl, '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -830,7 +847,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String orgId = accessToken[2];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/group-types/by-organization'),
+        Uri.https(baseUrl, '/api/v1/group-types/by-organization'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -876,7 +893,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String orgId = accessToken[2];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/projects/by-organization'),
+        Uri.https(baseUrl, '/api/v1/projects/by-organization'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -935,6 +952,7 @@ class _CreatGroupState extends State<CreatGroup> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));

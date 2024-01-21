@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:vsla/Pages/inner/meeting_tabs/active.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class InactiveMeeting extends StatefulWidget {
   const InactiveMeeting({super.key});
@@ -63,10 +65,12 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                     await activateMeeting(newMeeting[index].meetingId,
                         newMeeting[index].currentRound);
                   },
-                  onTap: () {
-                    print(newMeeting[index].meetingTypeId);
-                    editModal(newMeeting[index]);
-                  },
+                  onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                      ? () {
+                          print(newMeeting[index].meetingTypeId);
+                          editModal(newMeeting[index]);
+                        }
+                      : null,
                   child: Card(
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.13,
@@ -184,8 +188,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/meetings/getInActiveMeetings/$groupId'),
+        Uri.https(baseUrl, '/api/v1/meetings/getInActiveMeetings/$groupId'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -233,7 +236,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-types/getAll/App'),
+        Uri.https(baseUrl, '/api/v1/meeting-types/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -278,7 +281,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals/getAll/App'),
+        Uri.https(baseUrl, '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -646,7 +649,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
       print(body);
       try {
         var response = await http.put(
-          Uri.http("10.1.177.121:8111", "/api/v1/editMeeting/$groupId"),
+          Uri.https(baseUrl, "/api/v1/editMeeting/$groupId"),
           headers: <String, String>{
             'Authorization': 'Bearer $authToken',
             'Content-Type': 'application/json; charset=UTF-8',
@@ -718,8 +721,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
 
     try {
       var response = await http.put(
-        Uri.http("10.1.177.121:8111",
-            "api/v1/meetings/continueMeeting/$meetingId/$round"),
+        Uri.https(baseUrl, "api/v1/meetings/continueMeeting/$meetingId/$round"),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

@@ -10,6 +10,8 @@ import 'package:vsla/Pages/home1.dart';
 import 'package:vsla/createGroup.dart';
 import "package:http/http.dart" as http;
 import 'package:vsla/signup.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 // import 'package:vsla/utils/simplePreferences.dart';
 
 class Login extends StatefulWidget {
@@ -55,7 +57,7 @@ class _LoginState extends State<Login> {
       try {
         final response = await http
             .post(
-              Uri.http('10.1.177.121:8111', '/login'),
+              Uri.https(baseUrl, '/login'),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -76,6 +78,8 @@ class _LoginState extends State<Login> {
             Map<String, dynamic> data = dataList.first;
             String accessToken = data['access_token'];
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+            print(decodedToken['role'][0]);
+            String role = decodedToken['role'][0];
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
             dynamic hasGroup = decodedToken['has-group'];
             dynamic groupID = decodedToken['groupId'];
@@ -90,22 +94,24 @@ class _LoginState extends State<Login> {
               });
             }
             if (groupID != null) {
-              print(decodedToken);
               groupId = groupID.toString();
               String sub = subVal.toString();
               List<String> newUser = [
                 accessToken,
                 sub,
                 groupId,
-                orgId.toString()
+                orgId.toString(),
+                role
               ];
+              // print(newUser);
+              GlobalStrings.setGlobalString(role);
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
               prefs.setStringList("_keyUser", newUser);
             } else {
               print(decodedToken);
               String sub = subVal.toString();
-              List<String> newUser = [accessToken, sub, orgId.toString()];
+              List<String> newUser = [accessToken, sub, orgId.toString(), role];
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 

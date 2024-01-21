@@ -14,6 +14,8 @@ import 'package:vsla/Pages/inner/members.dart';
 import 'package:vsla/Pages/inner/awarness.dart';
 import 'package:vsla/login.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class Home3 extends StatefulWidget {
   const Home3({super.key});
@@ -903,6 +905,7 @@ class _Home3State extends State<Home3> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));
@@ -924,7 +927,7 @@ class _Home3State extends State<Home3> {
       final String authToken = accessToken![0];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/home-page'),
+        Uri.https(baseUrl, '/api/v1/home-page'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

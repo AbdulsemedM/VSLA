@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/youtubePlayer.dart';
 import 'package:vsla/Pages/routes/home3.dart';
+import 'package:vsla/utils/api_config.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,9 +36,9 @@ class _AwarnessState extends State<Awarness> {
   var awareness = true;
   var loading = false;
   List<AwarenessData> awarenesses = [];
-  late YoutubePlayerController _controller;
-  late TextEditingController _idController;
-  late TextEditingController _seekToController;
+  // late YoutubePlayerController _controller;
+  // late TextEditingController _idController;
+  // late TextEditingController _seekToController;
 
   // late PlayerState _playerState;
   // late YoutubeMetaData _videoMetaData;
@@ -70,20 +71,20 @@ class _AwarnessState extends State<Awarness> {
   //   }
   // }
 
-  @override
-  void deactivate() {
-    // Pauses video while navigating to next page.
-    _controller.pause();
-    super.deactivate();
-  }
+  // @override
+  // void deactivate() {
+  //   // Pauses video while navigating to next page.
+  //   _controller.pause();
+  //   super.deactivate();
+  // }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _idController.dispose();
-    _seekToController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _controller.dispose();
+  //   _idController.dispose();
+  //   _seekToController.dispose();
+  //   super.dispose();
+  // }
 
   List<String> ids = [];
 
@@ -424,7 +425,7 @@ class _AwarnessState extends State<Awarness> {
                                             awarenesses[index]
                                                         .description
                                                         .length >
-                                                    30
+                                                    20
                                                 ? '${awarenesses[index].description.substring(0, 70)}...'
                                                 : awarenesses[index]
                                                     .description,
@@ -574,7 +575,7 @@ class _AwarnessState extends State<Awarness> {
 
     try {
       var response = await http.get(
-        Uri.http("10.1.177.121:8111", "api/v1/awareness/by-group"),
+        Uri.https(baseUrl, "api/v1/awareness/by-group"),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

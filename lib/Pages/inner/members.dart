@@ -9,6 +9,8 @@ import 'package:vsla/Pages/inner/profit.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/inner/addMember.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class Members extends StatefulWidget {
   const Members({super.key});
@@ -40,11 +42,21 @@ class MemberData {
 
 class _MembersState extends State<Members> {
   var members = true;
+  var role = '';
   @override
   void initState() {
     super.initState();
     fetchMembers();
   }
+
+  // void fetchRole() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   var my = prefs.getStringList("_keyUser");
+  //   setState(() {
+  //     role = my![4];
+  //   });
+  //   print(role);
+  // }
 
   List<MemberData> allMembers = [];
   var male = 0;
@@ -254,9 +266,12 @@ class _MembersState extends State<Members> {
                               itemCount: allMembers.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: () {
-                                    editModal(allMembers[index]);
-                                  },
+                                  onTap: GlobalStrings.getGlobalString ==
+                                          "GROUP_ADMIN"
+                                      ? () {
+                                          editModal(allMembers[index]);
+                                        }
+                                      : null,
                                   child: Card(
                                     child: SizedBox(
                                       height:
@@ -430,30 +445,31 @@ class _MembersState extends State<Members> {
                   ],
                 ),
               ),
-              Positioned(
-                bottom: 16.0, // Adjust this value as needed
-                right: 16.0, // Adjust this value as needed
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddMember()),
-                    );
-                  },
-                  child: Container(
-                    height: screenWidth * 0.12,
-                    width: screenWidth * 0.12,
-                    decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.circular(screenWidth * 0.12),
-                    ),
-                    child: const Center(
-                      child: Icon(FontAwesomeIcons.plus),
+              if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
+                Positioned(
+                  bottom: 16.0, // Adjust this value as needed
+                  right: 16.0, // Adjust this value as needed
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddMember()),
+                      );
+                    },
+                    child: Container(
+                      height: screenWidth * 0.12,
+                      width: screenWidth * 0.12,
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(screenWidth * 0.12),
+                      ),
+                      child: const Center(
+                        child: Icon(FontAwesomeIcons.plus),
+                      ),
                     ),
                   ),
                 ),
-              ),
               Positioned(
                 bottom: 16.0, // Adjust this value as needed
                 left: 16.0, // Adjust this value as needed
@@ -490,7 +506,7 @@ class _MembersState extends State<Members> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/groups/$groupId/members'),
+        Uri.https(baseUrl, '/api/v1/groups/$groupId/members'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -718,7 +734,7 @@ class _MembersState extends State<Members> {
                           var accessToken = prefs.getStringList("_keyUser");
                           final String authToken = accessToken![0];
                           var response = await http.delete(
-                            Uri.http("10.1.177.121:8111",
+                            Uri.https(baseUrl,
                                 "/api/v1/groups/delete-member/${allMember.userId}"),
                             headers: <String, String>{
                               'Content-Type': 'application/json; charset=UTF-8',
@@ -808,7 +824,7 @@ class _MembersState extends State<Members> {
                         var accessToken = prefs.getStringList("_keyUser");
                         final String authToken = accessToken![0];
                         var response = await http.put(
-                          Uri.http("10.1.177.121:8111",
+                          Uri.https(baseUrl,
                               "/api/v1/groups/edit-member/${allMember.userId}"),
                           headers: <String, String>{
                             'Content-Type': 'application/json; charset=UTF-8',

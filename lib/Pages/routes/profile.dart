@@ -1,11 +1,18 @@
 // import 'dart:convert';
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/login.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:http/http.dart' as http;
+import 'package:vsla/utils/role.dart';
 // import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
@@ -19,6 +26,13 @@ class _ProfileState extends State<Profile> {
   var loading = false;
   var groupName = "";
   var phoneNumber = "";
+  List<ContributionData> allContribution = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchDashBoardData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -45,49 +59,45 @@ class _ProfileState extends State<Profile> {
             children: [
               CircleAvatar(
                   radius: MediaQuery.of(context).size.height * 0.1,
-                  child: Image(image: AssetImage("assets/images/male.png"))),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.08,
-                height: MediaQuery.of(context).size.height * 0.04,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.width * 0.08),
-                    color: Colors.grey[100]),
-                child: const Icon(
-                  FontAwesomeIcons.pencil,
-                  color: Colors.black,
-                ),
-              )
+                  child: Image(image: AssetImage("assets/images/group.png"))),
+              // Container(
+              //   width: MediaQuery.of(context).size.width * 0.08,
+              //   height: MediaQuery.of(context).size.height * 0.04,
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(
+              //           MediaQuery.of(context).size.width * 0.08),
+              //       color: Colors.grey[100]),
+              //   child: const Icon(
+              //     FontAwesomeIcons.pencil,
+              //     color: Colors.black,
+              //   ),
+              // )
             ],
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Abdulsemed Mussema",
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 8.0),
-            child: Text(
-              "Team Bulee Horaa",
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w400),
-            ),
-          ),
-          SizedBox(
-              height: MediaQuery.of(context).size.height * 0.068,
-              width: MediaQuery.of(context).size.width * 0.5,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      side: BorderSide.none,
-                      shape: const StadiumBorder()),
-                  onPressed: () {},
-                  child: Text(
-                    "Edit profile",
+            padding: const EdgeInsets.fromLTRB(0, 20, 0, 8.0),
+            child: loading
+                ? CircularProgressIndicator()
+                : Text(
+                    groupName,
                     style: GoogleFonts.poppins(
-                        color: Colors.black, fontWeight: FontWeight.w700),
-                  ))),
+                        fontWeight: FontWeight.w700, fontSize: 30),
+                  ),
+          ),
+          // SizedBox(
+          //     height: MediaQuery.of(context).size.height * 0.068,
+          //     width: MediaQuery.of(context).size.width * 0.5,
+          //     child: ElevatedButton(
+          //         style: ElevatedButton.styleFrom(
+          //             backgroundColor: Colors.orange,
+          //             side: BorderSide.none,
+          //             shape: const StadiumBorder()),
+          //         onPressed: () {},
+          //         child: Text(
+          //           "Edit profile",
+          //           style: GoogleFonts.poppins(
+          //               color: Colors.black, fontWeight: FontWeight.w700),
+          //         ))),
           const Padding(
             padding: EdgeInsets.fromLTRB(15, 8, 15, 8.0),
             child: Divider(),
@@ -113,7 +123,9 @@ class _ProfileState extends State<Profile> {
             icon: Icons.help,
           ),
           myTiles(
-            onPressed: () {},
+            onPressed: () {
+              _onBackButtonPressed(context);
+            },
             title: "Logout",
             icon: Icons.logout,
             textColor: Colors.red,
@@ -145,6 +157,7 @@ class _ProfileState extends State<Profile> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));
@@ -156,6 +169,46 @@ class _ProfileState extends State<Profile> {
             ],
           );
         });
+  }
+
+  Future<void> fetchDashBoardData() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+
+      final response = await http.get(
+        Uri.https(baseUrl, '/api/v1/home-page'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      Map<String, dynamic> data = jsonDecode(response.body);
+      // print(response.body);
+      for (var recentContributions in data['recentContributions']) {
+        allContribution.add(ContributionData(
+          amount: recentContributions['amount'],
+          contributor: recentContributions['contributor'],
+          date: recentContributions['date'],
+        ));
+      }
+      print("hereeeeee");
+      print(allContribution.length);
+
+      setState(() {
+        groupName = data['groupName'];
+
+        loading = false;
+      });
+      // print(mileStone);
+    } catch (e) {
+      var message = e.toString();
+      'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
   }
 }
 
@@ -247,4 +300,37 @@ class myTiles extends StatelessWidget {
   //     Fluttertoast.showToast(msg: message, fontSize: 18);
   //   }
   // }
+  Future<bool> _onBackButtonPressed(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: const Text("Confirm Exit"),
+            content: const Text("Do you want to Logout?"),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text("No")),
+              TextButton(
+                  onPressed: () async {
+                    List<String> user = [];
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+
+                    prefs.setStringList("_keyUser", user);
+                    // ignore: use_build_context_synchronously
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => const Login()));
+                  },
+                  child: const Text(
+                    "Yes",
+                    style: TextStyle(color: Colors.red),
+                  ))
+            ],
+          );
+        });
+  }
 }

@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/utils/api_config.dart';
 
 class AddMember extends StatefulWidget {
   const AddMember({super.key});
@@ -50,7 +51,7 @@ class _AddMemberState extends State<AddMember> {
         }
       };
 
-      const String apiUrl = 'http://10.1.177.121:8111/api/v1/groups/add-member';
+      const String apiUrl = 'https://$baseUrl/api/v1/groups/add-member';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];

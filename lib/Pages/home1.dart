@@ -9,6 +9,7 @@ import 'package:vsla/Pages/routes/profile.dart';
 // import 'package:vsla/Pages/routes/settings.dart';
 import 'package:vsla/Pages/routes/socialFunds.dart';
 import 'package:vsla/login.dart';
+import 'package:vsla/utils/role.dart';
 
 class Home1 extends StatefulWidget {
   const Home1({super.key});
@@ -57,7 +58,7 @@ class _Home1State extends State<Home1> {
                         ? const Bank_links()
                         // : visit == 3
                         //     ? const Settings()
-                            : const Profile()),
+                        : const Profile()),
         bottomNavigationBar: BottomBarInspiredFancy(
             iconSize: 20,
             indexSelected: visit,
@@ -94,6 +95,7 @@ class _Home1State extends State<Home1> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));

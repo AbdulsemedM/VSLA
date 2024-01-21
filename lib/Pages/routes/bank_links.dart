@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/login.dart';
+import 'package:vsla/utils/role.dart';
 
 // ignore: camel_case_types
 class Bank_links extends StatefulWidget {
@@ -322,6 +323,7 @@ class _Bank_linksState extends State<Bank_links> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));

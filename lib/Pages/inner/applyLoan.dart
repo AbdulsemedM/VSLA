@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/utils/api_config.dart';
 
 class ApplyLoan extends StatefulWidget {
   const ApplyLoan({super.key});
@@ -141,7 +142,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       print(body);
       try {
         var response = await http.post(
-          Uri.http("10.1.177.121:8111", "api/v1/Loan/Add/$selectedMember"),
+          Uri.https(baseUrl, "api/v1/Loan/Add/$selectedMember"),
           headers: <String, String>{
             'Authorization': 'Bearer $authToken',
             'Content-Type': 'application/json; charset=UTF-8',
@@ -508,8 +509,8 @@ class _ApplyLoanState extends State<ApplyLoan> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/groups/$groupId/constributors/roundPayment'),
+        Uri.https(
+            baseUrl, '/api/v1/groups/$groupId/constributors/roundPayment'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -563,7 +564,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/loanReason/getAll'),
+        Uri.https(baseUrl, '/api/v1/loanReason/getAll'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

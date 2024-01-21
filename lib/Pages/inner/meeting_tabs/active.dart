@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class ActiveMeeting extends StatefulWidget {
   const ActiveMeeting({super.key});
@@ -102,10 +104,12 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
               itemCount: newMeeting.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () {
-                    editModal(newMeeting[index]);
-                    // editModal(newMeeting[index]);
-                  },
+                  onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                      ? () {
+                          editModal(newMeeting[index]);
+                          // editModal(newMeeting[index]);
+                        }
+                      : null,
                   child: Card(
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.13,
@@ -516,8 +520,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
         print("mybodyyyyy");
         print(body);
         var response = await http.put(
-          Uri.http(
-              "10.1.177.121:8111", "/api/v1/meetings/editMeeting/$meetingId"),
+          Uri.https(baseUrl, "/api/v1/meetings/editMeeting/$meetingId"),
           headers: <String, String>{
             // 'Authorization': 'Bearer $authToken',
             'Content-Type': 'application/json; charset=UTF-8',
@@ -586,8 +589,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
       var response = await http.put(
-        Uri.http(
-            "10.1.177.121:8111", "/api/v1/meetings/cancelMeeting/$meetingId"),
+        Uri.https(baseUrl, "/api/v1/meetings/cancelMeeting/$meetingId"),
         headers: <String, String>{
           // 'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -655,8 +657,8 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
 
       try {
         var response = await http.put(
-          Uri.http("10.1.177.121:8111",
-              "api/v1/meetings/continueMeeting/$meetingId/$round"),
+          Uri.https(
+              baseUrl, "api/v1/meetings/continueMeeting/$meetingId/$round"),
           headers: <String, String>{
             'Authorization': 'Bearer $authToken',
             'Content-Type': 'application/json; charset=UTF-8',
@@ -720,8 +722,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http(
-            '10.1.177.121:8111', '/api/v1/meetings/getActiveMeetings/$groupId'),
+        Uri.https(baseUrl, '/api/v1/meetings/getActiveMeetings/$groupId'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -769,7 +770,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-types/getAll/App'),
+        Uri.https(baseUrl, '/api/v1/meeting-types/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -814,7 +815,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals/getAll/App'),
+        Uri.https(baseUrl, '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

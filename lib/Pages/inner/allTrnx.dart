@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:http/http.dart' as http;
 import 'package:vsla/Pages/routes/socialFunds.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class AllTrnx extends StatefulWidget {
   final String payment;
@@ -157,12 +159,17 @@ class _AllTrnxState extends State<AllTrnx> {
                                 itemCount: allMembers.length,
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
-                                    onTap: () {
-                                      allMembers[index].proxy.toLowerCase() ==
-                                              "true"
-                                          ? editModal(allMembers[index])
-                                          : null;
-                                    },
+                                    onTap: GlobalStrings.getGlobalString ==
+                                            "GROUP_ADMIN"
+                                        ? () {
+                                            allMembers[index]
+                                                        .proxy
+                                                        .toLowerCase() ==
+                                                    "true"
+                                                ? editModal(allMembers[index])
+                                                : null;
+                                          }
+                                        : null,
                                     child: Card(
                                       // shadowColor: Colors.white,
                                       color: allMembers[index].proxy == "true"
@@ -290,8 +297,7 @@ class _AllTrnxState extends State<AllTrnx> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/groups/$groupId/contributors/socialFund'),
+        Uri.https(baseUrl, '/api/v1/groups/$groupId/contributors/socialFund'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -343,8 +349,8 @@ class _AllTrnxState extends State<AllTrnx> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/groups/$groupId/constributors/roundPayment'),
+        Uri.https(
+            baseUrl, '/api/v1/groups/$groupId/constributors/roundPayment'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -631,7 +637,7 @@ class _AllTrnxState extends State<AllTrnx> {
                                     prefs.getStringList("_keyUser");
                                 final String authToken = accessToken![0];
                                 var response = await http.post(
-                                  Uri.http("10.1.177.121:8111",
+                                  Uri.https(baseUrl,
                                       "/api/v1/Transactions/addTransaction"),
                                   headers: <String, String>{
                                     'Content-Type':

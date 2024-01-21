@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vsla/otp.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -101,7 +102,7 @@ class _SignupState extends State<Signup> {
       print(body);
       try {
         var response = await http.post(
-          Uri.http("10.1.177.121:8111", "api/v1/users"),
+          Uri.https(baseUrl, "api/v1/users"),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -712,12 +713,14 @@ class _SignupState extends State<Signup> {
       // var user = await SimplePreferences().getUser();
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/organizations'),
+        Uri.https(baseUrl, '/api/v1/organizations'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
       // transactions = parseTransactions(response.body);
+      print("hererewego");
+      print(response.body);
       var data = jsonDecode(response.body);
 
       // print(data);
