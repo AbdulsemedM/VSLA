@@ -159,17 +159,19 @@ class _AllTrnxState extends State<AllTrnx> {
                                 itemCount: allMembers.length,
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
-                                    onTap: GlobalStrings.getGlobalString ==
-                                            "GROUP_ADMIN"
-                                        ? () {
-                                            allMembers[index]
-                                                        .proxy
-                                                        .toLowerCase() ==
-                                                    "true"
-                                                ? editModal(allMembers[index])
-                                                : null;
-                                          }
-                                        : null,
+                                    onTap: () {
+                                      print(GlobalStrings.getGlobalString());
+                                      print(allMembers[index]
+                                          .proxy
+                                          .toLowerCase());
+                                      if (GlobalStrings.getGlobalString() ==
+                                          "GROUP_ADMIN") {
+                                        allMembers[index].proxy.toLowerCase() ==
+                                                "true"
+                                            ? editModal(allMembers[index])
+                                            : null;
+                                      }
+                                    },
                                     child: Card(
                                       // shadowColor: Colors.white,
                                       color: allMembers[index].proxy == "true"

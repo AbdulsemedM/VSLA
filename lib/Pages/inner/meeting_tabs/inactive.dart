@@ -65,7 +65,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                     await activateMeeting(newMeeting[index].meetingId,
                         newMeeting[index].currentRound);
                   },
-                  onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                  onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
                       ? () {
                           print(newMeeting[index].meetingTypeId);
                           editModal(newMeeting[index]);

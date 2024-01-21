@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:date_field/date_field.dart';
@@ -81,6 +82,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
   void initState() {
     super.initState();
     fetchMeetings();
+
     fetchMeetingTypes();
     fetchMeetingIntervals();
   }
@@ -104,7 +106,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
               itemCount: newMeeting.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                  onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
                       ? () {
                           editModal(newMeeting[index]);
                           // editModal(newMeeting[index]);

@@ -121,7 +121,7 @@ class _SocialFundsState extends State<SocialFunds> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
-                      onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
                           ? () {
                               donate(type: "wedding");
                             }
@@ -145,7 +145,7 @@ class _SocialFundsState extends State<SocialFunds> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
                           ? () {
                               donate(type: "Graduation");
                             }
@@ -169,7 +169,7 @@ class _SocialFundsState extends State<SocialFunds> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
                           ? () {
                               donate(type: "Energency");
                             }
@@ -193,7 +193,7 @@ class _SocialFundsState extends State<SocialFunds> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: GlobalStrings.getGlobalString == 'GROUP_ADMIN'
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
                           ? () {
                               donate(type: "Mourning");
                             }

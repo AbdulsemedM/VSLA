@@ -266,12 +266,13 @@ class _MembersState extends State<Members> {
                               itemCount: allMembers.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: GlobalStrings.getGlobalString ==
-                                          "GROUP_ADMIN"
-                                      ? () {
-                                          editModal(allMembers[index]);
-                                        }
-                                      : null,
+                                  onTap: () {
+                                    print(GlobalStrings.getGlobalString());
+                                    if (GlobalStrings.getGlobalString() ==
+                                        "GROUP_ADMIN") {
+                                      editModal(allMembers[index]);
+                                    }
+                                  },
                                   child: Card(
                                     child: SizedBox(
                                       height:

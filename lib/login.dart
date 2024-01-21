@@ -103,8 +103,8 @@ class _LoginState extends State<Login> {
                 orgId.toString(),
                 role
               ];
-              // print(newUser);
               GlobalStrings.setGlobalString(role);
+              print(GlobalStrings.getGlobalString());
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
               prefs.setStringList("_keyUser", newUser);

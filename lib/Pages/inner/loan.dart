@@ -433,7 +433,7 @@ class _LoanState extends State<Loan> {
                               itemCount: filteredLoans.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: GlobalStrings.getGlobalString.toString() ==
+                                  onTap: GlobalStrings.getGlobalString() ==
                                           "GROUP_ADMIN"
                                       ? () {
                                           viewModal(filteredLoans[index]);
