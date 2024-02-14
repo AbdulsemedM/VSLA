@@ -523,7 +523,7 @@ class _MembersState extends State<Members> {
           phoneNumber: member['phoneNumber'],
           proxy: member['proxy'],
           userId: member['userId'],
-          fullName: member['fullName'],
+          fullName: utf8.decode(member['fullName'].runes.toList()),
           gender: member['gender'],
           loanBalance: member['loanBalance'],
           paid: member['paid'],

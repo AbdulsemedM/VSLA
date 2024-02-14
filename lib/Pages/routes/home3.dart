@@ -36,6 +36,16 @@ class ContributionData {
   });
 }
 
+class TipsData {
+  final String title;
+  final String description;
+
+  TipsData({
+    required this.title,
+    required this.description,
+  });
+}
+
 class _Home3State extends State<Home3> {
   final PageController _pageController = PageController();
   var members = false;
@@ -48,6 +58,7 @@ class _Home3State extends State<Home3> {
   void initState() {
     super.initState();
     fetchDashBoardData();
+    fetchTips();
   }
 
   String groupName = "";
@@ -55,6 +66,7 @@ class _Home3State extends State<Home3> {
   List<int> mileStone = [];
   List<String> tipOfTheDay = [];
   List<ContributionData> allContribution = [];
+  List<TipsData> allTips = [];
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +115,7 @@ class _Home3State extends State<Home3> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 10.0),
                                         child: Text(
-                                          groupName,
+                                          utf8.decode(groupName.runes.toList()),
                                           style: GoogleFonts.poppins(
                                               fontSize: screenWidth * 0.06,
                                               fontWeight: FontWeight.bold),
@@ -702,9 +714,14 @@ class _Home3State extends State<Home3> {
                                                     padding: const EdgeInsets
                                                         .fromLTRB(5, 0, 0, 6),
                                                     child: Text(
-                                                      loading
+                                                      loading || allTips.isEmpty
                                                           ? ""
-                                                          : tipOfTheDay[0],
+                                                          : utf8.decode(allTips[
+                                                                  allTips.length -
+                                                                      1]
+                                                              .title
+                                                              .runes
+                                                              .toList()),
                                                       style:
                                                           GoogleFonts.poppins(
                                                               color:
@@ -725,10 +742,15 @@ class _Home3State extends State<Home3> {
                                                     padding: const EdgeInsets
                                                         .fromLTRB(5, 0, 0, 0),
                                                     child: Text(
-                                                      loading
+                                                      loading || allTips.isEmpty
                                                           ? ""
-                                                          : insertNewLines(
-                                                              tipOfTheDay[1]),
+                                                          : insertNewLines(utf8
+                                                              .decode(allTips[
+                                                                      allTips.length -
+                                                                          1]
+                                                                  .description
+                                                                  .runes
+                                                                  .toList())),
                                                       style:
                                                           GoogleFonts.poppins(
                                                               color:
@@ -948,7 +970,7 @@ class _Home3State extends State<Home3> {
 
       setState(() {
         totalAmount = data['totalAmount'];
-        groupName = data['groupName'];
+        groupName = (data['groupName']);
         // print(totalAmount);
         // print(groupName);
         mileStone.add(data['milestone']['bronze']);
@@ -959,10 +981,48 @@ class _Home3State extends State<Home3> {
         tipOfTheDay.add(data['tipOfTheDay']["description"]);
         loading = false;
       });
-      // print(mileStone);
+      print(utf8.decode(groupName.runes.toList()));
     } catch (e) {
       var message = e.toString();
-      'Something went wrong. Please check your internet connection.';
+      print(e
+          .toString()); // 'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchTips() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+
+      final response = await http.get(
+        Uri.https(baseUrl, '/api/v1/Tips/getTips/App'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+      print(data);
+      if (data.length > 0) {
+        for (var tips in data) {
+          setState(() {
+            allTips.add(TipsData(
+              title: tips['title'],
+              description: tips['description'],
+            ));
+          });
+        }
+      }
+      print("hereeeeee");
+      print(allTips.length);
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      // 'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }

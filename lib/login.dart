@@ -366,60 +366,60 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                    Center(
-                      child: Text(
-                        "or sign in with",
-                        style: GoogleFonts.poppins(
-                            color: Colors.grey[500], fontSize: 15),
-                      ),
-                    ),
+                    // Center(
+                    //   child: Text(
+                    //     "or sign in with",
+                    //     style: GoogleFonts.poppins(
+                    //         color: Colors.grey[500], fontSize: 15),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Image(
-                        image: AssetImage(
-                      "assets/images/google.png",
-                    )),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Image(
-                        fit: BoxFit.contain,
-                        height: 60,
-                        width: 50,
-                        image: AssetImage(
-                          "assets/images/facebook.png",
-                        )),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Image(
-                        image: AssetImage(
-                      "assets/images/twitter.png",
-                    )),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //   children: [
+              //     Container(
+              //       height: MediaQuery.of(context).size.height * 0.06,
+              //       width: MediaQuery.of(context).size.width * 0.15,
+              //       decoration: BoxDecoration(
+              //           color: Colors.grey[200],
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: const Image(
+              //           image: AssetImage(
+              //         "assets/images/google.png",
+              //       )),
+              //     ),
+              //     Container(
+              //       height: MediaQuery.of(context).size.height * 0.06,
+              //       width: MediaQuery.of(context).size.width * 0.15,
+              //       decoration: BoxDecoration(
+              //           color: Colors.grey[200],
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: const Image(
+              //           fit: BoxFit.contain,
+              //           height: 60,
+              //           width: 50,
+              //           image: AssetImage(
+              //             "assets/images/facebook.png",
+              //           )),
+              //     ),
+              //     Container(
+              //       height: MediaQuery.of(context).size.height * 0.06,
+              //       width: MediaQuery.of(context).size.width * 0.15,
+              //       decoration: BoxDecoration(
+              //           color: Colors.grey[200],
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: const Image(
+              //           image: AssetImage(
+              //         "assets/images/twitter.png",
+              //       )),
+              //     ),
+              //   ],
+              // ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
               ),
@@ -440,7 +440,9 @@ class _LoginState extends State<Login> {
                     TextSpan(
                         text: " SIGN UP ",
                         style: GoogleFonts.poppins(
-                            fontSize: 15, color: Colors.orange))
+                            fontWeight: FontWeight.w600,
+                            fontSize: 25,
+                            color: Colors.orange))
                   ])),
                 ),
               ),
