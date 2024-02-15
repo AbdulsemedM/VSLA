@@ -352,6 +352,7 @@ class _MeetingsState extends State<Meetings>
                                               'Selected date: $nextMeetingDate'); // Output: 2023-11-17
                                           // Handle the formatted date as needed
                                         },
+                                        firstDate: DateTime.now(),
                                       ),
                                     ),
                                     Padding(

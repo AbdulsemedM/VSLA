@@ -376,6 +376,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
                       padding: const EdgeInsets.all(8.0),
                       child: DateTimeFormField(
                         // initialDate: DateTime.parse(nextMeetingDate!),
+                        firstDate: DateTime.now(),
                         decoration: InputDecoration(
                           contentPadding:
                               const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),

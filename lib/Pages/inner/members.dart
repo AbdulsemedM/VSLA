@@ -451,12 +451,16 @@ class _MembersState extends State<Members> {
                   bottom: 16.0, // Adjust this value as needed
                   right: 16.0, // Adjust this value as needed
                   child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const AddMember()),
                       );
+                      if (result != null) {
+                        print("poppeeddd");
+                        fetchMembers();
+                      }
                     },
                     child: Container(
                       height: screenWidth * 0.12,
@@ -500,6 +504,9 @@ class _MembersState extends State<Members> {
 
   Future<void> fetchMembers() async {
     try {
+      setState(() {
+        loading = true;
+      });
       // var user = await SimplePreferences().getUser();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
@@ -545,6 +552,9 @@ class _MembersState extends State<Members> {
         loading = false;
       });
     } catch (e) {
+      setState(() {
+        loading = false;
+      });
       print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';
@@ -843,6 +853,7 @@ class _MembersState extends State<Members> {
                           Future.delayed(const Duration(milliseconds: 100), () {
                             Fluttertoast.showToast(msg: message, fontSize: 18);
                           });
+                          fetchMembers();
                           Navigator.of(context)
                               .pop(); // Close the dialog when the user presses the button
                         } else if (response.statusCode != 200) {

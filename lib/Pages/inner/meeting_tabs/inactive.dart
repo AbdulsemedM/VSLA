@@ -503,6 +503,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: DateTimeFormField(
+                        firstDate: DateTime.now(),
                         // initialDate: DateTime.parse(nextMeetingDate!),
                         decoration: InputDecoration(
                           contentPadding:

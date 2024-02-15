@@ -85,24 +85,37 @@ class _CreatGroupState extends State<CreatGroup> {
   TextEditingController groupNameController = new TextEditingController();
   TextEditingController woredaController = new TextEditingController();
   TextEditingController entryFeeController = new TextEditingController();
+  TextEditingController interestRateController = new TextEditingController();
+  TextEditingController socialFundAmountController =
+      new TextEditingController();
   TextEditingController groupSizeController = TextEditingController();
   TextEditingController kebeleController = new TextEditingController();
+  var loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        loading = true;
+      });
       final String groupName = groupNameController.text;
       final int groupSize = int.parse(groupSizeController.text);
       final int entryFee = int.parse(entryFeeController.text);
+      final int socialFundAmount = int.parse(socialFundAmountController.text);
+      final double interestRate = double.parse(interestRateController.text);
       final String woreda = woredaController.text;
-      final String kebele = kebeleController.text;
+      final String kebele =
+          kebeleController.text != '' ? kebeleController.text : '';
       final Map<String, dynamic> requestBody = {
         "groupName": groupName,
         "groupSize": groupSize,
-        "entryFee": entryFee,
+        "shareAmount": entryFee,
+        "socialFundAmount": socialFundAmount,
+        "interestRate": interestRate,
         "meetingIntervalId": selectedInterval,
         "projectId": selectedProject,
         "groupTypeId": selectedGroup,
         "meetingDate": selectedDate,
+        "entryFee": 0,
         "address": {
           "region": selectedRegion,
           "zone": selectedZone,
@@ -142,12 +155,18 @@ class _CreatGroupState extends State<CreatGroup> {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setStringList("_keyUser", newUser);
         print(newUser);
+        setState(() {
+          loading = false;
+        });
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Home1()));
         print("saved");
         // Successful response, handle it as needed
         // You can navigate to a success screen or perform other actions.
       } else {
+        setState(() {
+          loading = false;
+        });
         print(response.body);
         // Handle errors or failed requests
         // You can show an error message or perform error-specific actions.
@@ -387,7 +406,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final kebele = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
-        validator: _validateField,
+        // validator: ,
         controller: kebeleController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -399,7 +418,7 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Kebele *",
+          labelText: "Kebele",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
@@ -458,6 +477,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final entryFee = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         validator: _validateField,
         controller: entryFeeController,
         decoration: InputDecoration(
@@ -470,7 +490,51 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Entry Fee",
+          labelText: "Share Amount",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+        ),
+      ),
+    );
+    final socialFund = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        validator: _validateField,
+        controller: socialFundAmountController,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "Social Fund Amount",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+        ),
+      ),
+    );
+    final interest = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        validator: _validateField,
+        controller: interestRateController,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "Interest Rate",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
@@ -479,6 +543,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final firstMeetingDate = Padding(
       padding: const EdgeInsets.all(16.0),
       child: DateTimeFormField(
+        firstDate: DateTime.now(),
         validator: _validateDate,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -725,6 +790,20 @@ class _CreatGroupState extends State<CreatGroup> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: socialFund,
+                  ),
+                  const SizedBox(
+                    width:
+                        16.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: interest,
+                  ),
+                ],
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
@@ -767,21 +846,24 @@ class _CreatGroupState extends State<CreatGroup> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Color(0xFFF89520), // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 5,
-                ),
-                child: Text(
-                  "Save",
-                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
-                ), // Button text
-              ),
+              loading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFFF89520), // Text color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        "Save",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, color: Colors.white),
+                      ), // Button text
+                    ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
