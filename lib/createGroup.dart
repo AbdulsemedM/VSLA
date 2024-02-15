@@ -9,7 +9,10 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/home1.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/Pages/inner/meeting_tabs/active.dart';
 import 'package:vsla/login.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class CreatGroup extends StatefulWidget {
   const CreatGroup({super.key});
@@ -74,7 +77,7 @@ class _CreatGroupState extends State<CreatGroup> {
   }
 
   String selectedDate = "";
-  List<IntervalData> interval = [];
+  List<MeetingIntevalData> interval = [];
   List<GroupData> groupTypes = [];
   List<ProjectData> projects = [];
   String? selectedRegion;
@@ -82,24 +85,37 @@ class _CreatGroupState extends State<CreatGroup> {
   TextEditingController groupNameController = new TextEditingController();
   TextEditingController woredaController = new TextEditingController();
   TextEditingController entryFeeController = new TextEditingController();
+  TextEditingController interestRateController = new TextEditingController();
+  TextEditingController socialFundAmountController =
+      new TextEditingController();
   TextEditingController groupSizeController = TextEditingController();
   TextEditingController kebeleController = new TextEditingController();
+  var loading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        loading = true;
+      });
       final String groupName = groupNameController.text;
       final int groupSize = int.parse(groupSizeController.text);
       final int entryFee = int.parse(entryFeeController.text);
+      final int socialFundAmount = int.parse(socialFundAmountController.text);
+      final double interestRate = double.parse(interestRateController.text);
       final String woreda = woredaController.text;
-      final String kebele = kebeleController.text;
+      final String kebele =
+          kebeleController.text != '' ? kebeleController.text : '';
       final Map<String, dynamic> requestBody = {
         "groupName": groupName,
         "groupSize": groupSize,
-        "entryFee": entryFee,
+        "shareAmount": entryFee,
+        "socialFundAmount": socialFundAmount,
+        "interestRate": interestRate,
         "meetingIntervalId": selectedInterval,
         "projectId": selectedProject,
         "groupTypeId": selectedGroup,
         "meetingDate": selectedDate,
+        "entryFee": 0,
         "address": {
           "region": selectedRegion,
           "zone": selectedZone,
@@ -113,31 +129,44 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String phone = accessToken[1];
       final String orgId = accessToken[2];
+      final String role = accessToken[3];
       // final String groupId = accessToken[2];
-      final String apiUrl = 'http://10.1.177.121:8111/api/v1/groups';
+      // const String apiUrl = 'https://$baseUrl/api/v1/groups';
       // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
 
       final response = await http.post(
-        Uri.parse(apiUrl),
+        Uri.https(baseUrl, '/api/v1/groups'),
         headers: {
           'Authorization': 'Bearer $authToken',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(requestBody),
       );
       if (response.statusCode == 201) {
         var data = jsonDecode(response.body);
         var groupId = data['groupId'];
-        List<String> newUser = [authToken, phone, groupId.toString(), orgId];
+        List<String> newUser = [
+          authToken,
+          phone,
+          groupId.toString(),
+          orgId,
+          role
+        ];
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setStringList("_keyUser", newUser);
         print(newUser);
+        setState(() {
+          loading = false;
+        });
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const Home1()));
         print("saved");
         // Successful response, handle it as needed
         // You can navigate to a success screen or perform other actions.
       } else {
+        setState(() {
+          loading = false;
+        });
         print(response.body);
         // Handle errors or failed requests
         // You can show an error message or perform error-specific actions.
@@ -187,7 +216,7 @@ class _CreatGroupState extends State<CreatGroup> {
   @override
   void initState() {
     super.initState();
-    fetchInterval();
+    fetchMeetingIntervals();
     fetchGroup();
     fetchProject();
   }
@@ -247,7 +276,7 @@ class _CreatGroupState extends State<CreatGroup> {
         ),
         items: [
           DropdownMenuItem<String>(
-            value: "1000",
+            value: "Oromia",
             child: Center(
               child: Text('Oromia',
                   style:
@@ -255,7 +284,7 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1200",
+            value: "Amhara",
             child: Center(
               child: Text('Amhara',
                   style:
@@ -263,7 +292,7 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1300",
+            value: "Addis Ababa",
             child: Center(
               child: Text('Addis Ababa',
                   style:
@@ -310,7 +339,7 @@ class _CreatGroupState extends State<CreatGroup> {
         ),
         items: [
           DropdownMenuItem<String>(
-            value: "1000",
+            value: "Arsi",
             child: Center(
               child: Text('Arsi',
                   style:
@@ -318,7 +347,7 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1200",
+            value: "Adama",
             child: Center(
               child: Text('Adama',
                   style:
@@ -326,9 +355,17 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "1300",
+            value: "Jimma",
             child: Center(
               child: Text('Jimma',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "Illu Ababor",
+            child: Center(
+              child: Text('Illu Ababor',
                   style:
                       GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
@@ -369,7 +406,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final kebele = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
-        validator: _validateField,
+        // validator: ,
         controller: kebeleController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -381,7 +418,7 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Kebele *",
+          labelText: "Kebele",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
@@ -440,6 +477,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final entryFee = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
+        keyboardType: TextInputType.number,
         validator: _validateField,
         controller: entryFeeController,
         decoration: InputDecoration(
@@ -452,7 +490,51 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Entry Fee",
+          labelText: "Share Amount",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+        ),
+      ),
+    );
+    final socialFund = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        validator: _validateField,
+        controller: socialFundAmountController,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "Social Fund Amount",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+        ),
+      ),
+    );
+    final interest = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        validator: _validateField,
+        controller: interestRateController,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "Interest Rate* (%)",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
@@ -461,6 +543,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final firstMeetingDate = Padding(
       padding: const EdgeInsets.all(16.0),
       child: DateTimeFormField(
+        firstDate: DateTime.now(),
         validator: _validateDate,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -514,7 +597,7 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: interval.map((IntervalData intervals) {
+        items: interval.map((MeetingIntevalData intervals) {
           return DropdownMenuItem<String>(
             value: intervals.meetingIntervalId.toString(),
             child: Text(
@@ -707,6 +790,20 @@ class _CreatGroupState extends State<CreatGroup> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: socialFund,
+                  ),
+                  const SizedBox(
+                    width:
+                        16.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: interest,
+                  ),
+                ],
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
@@ -749,21 +846,24 @@ class _CreatGroupState extends State<CreatGroup> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
-              ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Color(0xFFF89520), // Text color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 5,
-                ),
-                child: Text(
-                  "Save",
-                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
-                ), // Button text
-              ),
+              loading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFFF89520), // Text color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        "Save",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, color: Colors.white),
+                      ), // Button text
+                    ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
@@ -774,32 +874,36 @@ class _CreatGroupState extends State<CreatGroup> {
     );
   }
 
-  Future<void> fetchInterval() async {
+  Future<void> fetchMeetingIntervals() async {
     try {
       // var user = await SimplePreferences().getUser();
-
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/meeting-intervals'),
+        Uri.https(baseUrl, '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      // print(data);
-      List<IntervalData> newInterval = [];
+      print(data);
+      List<MeetingIntevalData> newMeeting = [];
 
-      for (var interval in data) {
+      for (var meet in data) {
         // print(transaction.date);
-        var intervalData = IntervalData(
-          meetingIntervalId: interval['meetingIntervalId'],
-          meetingIntervalName: interval['meetingIntervalName'],
-        );
-        newInterval.add(intervalData);
+        var meetings = MeetingIntevalData(
+            meetingIntervalId: meet['meetingIntervalId'].toString(),
+            meetingIntervalName: meet['meetingIntervalName'],
+            intervalInDays: meet['intervalInDays']);
+        newMeeting.add(meetings);
         // print(company);
       }
-      interval.addAll(newInterval);
+      interval.addAll(newMeeting);
+      print("meetingInterval");
       print(interval.length);
 
       // print(transactions[0]);
@@ -809,6 +913,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // }
       // );
     } catch (e) {
+      print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -824,8 +929,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String orgId = accessToken[2];
       final response = await http.get(
-        Uri.http(
-            '10.1.177.121:8111', '/api/v1/group-types/by-organization/$orgId'),
+        Uri.https(baseUrl, '/api/v1/group-types/by-organization'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -834,7 +938,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      // print(data);
+      print(data);
       List<GroupData> newGroupType = [];
 
       for (var groupType in data) {
@@ -871,8 +975,7 @@ class _CreatGroupState extends State<CreatGroup> {
       final String authToken = accessToken![0];
       final String orgId = accessToken[2];
       final response = await http.get(
-        Uri.http(
-            '10.1.177.121:8111', '/api/v1/projects/by-organization/$orgId'),
+        Uri.https(baseUrl, '/api/v1/projects/by-organization'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -881,7 +984,7 @@ class _CreatGroupState extends State<CreatGroup> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      // print(data);
+      print(data);
       List<ProjectData> newProject = [];
 
       for (var project in data) {
@@ -931,6 +1034,7 @@ class _CreatGroupState extends State<CreatGroup> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));

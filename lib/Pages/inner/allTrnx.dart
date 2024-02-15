@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:http/http.dart' as http;
 import 'package:vsla/Pages/routes/socialFunds.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class AllTrnx extends StatefulWidget {
   final String payment;
@@ -121,13 +123,13 @@ class _AllTrnxState extends State<AllTrnx> {
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.bold),
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  widget.payment == "roundPayment"
-                                      ? fetchMembersRound()
-                                      : fetchMembersSocial();
-                                },
-                                child: const Icon(Icons.refresh, size: 25)),
+                            // GestureDetector(
+                            //     onTap: () {
+                            //       widget.payment == "roundPayment"
+                            //           ? fetchMembersRound()
+                            //           : fetchMembersSocial();
+                            //     },
+                            //     child: const Icon(Icons.refresh, size: 25)),
                             Text(
                               allMembers.length.toString(),
                               style: GoogleFonts.poppins(
@@ -158,10 +160,17 @@ class _AllTrnxState extends State<AllTrnx> {
                                 itemBuilder: (context, index) {
                                   return GestureDetector(
                                     onTap: () {
-                                      allMembers[index].proxy.toLowerCase() ==
-                                              "true"
-                                          ? editModal(allMembers[index])
-                                          : null;
+                                      print(GlobalStrings.getGlobalString());
+                                      print(allMembers[index]
+                                          .proxy
+                                          .toLowerCase());
+                                      if (GlobalStrings.getGlobalString() ==
+                                          "GROUP_ADMIN") {
+                                        allMembers[index].proxy.toLowerCase() ==
+                                                "true"
+                                            ? editModal(allMembers[index])
+                                            : null;
+                                      }
                                     },
                                     child: Card(
                                       // shadowColor: Colors.white,
@@ -290,8 +299,7 @@ class _AllTrnxState extends State<AllTrnx> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/groups/$groupId/contributors/socialFund'),
+        Uri.https(baseUrl, '/api/v1/groups/$groupId/contributors/socialFund'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -343,8 +351,8 @@ class _AllTrnxState extends State<AllTrnx> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/groups/$groupId/constributors/roundPayment'),
+        Uri.https(
+            baseUrl, '/api/v1/groups/$groupId/constributors/roundPayment'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -590,6 +598,9 @@ class _AllTrnxState extends State<AllTrnx> {
                                   ),
                                   TextButton(
                                     onPressed: () {
+                                      widget.payment == "roundPayment"
+                                          ? fetchMembersRound()
+                                          : fetchMembersSocial();
                                       Navigator.of(context)
                                           .pop(true); // User confirms deletion
                                     },
@@ -631,7 +642,7 @@ class _AllTrnxState extends State<AllTrnx> {
                                     prefs.getStringList("_keyUser");
                                 final String authToken = accessToken![0];
                                 var response = await http.post(
-                                  Uri.http("10.1.177.121:8111",
+                                  Uri.https(baseUrl,
                                       "/api/v1/Transactions/addTransaction"),
                                   headers: <String, String>{
                                     'Content-Type':
@@ -689,10 +700,13 @@ class _AllTrnxState extends State<AllTrnx> {
                             }
                           }
                         },
-                        child: Text(
-                          'Add',
-                          style: GoogleFonts.poppins(color: Colors.orange),
-                        ),
+                        child: loading1
+                            ? CircularProgressIndicator()
+                            : Text(
+                                'Add',
+                                style:
+                                    GoogleFonts.poppins(color: Colors.orange),
+                              ),
                       ),
               ],
             ),

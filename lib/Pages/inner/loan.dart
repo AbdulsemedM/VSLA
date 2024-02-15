@@ -7,8 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/applyLoan.dart';
 import 'package:vsla/Pages/routes/home3.dart';
+import 'package:vsla/utils/api_config.dart';
 import 'package:vsla/utils/circleWidget.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/role.dart';
 
 class Loan extends StatefulWidget {
   const Loan({super.key});
@@ -270,7 +272,7 @@ class _LoanState extends State<Loan> {
                             height: MediaQuery.of(context).size.height * 0.02,
                           ),
                           Text(
-                            "Lost ${loading ? 0 : lost[0]}%",
+                            "Rejected ${loading ? 0 : lost[0]}%",
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -307,27 +309,32 @@ class _LoanState extends State<Loan> {
                       )
                     ],
                   ),
-                  SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.068,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
-                              side: BorderSide.none,
-                              shape: const StadiumBorder()),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ApplyLoan()),
-                            );
-                          },
-                          child: Text(
-                            "Apply for Loan",
-                            style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700),
-                          ))),
+                  if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.068,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                side: BorderSide.none,
+                                shape: const StadiumBorder()),
+                            onPressed: () async {
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ApplyLoan()),
+                              );
+                              if (result != null) {
+                                print('popper');
+                                fetchLoans();
+                              }
+                            },
+                            child: Text(
+                              "Apply for Loan",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                            ))),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -408,14 +415,14 @@ class _LoanState extends State<Loan> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                        child: GestureDetector(
-                            onTap: () {
-                              fetchLoans();
-                            },
-                            child: const Icon(Icons.refresh)),
-                      )
+                      // Padding(
+                      //   padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                      //   child: GestureDetector(
+                      //       onTap: () {
+                      //         fetchLoans();
+                      //       },
+                      //       child: const Icon(Icons.refresh)),
+                      // )
                     ],
                   ),
                   loading
@@ -430,9 +437,12 @@ class _LoanState extends State<Loan> {
                               itemCount: filteredLoans.length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
-                                  onTap: () {
-                                    viewModal(filteredLoans[index]);
-                                  },
+                                  onTap: GlobalStrings.getGlobalString() ==
+                                          "GROUP_ADMIN"
+                                      ? () {
+                                          viewModal(filteredLoans[index]);
+                                        }
+                                      : null,
                                   child: Card(
                                     child: SizedBox(
                                       height: 60,
@@ -542,7 +552,7 @@ class _LoanState extends State<Loan> {
       // final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/Loan/LoanPage'),
+        Uri.https(baseUrl, '/api/v1/Loan/LoanPage'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -726,7 +736,7 @@ class _LoanState extends State<Loan> {
                             });
                             try {
                               var response = await http.put(
-                                Uri.http("10.1.177.121:8111",
+                                Uri.https(baseUrl,
                                     "/api/v1/Loan/edit/${loanDetail.loanId}"),
                                 headers: <String, String>{
                                   'Content-Type':
@@ -807,7 +817,7 @@ class _LoanState extends State<Loan> {
                                 });
                                 try {
                                   var response = await http.put(
-                                    Uri.http("10.1.177.121:8111",
+                                    Uri.https(baseUrl,
                                         "/api/v1/Loan/edit/repay/${loanDetail.loanId}"),
                                     headers: <String, String>{
                                       'Content-Type':

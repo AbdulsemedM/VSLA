@@ -7,12 +7,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/allTrnx.dart';
+import 'package:vsla/Pages/inner/all_payments/payments.dart';
 import 'package:vsla/Pages/inner/loan.dart';
+import 'package:vsla/Pages/inner/meetings.dart';
 import 'package:vsla/Pages/inner/transactions.dart';
 import 'package:vsla/Pages/inner/members.dart';
 import 'package:vsla/Pages/inner/awarness.dart';
 import 'package:vsla/login.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class Home3 extends StatefulWidget {
   const Home3({super.key});
@@ -33,6 +37,16 @@ class ContributionData {
   });
 }
 
+class TipsData {
+  final String title;
+  final String description;
+
+  TipsData({
+    required this.title,
+    required this.description,
+  });
+}
+
 class _Home3State extends State<Home3> {
   final PageController _pageController = PageController();
   var members = false;
@@ -45,6 +59,7 @@ class _Home3State extends State<Home3> {
   void initState() {
     super.initState();
     fetchDashBoardData();
+    fetchTips();
   }
 
   String groupName = "";
@@ -52,6 +67,7 @@ class _Home3State extends State<Home3> {
   List<int> mileStone = [];
   List<String> tipOfTheDay = [];
   List<ContributionData> allContribution = [];
+  List<TipsData> allTips = [];
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +116,7 @@ class _Home3State extends State<Home3> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 10.0),
                                         child: Text(
-                                          groupName,
+                                          utf8.decode(groupName.runes.toList()),
                                           style: GoogleFonts.poppins(
                                               fontSize: screenWidth * 0.06,
                                               fontWeight: FontWeight.bold),
@@ -115,7 +131,7 @@ class _Home3State extends State<Home3> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total Amount",
+                                        "Working Balance",
                                         style: GoogleFonts.poppins(
                                             fontSize: screenWidth * 0.045,
                                             fontWeight: FontWeight.w600),
@@ -564,7 +580,11 @@ class _Home3State extends State<Home3> {
                                         child: GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              trnx = true;
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Payments()));
                                             });
                                           },
                                           child: Column(
@@ -596,26 +616,35 @@ class _Home3State extends State<Home3> {
                                                 0.09,
                                         width: screenWidth * 0.22,
                                         // color: Colors.amber,
-                                        child: Column(
-                                          children: [
-                                            Center(
-                                              child: Image(
-                                                image: const AssetImage(
-                                                  "assets/images/Meeting.png",
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Meetings()));
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Center(
+                                                child: Image(
+                                                  image: const AssetImage(
+                                                    "assets/images/Meeting.png",
+                                                  ),
+                                                  width: screenWidth * 0.19,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.04,
                                                 ),
-                                                width: screenWidth * 0.19,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.04,
                                               ),
-                                            ),
-                                            Text(
-                                              "Meetings",
-                                              style: GoogleFonts.poppins(
-                                                  color: Colors.black),
-                                            )
-                                          ],
+                                              Text(
+                                                "Meetings",
+                                                style: GoogleFonts.poppins(
+                                                    color: Colors.black),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       SizedBox(
@@ -690,9 +719,14 @@ class _Home3State extends State<Home3> {
                                                     padding: const EdgeInsets
                                                         .fromLTRB(5, 0, 0, 6),
                                                     child: Text(
-                                                      loading
+                                                      loading || allTips.isEmpty
                                                           ? ""
-                                                          : tipOfTheDay[0],
+                                                          : utf8.decode(allTips[
+                                                                  allTips.length -
+                                                                      1]
+                                                              .title
+                                                              .runes
+                                                              .toList()),
                                                       style:
                                                           GoogleFonts.poppins(
                                                               color:
@@ -713,10 +747,15 @@ class _Home3State extends State<Home3> {
                                                     padding: const EdgeInsets
                                                         .fromLTRB(5, 0, 0, 0),
                                                     child: Text(
-                                                      loading
+                                                      loading || allTips.isEmpty
                                                           ? ""
-                                                          : insertNewLines(
-                                                              tipOfTheDay[1]),
+                                                          : insertNewLines(utf8
+                                                              .decode(allTips[
+                                                                      allTips.length -
+                                                                          1]
+                                                                  .description
+                                                                  .runes
+                                                                  .toList())),
                                                       style:
                                                           GoogleFonts.poppins(
                                                               color:
@@ -752,17 +791,17 @@ class _Home3State extends State<Home3> {
                                           fontSize: screenWidth * 0.05,
                                           fontWeight: FontWeight.w700),
                                     ),
-                                    Text(
-                                      "See All",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: screenWidth * 0.04,
-                                          fontWeight: FontWeight.w600),
-                                    ),
+                                    // Text(
+                                    //   "See All",
+                                    //   style: GoogleFonts.poppins(
+                                    //       fontSize: screenWidth * 0.04,
+                                    //       fontWeight: FontWeight.w600),
+                                    // ),
                                   ],
                                 ),
                                 SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height * 0.2,
+                                      MediaQuery.of(context).size.height * 0.3,
                                   width: MediaQuery.of(context).size.width * 1,
                                   child: ListView.builder(
                                       scrollDirection: Axis.vertical,
@@ -893,6 +932,7 @@ class _Home3State extends State<Home3> {
                         await SharedPreferences.getInstance();
 
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));
@@ -914,7 +954,7 @@ class _Home3State extends State<Home3> {
       final String authToken = accessToken![0];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/home-page'),
+        Uri.https(baseUrl, '/api/v1/home-page'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -935,7 +975,7 @@ class _Home3State extends State<Home3> {
 
       setState(() {
         totalAmount = data['totalAmount'];
-        groupName = data['groupName'];
+        groupName = (data['groupName']);
         // print(totalAmount);
         // print(groupName);
         mileStone.add(data['milestone']['bronze']);
@@ -946,10 +986,48 @@ class _Home3State extends State<Home3> {
         tipOfTheDay.add(data['tipOfTheDay']["description"]);
         loading = false;
       });
-      // print(mileStone);
+      print(utf8.decode(groupName.runes.toList()));
     } catch (e) {
       var message = e.toString();
-      'Something went wrong. Please check your internet connection.';
+      print(e
+          .toString()); // 'Something went wrong. Please check your internet connection.';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchTips() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getStringList("_keyUser");
+      final String authToken = accessToken![0];
+
+      final response = await http.get(
+        Uri.https(baseUrl, '/api/v1/Tips/getTips/App'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+      print(data);
+      if (data.length > 0) {
+        for (var tips in data) {
+          setState(() {
+            allTips.add(TipsData(
+              title: tips['title'],
+              description: tips['description'],
+            ));
+          });
+        }
+      }
+      print("hereeeeee");
+      print(allTips.length);
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      // 'Something went wrong. Please check your internet connection.';
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }

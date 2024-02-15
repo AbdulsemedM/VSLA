@@ -11,6 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/allTrnx.dart';
 import 'package:vsla/login.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class SocialFunds extends StatefulWidget {
   const SocialFunds({super.key});
@@ -119,9 +121,11 @@ class _SocialFundsState extends State<SocialFunds> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        donate(type: "wedding");
-                      },
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
+                          ? () {
+                              donate(type: "wedding");
+                            }
+                          : null,
                       child: Column(
                         children: [
                           Container(
@@ -141,9 +145,11 @@ class _SocialFundsState extends State<SocialFunds> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        donate(type: "Graduation");
-                      },
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
+                          ? () {
+                              donate(type: "Graduation");
+                            }
+                          : null,
                       child: Column(
                         children: [
                           Container(
@@ -163,9 +169,11 @@ class _SocialFundsState extends State<SocialFunds> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        donate(type: "Energency");
-                      },
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
+                          ? () {
+                              donate(type: "Energency");
+                            }
+                          : null,
                       child: Column(
                         children: [
                           Container(
@@ -185,9 +193,11 @@ class _SocialFundsState extends State<SocialFunds> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        donate(type: "Mourning");
-                      },
+                      onTap: GlobalStrings.getGlobalString() == 'GROUP_ADMIN'
+                          ? () {
+                              donate(type: "Mourning");
+                            }
+                          : null,
                       child: Column(
                         children: [
                           Container(
@@ -563,7 +573,7 @@ class _SocialFundsState extends State<SocialFunds> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
+        Uri.https(baseUrl,
             '/api/v1/Transactions/getAllTransactions/socialFund/$groupId'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -620,6 +630,7 @@ class _SocialFundsState extends State<SocialFunds> {
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setStringList("_keyUser", user);
+                    GlobalStrings.setGlobalString("");
                     Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => const Login()));
                   },
@@ -641,7 +652,7 @@ class _SocialFundsState extends State<SocialFunds> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/groups/$groupId/members'),
+        Uri.https(baseUrl, '/api/v1/groups/$groupId/members'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -964,7 +975,7 @@ class _SocialFundsState extends State<SocialFunds> {
                               print(body);
                               try {
                                 var response = await http.post(
-                                  Uri.http("10.1.177.121:8111",
+                                  Uri.https(baseUrl,
                                       "/api/v1/Transactions/addTransaction"),
                                   headers: <String, String>{
                                     'Content-Type':

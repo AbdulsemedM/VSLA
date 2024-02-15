@@ -5,9 +5,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/inner/profit.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/inner/addMember.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 
 class Members extends StatefulWidget {
   const Members({super.key});
@@ -39,11 +42,21 @@ class MemberData {
 
 class _MembersState extends State<Members> {
   var members = true;
+  var role = '';
   @override
   void initState() {
     super.initState();
     fetchMembers();
   }
+
+  // void fetchRole() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   var my = prefs.getStringList("_keyUser");
+  //   setState(() {
+  //     role = my![4];
+  //   });
+  //   print(role);
+  // }
 
   List<MemberData> allMembers = [];
   var male = 0;
@@ -120,11 +133,11 @@ class _MembersState extends State<Members> {
                                 fontSize: screenWidth * 0.045,
                                 fontWeight: FontWeight.bold),
                           ),
-                          GestureDetector(
-                              onTap: () {
-                                fetchMembers();
-                              },
-                              child: const Icon(Icons.refresh, size: 25)),
+                          // GestureDetector(
+                          //     onTap: () {
+                          //       fetchMembers();
+                          //     },
+                          //     child: const Icon(Icons.refresh, size: 25)),
                           Text(
                             allMembers.length.toString(),
                             style: GoogleFonts.poppins(
@@ -254,7 +267,11 @@ class _MembersState extends State<Members> {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
-                                    editModal(allMembers[index]);
+                                    print(GlobalStrings.getGlobalString());
+                                    if (GlobalStrings.getGlobalString() ==
+                                        "GROUP_ADMIN") {
+                                      editModal(allMembers[index]);
+                                    }
                                   },
                                   child: Card(
                                     child: SizedBox(
@@ -331,7 +348,7 @@ class _MembersState extends State<Members> {
                                                           ),
                                                           Text(
                                                             allMembers[index]
-                                                                .loanBalance
+                                                                .phoneNumber
                                                                 .toString(),
                                                             style: GoogleFonts
                                                                 .roboto(
@@ -351,7 +368,7 @@ class _MembersState extends State<Members> {
                                                                     10,
                                                                     0),
                                                             child: Text(
-                                                              " Paid",
+                                                              " Proxy: ",
                                                               style: GoogleFonts
                                                                   .roboto(
                                                                       color: Colors
@@ -361,8 +378,9 @@ class _MembersState extends State<Members> {
                                                           ),
                                                           Text(
                                                             allMembers[index]
-                                                                .loanBalance
-                                                                .toString(),
+                                                                    .proxy
+                                                                ? "Yes"
+                                                                : "No",
                                                             style: GoogleFonts
                                                                 .roboto(
                                                                     color: Colors
@@ -428,15 +446,43 @@ class _MembersState extends State<Members> {
                   ],
                 ),
               ),
+              if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
+                Positioned(
+                  bottom: 16.0, // Adjust this value as needed
+                  right: 16.0, // Adjust this value as needed
+                  child: GestureDetector(
+                    onTap: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AddMember()),
+                      );
+                      if (result != null) {
+                        print("poppeeddd");
+                        fetchMembers();
+                      }
+                    },
+                    child: Container(
+                      height: screenWidth * 0.12,
+                      width: screenWidth * 0.12,
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(screenWidth * 0.12),
+                      ),
+                      child: const Center(
+                        child: Icon(FontAwesomeIcons.plus),
+                      ),
+                    ),
+                  ),
+                ),
               Positioned(
                 bottom: 16.0, // Adjust this value as needed
-                right: 16.0, // Adjust this value as needed
+                left: 16.0, // Adjust this value as needed
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddMember()),
+                      MaterialPageRoute(builder: (context) => const Profits()),
                     );
                   },
                   child: Container(
@@ -447,7 +493,7 @@ class _MembersState extends State<Members> {
                       borderRadius: BorderRadius.circular(screenWidth * 0.12),
                     ),
                     child: const Center(
-                      child: Icon(FontAwesomeIcons.plus),
+                      child: Icon(FontAwesomeIcons.rectangleList),
                     ),
                   ),
                 ),
@@ -458,6 +504,9 @@ class _MembersState extends State<Members> {
 
   Future<void> fetchMembers() async {
     try {
+      setState(() {
+        loading = true;
+      });
       // var user = await SimplePreferences().getUser();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
@@ -465,7 +514,7 @@ class _MembersState extends State<Members> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111', '/api/v1/groups/$groupId/members'),
+        Uri.https(baseUrl, '/api/v1/groups/$groupId/members'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -481,7 +530,7 @@ class _MembersState extends State<Members> {
           phoneNumber: member['phoneNumber'],
           proxy: member['proxy'],
           userId: member['userId'],
-          fullName: member['fullName'],
+          fullName: utf8.decode(member['fullName'].runes.toList()),
           gender: member['gender'],
           loanBalance: member['loanBalance'],
           paid: member['paid'],
@@ -503,6 +552,9 @@ class _MembersState extends State<Members> {
         loading = false;
       });
     } catch (e) {
+      setState(() {
+        loading = false;
+      });
       print(e.toString());
       var message =
           'Something went wrong. Please check your internet connection.';
@@ -538,7 +590,8 @@ class _MembersState extends State<Members> {
                 validator: _validateField,
                 controller: fullNameController,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(color: Color(0xFFF89520)),
@@ -558,7 +611,8 @@ class _MembersState extends State<Members> {
               child: DropdownButtonFormField<bool>(
                 value: selectedProxy,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                  contentPadding:
+                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
                   labelText: "Proxy enabled *",
                   hintText: "yes / no",
                   labelStyle: GoogleFonts.poppins(
@@ -691,7 +745,7 @@ class _MembersState extends State<Members> {
                           var accessToken = prefs.getStringList("_keyUser");
                           final String authToken = accessToken![0];
                           var response = await http.delete(
-                            Uri.http("10.1.177.121:8111",
+                            Uri.https(baseUrl,
                                 "/api/v1/groups/delete-member/${allMember.userId}"),
                             headers: <String, String>{
                               'Content-Type': 'application/json; charset=UTF-8',
@@ -781,7 +835,7 @@ class _MembersState extends State<Members> {
                         var accessToken = prefs.getStringList("_keyUser");
                         final String authToken = accessToken![0];
                         var response = await http.put(
-                          Uri.http("10.1.177.121:8111",
+                          Uri.https(baseUrl,
                               "/api/v1/groups/edit-member/${allMember.userId}"),
                           headers: <String, String>{
                             'Content-Type': 'application/json; charset=UTF-8',
@@ -799,6 +853,7 @@ class _MembersState extends State<Members> {
                           Future.delayed(const Duration(milliseconds: 100), () {
                             Fluttertoast.showToast(msg: message, fontSize: 18);
                           });
+                          fetchMembers();
                           Navigator.of(context)
                               .pop(); // Close the dialog when the user presses the button
                         } else if (response.statusCode != 200) {

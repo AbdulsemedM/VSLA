@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:http/http.dart' as http;
+import 'package:vsla/utils/api_config.dart';
 
 class Transaction extends StatefulWidget {
   const Transaction({super.key});
@@ -719,8 +720,7 @@ class _TransactionState extends State<Transaction> {
       final String groupId = accessToken[2];
 
       final response = await http.get(
-        Uri.http('10.1.177.121:8111',
-            '/api/v1/Transactions/getAllTransactions/$groupId'),
+        Uri.https(baseUrl, '/api/v1/Transactions/getAllTransactions/$groupId'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',

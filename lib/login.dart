@@ -10,6 +10,8 @@ import 'package:vsla/Pages/home1.dart';
 import 'package:vsla/createGroup.dart';
 import "package:http/http.dart" as http;
 import 'package:vsla/signup.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:vsla/utils/role.dart';
 // import 'package:vsla/utils/simplePreferences.dart';
 
 class Login extends StatefulWidget {
@@ -55,7 +57,7 @@ class _LoginState extends State<Login> {
       try {
         final response = await http
             .post(
-              Uri.http('10.1.177.121:8111', '/login'),
+              Uri.https(baseUrl, '/login'),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
@@ -76,10 +78,12 @@ class _LoginState extends State<Login> {
             Map<String, dynamic> data = dataList.first;
             String accessToken = data['access_token'];
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+            print(decodedToken['role'][0]);
+            String role = decodedToken['role'][0];
             dynamic subVal = decodedToken['sub']; // Access 'sub' field
             dynamic hasGroup = decodedToken['has-group'];
             dynamic groupID = decodedToken['groupId'];
-            dynamic orgId = decodedToken['orgId'];
+            dynamic orgId = decodedToken['org_id'];
             if (hasGroup == "No") {
               setState(() {
                 registered = false;
@@ -90,32 +94,29 @@ class _LoginState extends State<Login> {
               });
             }
             if (groupID != null) {
-              print(decodedToken);
               groupId = groupID.toString();
               String sub = subVal.toString();
               List<String> newUser = [
                 accessToken,
                 sub,
                 groupId,
-                orgId.toString()
+                orgId.toString(),
+                role
               ];
+              GlobalStrings.setGlobalString(role);
+              print(GlobalStrings.getGlobalString());
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
-
               prefs.setStringList("_keyUser", newUser);
             } else {
               print(decodedToken);
               String sub = subVal.toString();
-              List<String> newUser = [accessToken, sub, orgId.toString()];
+              List<String> newUser = [accessToken, sub, orgId.toString(), role];
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 
               prefs.setStringList("_keyUser", newUser);
             }
-            // List<dynamic> roles = decodedToken['roles']; // Access 'roles' field
-            // String firstRole = roles[0];
-            // dynamic expVal = decodedToken['exp']; // Access 'exp' field
-            // String exp = expVal.toString();
           } else {
             // print('No data found in the response.');
           }
@@ -365,60 +366,60 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                    Center(
-                      child: Text(
-                        "or sign in with",
-                        style: GoogleFonts.poppins(
-                            color: Colors.grey[500], fontSize: 15),
-                      ),
-                    ),
+                    // Center(
+                    //   child: Text(
+                    //     "or sign in with",
+                    //     style: GoogleFonts.poppins(
+                    //         color: Colors.grey[500], fontSize: 15),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Image(
-                        image: AssetImage(
-                      "assets/images/google.png",
-                    )),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Image(
-                        fit: BoxFit.contain,
-                        height: 60,
-                        width: 50,
-                        image: AssetImage(
-                          "assets/images/facebook.png",
-                        )),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    width: MediaQuery.of(context).size.width * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: const Image(
-                        image: AssetImage(
-                      "assets/images/twitter.png",
-                    )),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //   children: [
+              //     Container(
+              //       height: MediaQuery.of(context).size.height * 0.06,
+              //       width: MediaQuery.of(context).size.width * 0.15,
+              //       decoration: BoxDecoration(
+              //           color: Colors.grey[200],
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: const Image(
+              //           image: AssetImage(
+              //         "assets/images/google.png",
+              //       )),
+              //     ),
+              //     Container(
+              //       height: MediaQuery.of(context).size.height * 0.06,
+              //       width: MediaQuery.of(context).size.width * 0.15,
+              //       decoration: BoxDecoration(
+              //           color: Colors.grey[200],
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: const Image(
+              //           fit: BoxFit.contain,
+              //           height: 60,
+              //           width: 50,
+              //           image: AssetImage(
+              //             "assets/images/facebook.png",
+              //           )),
+              //     ),
+              //     Container(
+              //       height: MediaQuery.of(context).size.height * 0.06,
+              //       width: MediaQuery.of(context).size.width * 0.15,
+              //       decoration: BoxDecoration(
+              //           color: Colors.grey[200],
+              //           borderRadius: BorderRadius.circular(10)),
+              //       child: const Image(
+              //           image: AssetImage(
+              //         "assets/images/twitter.png",
+              //       )),
+              //     ),
+              //   ],
+              // ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
               ),
@@ -439,7 +440,9 @@ class _LoginState extends State<Login> {
                     TextSpan(
                         text: " SIGN UP ",
                         style: GoogleFonts.poppins(
-                            fontSize: 15, color: Colors.orange))
+                            fontWeight: FontWeight.w600,
+                            fontSize: 25,
+                            color: Colors.orange))
                   ])),
                 ),
               ),
