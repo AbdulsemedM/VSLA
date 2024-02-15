@@ -534,7 +534,7 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Interest Rate",
+          labelText: "Interest Rate* (%)",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),

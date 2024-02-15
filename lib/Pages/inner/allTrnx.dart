@@ -123,13 +123,13 @@ class _AllTrnxState extends State<AllTrnx> {
                                   fontSize: screenWidth * 0.045,
                                   fontWeight: FontWeight.bold),
                             ),
-                            GestureDetector(
-                                onTap: () {
-                                  widget.payment == "roundPayment"
-                                      ? fetchMembersRound()
-                                      : fetchMembersSocial();
-                                },
-                                child: const Icon(Icons.refresh, size: 25)),
+                            // GestureDetector(
+                            //     onTap: () {
+                            //       widget.payment == "roundPayment"
+                            //           ? fetchMembersRound()
+                            //           : fetchMembersSocial();
+                            //     },
+                            //     child: const Icon(Icons.refresh, size: 25)),
                             Text(
                               allMembers.length.toString(),
                               style: GoogleFonts.poppins(
@@ -598,6 +598,9 @@ class _AllTrnxState extends State<AllTrnx> {
                                   ),
                                   TextButton(
                                     onPressed: () {
+                                      widget.payment == "roundPayment"
+                                          ? fetchMembersRound()
+                                          : fetchMembersSocial();
                                       Navigator.of(context)
                                           .pop(true); // User confirms deletion
                                     },
@@ -697,10 +700,13 @@ class _AllTrnxState extends State<AllTrnx> {
                             }
                           }
                         },
-                        child: Text(
-                          'Add',
-                          style: GoogleFonts.poppins(color: Colors.orange),
-                        ),
+                        child: loading1
+                            ? CircularProgressIndicator()
+                            : Text(
+                                'Add',
+                                style:
+                                    GoogleFonts.poppins(color: Colors.orange),
+                              ),
                       ),
               ],
             ),

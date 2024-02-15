@@ -53,7 +53,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController loanAmountController = new TextEditingController();
   String? loanDescController;
-  TextEditingController loanInterestController = new TextEditingController();
+  // TextEditingController loanInterestController = new TextEditingController();
   TextEditingController repaymentPlanController = new TextEditingController();
   late String selectedPlan;
   List<MemberData> allMembers = [];
@@ -111,11 +111,6 @@ class _ApplyLoanState extends State<ApplyLoan> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
-    } else if (loanInterestController.text == "") {
-      const message = 'please enter an interest amount';
-      Future.delayed(const Duration(milliseconds: 100), () {
-        Fluttertoast.showToast(msg: message, fontSize: 18);
-      });
     } else if (loanDescController == null) {
       const message = 'Please enter a description';
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -135,7 +130,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
       final String authToken = accessToken![0];
       final body = {
         "amount": loanAmountController.text,
-        "interest": double.parse(loanInterestController.text) / 100,
+        // "interest": double.parse(loanInterestController.text) / 100,
         "description": loanDescController.toString(),
         "days": int.parse(selectedPlan)
       };
@@ -156,7 +151,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
             loading = false;
             loanAmountController.clear();
             loanDescController = "";
-            loanInterestController.clear();
+            // loanInterestController.clear();
             // selectedMember = "";
             // selectedPlan = "";
           });
@@ -277,29 +272,29 @@ class _ApplyLoanState extends State<ApplyLoan> {
             )),
       ),
     );
-    final loanInterest = Padding(
-      padding: const EdgeInsets.all(16),
-      child: TextFormField(
-        keyboardType: TextInputType.number,
-        validator: _validateField,
-        controller: loanInterestController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
-            borderSide: BorderSide(color: Color(0xFFF89520)),
-          ),
-          labelText: "Loan Interest % *",
-          labelStyle: GoogleFonts.poppins(
-            fontSize: 14,
-          ),
-        ),
-      ),
-    );
+    // final loanInterest = Padding(
+    //   padding: const EdgeInsets.all(16),
+    //   child: TextFormField(
+    //     keyboardType: TextInputType.number,
+    //     validator: _validateField,
+    //     controller: loanInterestController,
+    //     decoration: InputDecoration(
+    //       contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+    //       enabledBorder: OutlineInputBorder(
+    //         borderRadius: BorderRadius.circular(10.0),
+    //         borderSide: BorderSide(color: Color(0xFFF89520)),
+    //       ),
+    //       focusedBorder: OutlineInputBorder(
+    //         borderRadius: BorderRadius.circular(10.0),
+    //         borderSide: BorderSide(color: Color(0xFFF89520)),
+    //       ),
+    //       labelText: "Loan Interest % *",
+    //       labelStyle: GoogleFonts.poppins(
+    //         fontSize: 14,
+    //       ),
+    //     ),
+    //   ),
+    // );
     final repaymentPlan = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
@@ -422,79 +417,95 @@ class _ApplyLoanState extends State<ApplyLoan> {
             )),
       ),
     );
-    return Scaffold(
-      // backgroundColor: Colors.black,
-      body: SafeArea(
-          child: SingleChildScrollView(
-        child: Form(
-            key: _formKey,
-            child: Column(children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return WillPopScope(
+      onWillPop: () => _onBackButtonPressed(context),
+      child: Scaffold(
+        // backgroundColor: Colors.black,
+        body: SafeArea(
+            child: SingleChildScrollView(
+          child: Form(
+              key: _formKey,
+              child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context, true);
+                          },
+                          child: const Icon(Icons.arrow_back_ios_new_sharp)),
+                      Image(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          image: const AssetImage("assets/images/vsla.png"))
+                    ],
+                  ),
+                ),
+                fullName,
+                Row(
                   children: [
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(Icons.arrow_back_ios_new_sharp)),
-                    Image(
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        image: const AssetImage("assets/images/vsla.png"))
+                    Expanded(
+                      child: loanAmount,
+                    ),
+                    // const SizedBox(
+                    //   width:
+                    //       1.0, // Adjust this value as needed for the gap between the widgets
+                    // ),
+                    // Expanded(
+                    //   child: loanInterest,
+                    // ),
                   ],
                 ),
-              ),
-              fullName,
-              Row(
-                children: [
-                  Expanded(
-                    child: loanAmount,
-                  ),
-                  const SizedBox(
-                    width:
-                        1.0, // Adjust this value as needed for the gap between the widgets
-                  ),
-                  Expanded(
-                    child: loanInterest,
-                  ),
-                ],
-              ),
-              loanDescription,
-              Row(
-                children: [
-                  Expanded(
-                    child: repaymentPlan,
-                  ),
-                  const SizedBox(
-                    width:
-                        1.0, // Adjust this value as needed for the gap between the widgets
-                  ),
-                  Expanded(
-                    child: Container(),
-                  ),
-                ],
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.068,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          side: BorderSide.none,
-                          shape: const StadiumBorder()),
-                      onPressed: () async {
-                        await apply();
-                      },
-                      child: Text(
-                        "Apply",
-                        style: GoogleFonts.poppins(
-                            color: Colors.white, fontWeight: FontWeight.w700),
-                      ))),
-            ])),
-      )),
+                loanDescription,
+                Row(
+                  children: [
+                    Expanded(
+                      child: repaymentPlan,
+                    ),
+                    const SizedBox(
+                      width:
+                          1.0, // Adjust this value as needed for the gap between the widgets
+                    ),
+                    Expanded(
+                      child: Container(),
+                    ),
+                  ],
+                ),
+                loading
+                    ? CircularProgressIndicator(
+                        color: Colors.orange,
+                      )
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.068,
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.orange,
+                                side: BorderSide.none,
+                                shape: const StadiumBorder()),
+                            onPressed: () async {
+                              await apply();
+                            },
+                            child: Text(
+                              "Apply",
+                              style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700),
+                            ))),
+              ])),
+        )),
+      ),
     );
+  }
+
+  Future<bool> _onBackButtonPressed(BuildContext context) async {
+    // Attempt to pop the current route
+    Navigator.pop(context, true);
+
+    // Return true if the route was popped, or false otherwise
+    return true;
   }
 
   Future<void> fetchMembersRound() async {

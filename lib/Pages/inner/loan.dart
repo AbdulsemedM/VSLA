@@ -272,7 +272,7 @@ class _LoanState extends State<Loan> {
                             height: MediaQuery.of(context).size.height * 0.02,
                           ),
                           Text(
-                            "Lost ${loading ? 0 : lost[0]}%",
+                            "Rejected ${loading ? 0 : lost[0]}%",
                             style: GoogleFonts.poppins(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
@@ -318,12 +318,16 @@ class _LoanState extends State<Loan> {
                                 backgroundColor: Colors.orange,
                                 side: BorderSide.none,
                                 shape: const StadiumBorder()),
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              var result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const ApplyLoan()),
                               );
+                              if (result != null) {
+                                print('popper');
+                                fetchLoans();
+                              }
                             },
                             child: Text(
                               "Apply for Loan",
@@ -411,14 +415,14 @@ class _LoanState extends State<Loan> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                        child: GestureDetector(
-                            onTap: () {
-                              fetchLoans();
-                            },
-                            child: const Icon(Icons.refresh)),
-                      )
+                      // Padding(
+                      //   padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                      //   child: GestureDetector(
+                      //       onTap: () {
+                      //         fetchLoans();
+                      //       },
+                      //       child: const Icon(Icons.refresh)),
+                      // )
                     ],
                   ),
                   loading

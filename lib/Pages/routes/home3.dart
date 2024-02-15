@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/allTrnx.dart';
+import 'package:vsla/Pages/inner/all_payments/payments.dart';
 import 'package:vsla/Pages/inner/loan.dart';
 import 'package:vsla/Pages/inner/meetings.dart';
 import 'package:vsla/Pages/inner/transactions.dart';
@@ -130,7 +131,7 @@ class _Home3State extends State<Home3> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total Amount",
+                                        "Working Balance",
                                         style: GoogleFonts.poppins(
                                             fontSize: screenWidth * 0.045,
                                             fontWeight: FontWeight.w600),
@@ -579,7 +580,11 @@ class _Home3State extends State<Home3> {
                                         child: GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              trnx = true;
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Payments()));
                                             });
                                           },
                                           child: Column(
@@ -786,17 +791,17 @@ class _Home3State extends State<Home3> {
                                           fontSize: screenWidth * 0.05,
                                           fontWeight: FontWeight.w700),
                                     ),
-                                    Text(
-                                      "See All",
-                                      style: GoogleFonts.poppins(
-                                          fontSize: screenWidth * 0.04,
-                                          fontWeight: FontWeight.w600),
-                                    ),
+                                    // Text(
+                                    //   "See All",
+                                    //   style: GoogleFonts.poppins(
+                                    //       fontSize: screenWidth * 0.04,
+                                    //       fontWeight: FontWeight.w600),
+                                    // ),
                                   ],
                                 ),
                                 SizedBox(
                                   height:
-                                      MediaQuery.of(context).size.height * 0.2,
+                                      MediaQuery.of(context).size.height * 0.3,
                                   width: MediaQuery.of(context).size.width * 1,
                                   child: ListView.builder(
                                       scrollDirection: Axis.vertical,
