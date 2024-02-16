@@ -24,7 +24,7 @@ class _MeetingsState extends State<Meetings>
   List<MeetingTypeData> meetingTypes = [];
   List<MeetingIntevalData> meetingIntervals = [];
   TextEditingController currentRound = new TextEditingController();
-  TextEditingController meetingReason = new TextEditingController();
+  // TextEditingController meetingReason = new TextEditingController();
   String? meeetingType;
   String? meetingInterval;
   String? meeetingTypeId;
@@ -199,39 +199,39 @@ class _MeetingsState extends State<Meetings>
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: TextFormField(
-                                        validator: (value) {
-                                          if (value == null) {
-                                            return null;
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        controller: meetingReason,
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.fromLTRB(
-                                              12.0, 10.0, 12.0, 10.0),
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: BorderSide(
-                                                color: Color(0xFFF89520)),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: BorderSide(
-                                                color: Color(0xFFF89520)),
-                                          ),
-                                          labelText: "Meeting Reason",
-                                          labelStyle: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    // Padding(
+                                    //   padding: const EdgeInsets.all(8),
+                                    //   child: TextFormField(
+                                    //     validator: (value) {
+                                    //       if (value == null) {
+                                    //         return null;
+                                    //       } else {
+                                    //         return null;
+                                    //       }
+                                    //     },
+                                    //     controller: meetingReason,
+                                    //     decoration: InputDecoration(
+                                    //       contentPadding: EdgeInsets.fromLTRB(
+                                    //           12.0, 10.0, 12.0, 10.0),
+                                    //       enabledBorder: OutlineInputBorder(
+                                    //         borderRadius:
+                                    //             BorderRadius.circular(10.0),
+                                    //         borderSide: BorderSide(
+                                    //             color: Color(0xFFF89520)),
+                                    //       ),
+                                    //       focusedBorder: OutlineInputBorder(
+                                    //         borderRadius:
+                                    //             BorderRadius.circular(10.0),
+                                    //         borderSide: BorderSide(
+                                    //             color: Color(0xFFF89520)),
+                                    //       ),
+                                    //       labelText: "Meeting Reason",
+                                    //       labelStyle: GoogleFonts.poppins(
+                                    //         fontSize: 14,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: SizedBox(
@@ -463,7 +463,7 @@ class _MeetingsState extends State<Meetings>
         "intervalDays": intervalDays,
         "meetingType": meeetingType,
         "meetingTypeId": meeetingTypeId,
-        "meetingReason": meetingReason.text,
+        // "meetingReason": meetingReason.text,
         "group": {"groupId": groupId}
       };
       print("mybodyyyyy");

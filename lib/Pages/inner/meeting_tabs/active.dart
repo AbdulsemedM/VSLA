@@ -21,7 +21,7 @@ class ActiveMeeting extends StatefulWidget {
 class MeetingData {
   final String meetingId;
   final String currentRound;
-  final String meetingReason;
+  // final String meetingReason;
   final String meetingType;
   final String meetingTypeId;
   final String intervalDays;
@@ -32,7 +32,7 @@ class MeetingData {
   MeetingData(
       {required this.meetingId,
       required this.currentRound,
-      required this.meetingReason,
+      // required this.meetingReason,
       required this.meetingType,
       required this.meetingTypeId,
       required this.intervalDays,
@@ -65,7 +65,7 @@ class MeetingIntevalData {
 
 class _ActiveMeetingState extends State<ActiveMeeting> {
   TextEditingController currentRound = new TextEditingController();
-  TextEditingController meetingReason = new TextEditingController();
+  // TextEditingController meetingReason = new TextEditingController();
   String? meeetingType;
   String? meetingInterval;
   String? meeetingTypeId;
@@ -143,9 +143,15 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            newMeeting[index]
-                                                .meetingReason
-                                                .toString(),
+                                            '${truncateText(
+                                              newMeeting[index]
+                                                  .intervalDays
+                                                  .toString(),
+                                              20, // Set the maximum length you want before truncating
+                                            )} Days',
+                                            // newMeeting[index]
+                                            //     .intervalDays
+                                            //     .toString(),
                                             style: GoogleFonts.roboto(
                                                 color: Colors.black),
                                           ),
@@ -191,6 +197,14 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
           );
   }
 
+  String truncateText(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return text.substring(0, maxLength) + '...';
+    }
+  }
+
   void editModal(MeetingData allMeeting) {
     String? _validateField(String? value) {
       if (value == null || value.isEmpty) {
@@ -200,7 +214,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
     }
 
     currentRound.text = allMeeting.currentRound;
-    meetingReason.text = allMeeting.meetingReason;
+    // meetingReason.text = allMeeting.meetingReason;
     nextMeetingDate = DateFormat("MMMM d, y")
         .format(DateTime.parse(allMeeting.nextMeetingDate));
     print(allMeeting.meetingIntervalId);
@@ -279,36 +293,36 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: TextFormField(
-                        // initialValue: allMeeting.meetingReason,
-                        validator: (value) {
-                          if (value == null) {
-                            return null;
-                          } else {
-                            return null;
-                          }
-                        },
-                        controller: meetingReason,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFFF89520)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFFF89520)),
-                          ),
-                          labelText: "Meeting Reason",
-                          labelStyle: GoogleFonts.poppins(
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8),
+                    //   child: TextFormField(
+                    //     // initialValue: allMeeting.meetingReason,
+                    //     validator: (value) {
+                    //       if (value == null) {
+                    //         return null;
+                    //       } else {
+                    //         return null;
+                    //       }
+                    //     },
+                    //     controller: meetingReason,
+                    //     decoration: InputDecoration(
+                    //       contentPadding:
+                    //           EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                    //       enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //         borderSide: BorderSide(color: Color(0xFFF89520)),
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //         borderSide: BorderSide(color: Color(0xFFF89520)),
+                    //       ),
+                    //       labelText: "Meeting Reason",
+                    //       labelStyle: GoogleFonts.poppins(
+                    //         fontSize: 14,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
@@ -517,7 +531,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
           "intervalDays": int.parse(intervalDays!),
           "meetingType": meeetingType,
           "meetingTypeId": meeetingTypeId,
-          "meetingReason": meetingReason.text,
+          // "meetingReason": meetingReason.text,
           "group": {"groupId": groupId}
         };
         print("mybodyyyyy");
@@ -741,7 +755,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
           newMeeting.add(MeetingData(
               meetingId: meeting['meetingId'],
               currentRound: meeting['currentRound'],
-              meetingReason: meeting['meetingReason'],
+              // meetingReason: meeting['meetingReason'],
               meetingType: meeting['meetingType'],
               meetingTypeId: meeting['meetingTypeId'],
               intervalDays: meeting['intervalDays'],

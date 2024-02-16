@@ -447,9 +447,11 @@ class _Home3State extends State<Home3> {
                                               0, 7, 0, 0),
                                           child: GestureDetector(
                                             onTap: () {
-                                              setState(() {
-                                                members = true;
-                                              });
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: ((context) =>
+                                                          Members())));
                                             },
                                             child: Column(
                                               children: [
@@ -468,9 +470,11 @@ class _Home3State extends State<Home3> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              loan = true;
-                                            });
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Transaction()));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(
@@ -492,9 +496,14 @@ class _Home3State extends State<Home3> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              transaction = true;
-                                            });
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Loan()));
+                                            // setState(() {
+                                            //   transaction = true;
+                                            // });
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(
@@ -539,14 +548,14 @@ class _Home3State extends State<Home3> {
                                         // color: Colors.amber,
                                         child: GestureDetector(
                                           onTap: () {
-                                            setState(() {
-                                              awareness = true;
-                                            });
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             const Awarness()));
+                                            // setState(() {
+                                            //   awareness = true;
+                                            // });
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Awarness()));
                                           },
                                           child: Column(
                                             children: [
