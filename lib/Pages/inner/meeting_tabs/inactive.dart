@@ -20,7 +20,7 @@ class InactiveMeeting extends StatefulWidget {
 
 class _InactiveMeetingState extends State<InactiveMeeting> {
   TextEditingController currentRound = new TextEditingController();
-  TextEditingController meetingReason = new TextEditingController();
+  // TextEditingController meetingReason = new TextEditingController();
   String? meeetingType;
   String? meetingInterval;
   String? meeetingTypeId;
@@ -102,12 +102,12 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            truncateText(
+                                            '${truncateText(
                                               newMeeting[index]
-                                                  .meetingReason
+                                                  .intervalDays
                                                   .toString(),
                                               20, // Set the maximum length you want before truncating
-                                            ),
+                                            )} Days',
                                             style: GoogleFonts.roboto(
                                                 color: Colors.black),
                                           ),
@@ -204,7 +204,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
           newMeeting.add(MeetingData(
               meetingId: meeting['meetingId'],
               currentRound: meeting['currentRound'],
-              meetingReason: meeting['meetingReason'],
+              // meetingReason: meeting['meetingReason'],
               meetingType: meeting['meetingType'],
               meetingTypeId: meeting['meetingTypeId'],
               intervalDays: meeting['intervalDays'],
@@ -329,7 +329,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
     }
 
     currentRound.text = allMeeting.currentRound;
-    meetingReason.text = allMeeting.meetingReason;
+    // meetingReason.text = allMeeting.meetingReason;
     nextMeetingDate = DateFormat("MMMM d, y")
         .format(DateTime.parse(allMeeting.nextMeetingDate));
     meetingIntervalId = allMeeting.meetingIntervalId;
@@ -407,36 +407,36 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: TextFormField(
-                        // initialValue: allMeeting.meetingReason,
-                        validator: (value) {
-                          if (value == null) {
-                            return null;
-                          } else {
-                            return null;
-                          }
-                        },
-                        controller: meetingReason,
-                        decoration: InputDecoration(
-                          contentPadding:
-                              EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFFF89520)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFFF89520)),
-                          ),
-                          labelText: "Meeting Reason",
-                          labelStyle: GoogleFonts.poppins(
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8),
+                    //   child: TextFormField(
+                    //     // initialValue: allMeeting.meetingReason,
+                    //     validator: (value) {
+                    //       if (value == null) {
+                    //         return null;
+                    //       } else {
+                    //         return null;
+                    //       }
+                    //     },
+                    //     controller: meetingReason,
+                    //     decoration: InputDecoration(
+                    //       contentPadding:
+                    //           EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                    //       enabledBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //         borderSide: BorderSide(color: Color(0xFFF89520)),
+                    //       ),
+                    //       focusedBorder: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(10.0),
+                    //         borderSide: BorderSide(color: Color(0xFFF89520)),
+                    //       ),
+                    //       labelText: "Meeting Reason",
+                    //       labelStyle: GoogleFonts.poppins(
+                    //         fontSize: 14,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: SizedBox(
@@ -643,7 +643,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
         "intervalDays": intervalDays,
         "meetingType": meeetingType,
         "meetingTypeId": meeetingTypeId,
-        "meetingReason": meetingReason.text,
+        // "meetingReason": meetingReason.text,
         "group": {"groupId": groupId}
       };
       print("mybodyyyyy");

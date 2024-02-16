@@ -90,463 +90,229 @@ class _AwarnessState extends State<Awarness> {
 
   @override
   Widget build(BuildContext context) {
-    return awareness == false
-        ? const Home3()
-        : WillPopScope(
-            onWillPop: () async {
-              if (awareness) {
-                // Set the new state outside onWillPop
-                setState(() {
-                  awareness = false;
-                });
-                // Allow back navigation
-                return false;
-              } else {
-                // Set the new state outside onWillPop
-                awareness = true;
-                // Prevent back navigation
-                return false;
-              }
-            },
-            child: SingleChildScrollView(
-              child: Column(
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Icon(Icons.arrow_back_ios_new_sharp)),
+                    Image(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        image: const AssetImage("assets/images/vsla.png"))
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: TextField(
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Color(0xFFF89520), // Background color
+                    contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.0), // Adjust padding as needed
+                    hintText: "Health, Tips & Tricks...",
+                    hintStyle: GoogleFonts.poppins(
+                      fontSize: 12,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ), // Text color
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(
+                          7), // Border radius for curvature
+                    ),
+                    prefixIcon:
+                        Icon(Icons.search, color: Colors.black), // Search icon
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                awareness = false;
-                              });
-                            },
-                            child: const Icon(Icons.arrow_back_ios_new_sharp)),
-                        Image(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            image: const AssetImage("assets/images/vsla.png"))
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFF89520), // Background color
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0), // Adjust padding as needed
-                        hintText: "Health, Tips & Tricks...",
-                        hintStyle: GoogleFonts.poppins(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ), // Text color
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                              7), // Border radius for curvature
-                        ),
-                        prefixIcon: Icon(Icons.search,
-                            color: Colors.black), // Search icon
+                    padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
+                    child: Text(
+                      "Be aware of...",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 8, 0, 8),
-                        child: Text(
-                          "Be aware of...",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
-                  // CarouselSlider(
-                  //     items: [
-                  //       Column(
-                  //         children: [
-                  //           Container(
-                  //             decoration: BoxDecoration(
-                  //               color: Color(0xFFF89520), // Background color
-                  //               borderRadius: BorderRadius.circular(
-                  //                   20), // Border radius for the curved effect
-                  //             ),
-                  //             child: GestureDetector(
-                  //               onTap: () {
-                  //                 showDialog(
-                  //                   context: context,
-                  //                   builder: (context) {
-                  //                     return AlertDialog(
-                  //                       content: Container(
-                  //                         width: 300,
-                  //                         child: YoutubePlayer(
-                  //                           controller: YoutubePlayerController(
-                  //                             initialVideoId: 'v=IcFW2abCl4M',
-                  //                             flags: YoutubePlayerFlags(
-                  //                               autoPlay: true,
-                  //                             ),
-                  //                           ),
-                  //                           showVideoProgressIndicator: true,
-                  //                         ),
-                  //                       ),
-                  //                     );
-                  //                   },
-                  //                 );
-                  //               },
-                  //               child: Column(
-                  //                 children: <Widget>[
-                  //                   Padding(
-                  //                       padding: const EdgeInsets.all(8.0),
-                  //                       child: ClipRRect(
-                  //                         borderRadius: BorderRadius.circular(
-                  //                             20), // Adjust the radius as needed
-                  //                         child: Image.asset(
-                  //                           'assets/images/Locust.jpg',
-                  //                           fit: BoxFit.cover,
-                  //                           height: 150,
-                  //                           width: 300,
-                  //                         ),
-                  //                       )),
-                  //                   Padding(
-                  //                     padding: const EdgeInsets.all(8.0),
-                  //                     child: Row(
-                  //                       children: [
-                  //                         Expanded(
-                  //                           child: Text(
-                  //                             'How to effectively control desert Locust swarms',
-                  //                             style: GoogleFonts.poppins(
-                  //                                 fontSize: 14,
-                  //                                 color: Colors.white),
-                  //                           ),
-                  //                         ),
-                  //                         // const SizedBox(
-                  //                         //   width:
-                  //                         //       0.1, // Adjust this value as needed for the gap between the widgets
-                  //                         // ),
-                  //                         Expanded(
-                  //                             child: Icon(
-                  //                           Icons.play_circle_filled_rounded,
-                  //                           color: Colors.black,
-                  //                         ))
-                  //                       ],
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       Column(
-                  //         children: [
-                  //           Container(
-                  //             decoration: BoxDecoration(
-                  //               color: Color(0xFFF89520), // Background color
-                  //               borderRadius: BorderRadius.circular(
-                  //                   20), // Border radius for the curved effect
-                  //             ),
-                  //             child: Column(
-                  //               children: <Widget>[
-                  //                 Padding(
-                  //                     padding: const EdgeInsets.all(8.0),
-                  //                     child: ClipRRect(
-                  //                       borderRadius: BorderRadius.circular(
-                  //                           20), // Adjust the radius as needed
-                  //                       child: Image.asset(
-                  //                         'assets/images/covid-19.jpg',
-                  //                         fit: BoxFit.cover,
-                  //                         height: 150,
-                  //                         width: 300,
-                  //                       ),
-                  //                     )),
-                  //                 Padding(
-                  //                   padding: const EdgeInsets.all(8.0),
-                  //                   child: Row(
-                  //                     children: [
-                  //                       Expanded(
-                  //                         child: Text(
-                  //                           'How to effectively control desert Locust swarms',
-                  //                           style: GoogleFonts.poppins(
-                  //                               fontSize: 14,
-                  //                               color: Colors.white),
-                  //                         ),
-                  //                       ),
-                  //                       // const SizedBox(
-                  //                       //   width:
-                  //                       //       0.1, // Adjust this value as needed for the gap between the widgets
-                  //                       // ),
-                  //                       Expanded(
-                  //                           child: Icon(
-                  //                         Icons.play_circle_filled_rounded,
-                  //                         color: Colors.black,
-                  //                       ))
-                  //                     ],
-                  //                   ),
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       )
-                  //     ],
-                  //     options: CarouselOptions(
-                  //       height: 305,
-                  //       aspectRatio: 16 / 9,
-                  //       viewportFraction: 0.8,
-                  //       initialPage: 0,
-                  //       enableInfiniteScroll: true,
-                  //       reverse: false,
-                  //       padEnds: true,
-                  //       autoPlay: true,
-                  //       autoPlayInterval: Duration(seconds: 3),
-                  //       autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  //       autoPlayCurve: Curves.fastOutSlowIn,
-                  //       enlargeCenterPage: true,
-                  //       enlargeFactor: 0.3,
-                  //       scrollDirection: Axis.horizontal,
-                  //     )),
-                  loading
-                      ? const CircularProgressIndicator()
-                      : CarouselSlider.builder(
-                          itemCount: awarenesses
-                              .length, // Replace yourItemList with the list of items
-                          options: CarouselOptions(
-                            height: MediaQuery.of(context).size.height * 0.35,
-                            aspectRatio: 16 / 9,
-                            viewportFraction: 0.8,
-                            initialPage: 0,
-                            enableInfiniteScroll: true,
-                            reverse: false,
-                            padEnds: true,
-                            autoPlay: false,
-                            autoPlayInterval: Duration(seconds: 3),
-                            autoPlayAnimationDuration:
-                                Duration(milliseconds: 800),
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            enlargeCenterPage: true,
-                            enlargeFactor: 0.3,
-                            scrollDirection: Axis.horizontal,
-                          ),
-                          itemBuilder:
-                              (BuildContext context, int index, int realIndex) {
-                            return Container(
-                              // Your item widget here
-                              decoration: BoxDecoration(
-                                color: Color(0xFFF89520),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  print(awarenesses[index].videoUrl);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => YoutubePlayerMy(
-                                                videoId:
-                                                    awarenesses[index].videoUrl,
-                                                ids: ids,
-                                              )));
-                                  // showDialog(
-                                  //   context: context,
-                                  //   builder: (context) {
-                                  //     return AlertDialog(
-                                  //       content: Container(
-                                  //         width: 300,
-                                  //         child: YoutubePlayer(
-                                  //           onReady: () {
-                                  //             _isPlayerReady = true;
-                                  //           },
-                                  //           controller: _controller,
-                                  //           showVideoProgressIndicator: true,
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  // );
-                                },
-                                child: Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          awarenesses[index]
-                                              .imageUrl, // Replace with your image path
-                                          fit: BoxFit.cover,
-                                          height: 150,
-                                          width: 300,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  awarenesses[index]
-                                                      .title, // Replace with your title
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Icon(
-                                                  Icons
-                                                      .play_circle_filled_rounded,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            awarenesses[index]
-                                                        .description
-                                                        .length >
-                                                    20
-                                                ? '${awarenesses[index].description.substring(0, 70)}...'
-                                                : awarenesses[index]
-                                                    .description,
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              color: Colors.white,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: Text(
-                          "All Videos",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.01,
-                  ),
-                  CarouselSlider(
-                      items: [
-                        Column(
-                          children: [
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          20), // Adjust the radius as needed
-                                      child: Image.asset(
-                                        'assets/images/livestock.jpg',
-                                        fit: BoxFit.cover,
-                                        height: 170,
-                                        width: 150,
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Expanded(
-                                child: Text(
-                              "Coffee shope tips...",
-                              style: GoogleFonts.poppins(
-                                  fontSize: 14, color: Color(0xFFF89520)),
-                            )),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          20), // Adjust the radius as needed
-                                      child: Image.asset(
-                                        'assets/images/business.jpg',
-                                        fit: BoxFit.cover,
-                                        height: 170,
-                                        width: 150,
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Expanded(
-                                child: Text(
-                              "Coffee shope tips...",
-                              style: GoogleFonts.poppins(
-                                  fontSize: 14, color: Color(0xFFF89520)),
-                            )),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Column(
-                              children: <Widget>[
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          20), // Adjust the radius as needed
-                                      child: Image.asset(
-                                        'assets/images/coffee.jpg',
-                                        fit: BoxFit.cover,
-                                        height: 170,
-                                        width: 150,
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            Expanded(
-                                child: Text(
-                              "Coffee shope tips...",
-                              style: GoogleFonts.poppins(
-                                  fontSize: 14, color: Color(0xFFF89520)),
-                            )),
-                          ],
-                        )
-                      ],
+                  )
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              // CarouselSlider(
+              //     items: [
+              //       Column(
+              //         children: [
+              //           Container(
+              //             decoration: BoxDecoration(
+              //               color: Color(0xFFF89520), // Background color
+              //               borderRadius: BorderRadius.circular(
+              //                   20), // Border radius for the curved effect
+              //             ),
+              //             child: GestureDetector(
+              //               onTap: () {
+              //                 showDialog(
+              //                   context: context,
+              //                   builder: (context) {
+              //                     return AlertDialog(
+              //                       content: Container(
+              //                         width: 300,
+              //                         child: YoutubePlayer(
+              //                           controller: YoutubePlayerController(
+              //                             initialVideoId: 'v=IcFW2abCl4M',
+              //                             flags: YoutubePlayerFlags(
+              //                               autoPlay: true,
+              //                             ),
+              //                           ),
+              //                           showVideoProgressIndicator: true,
+              //                         ),
+              //                       ),
+              //                     );
+              //                   },
+              //                 );
+              //               },
+              //               child: Column(
+              //                 children: <Widget>[
+              //                   Padding(
+              //                       padding: const EdgeInsets.all(8.0),
+              //                       child: ClipRRect(
+              //                         borderRadius: BorderRadius.circular(
+              //                             20), // Adjust the radius as needed
+              //                         child: Image.asset(
+              //                           'assets/images/Locust.jpg',
+              //                           fit: BoxFit.cover,
+              //                           height: 150,
+              //                           width: 300,
+              //                         ),
+              //                       )),
+              //                   Padding(
+              //                     padding: const EdgeInsets.all(8.0),
+              //                     child: Row(
+              //                       children: [
+              //                         Expanded(
+              //                           child: Text(
+              //                             'How to effectively control desert Locust swarms',
+              //                             style: GoogleFonts.poppins(
+              //                                 fontSize: 14,
+              //                                 color: Colors.white),
+              //                           ),
+              //                         ),
+              //                         // const SizedBox(
+              //                         //   width:
+              //                         //       0.1, // Adjust this value as needed for the gap between the widgets
+              //                         // ),
+              //                         Expanded(
+              //                             child: Icon(
+              //                           Icons.play_circle_filled_rounded,
+              //                           color: Colors.black,
+              //                         ))
+              //                       ],
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //       Column(
+              //         children: [
+              //           Container(
+              //             decoration: BoxDecoration(
+              //               color: Color(0xFFF89520), // Background color
+              //               borderRadius: BorderRadius.circular(
+              //                   20), // Border radius for the curved effect
+              //             ),
+              //             child: Column(
+              //               children: <Widget>[
+              //                 Padding(
+              //                     padding: const EdgeInsets.all(8.0),
+              //                     child: ClipRRect(
+              //                       borderRadius: BorderRadius.circular(
+              //                           20), // Adjust the radius as needed
+              //                       child: Image.asset(
+              //                         'assets/images/covid-19.jpg',
+              //                         fit: BoxFit.cover,
+              //                         height: 150,
+              //                         width: 300,
+              //                       ),
+              //                     )),
+              //                 Padding(
+              //                   padding: const EdgeInsets.all(8.0),
+              //                   child: Row(
+              //                     children: [
+              //                       Expanded(
+              //                         child: Text(
+              //                           'How to effectively control desert Locust swarms',
+              //                           style: GoogleFonts.poppins(
+              //                               fontSize: 14,
+              //                               color: Colors.white),
+              //                         ),
+              //                       ),
+              //                       // const SizedBox(
+              //                       //   width:
+              //                       //       0.1, // Adjust this value as needed for the gap between the widgets
+              //                       // ),
+              //                       Expanded(
+              //                           child: Icon(
+              //                         Icons.play_circle_filled_rounded,
+              //                         color: Colors.black,
+              //                       ))
+              //                     ],
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //         ],
+              //       )
+              //     ],
+              //     options: CarouselOptions(
+              //       height: 305,
+              //       aspectRatio: 16 / 9,
+              //       viewportFraction: 0.8,
+              //       initialPage: 0,
+              //       enableInfiniteScroll: true,
+              //       reverse: false,
+              //       padEnds: true,
+              //       autoPlay: true,
+              //       autoPlayInterval: Duration(seconds: 3),
+              //       autoPlayAnimationDuration: Duration(milliseconds: 800),
+              //       autoPlayCurve: Curves.fastOutSlowIn,
+              //       enlargeCenterPage: true,
+              //       enlargeFactor: 0.3,
+              //       scrollDirection: Axis.horizontal,
+              //     )),
+              loading
+                  ? const CircularProgressIndicator()
+                  : CarouselSlider.builder(
+                      itemCount: awarenesses
+                          .length, // Replace yourItemList with the list of items
                       options: CarouselOptions(
-                        height: 300,
+                        height: MediaQuery.of(context).size.height * 0.35,
                         aspectRatio: 16 / 9,
-                        viewportFraction: 0.4,
+                        viewportFraction: 0.8,
                         initialPage: 0,
                         enableInfiniteScroll: true,
                         reverse: false,
@@ -555,14 +321,226 @@ class _AwarnessState extends State<Awarness> {
                         autoPlayInterval: Duration(seconds: 3),
                         autoPlayAnimationDuration: Duration(milliseconds: 800),
                         autoPlayCurve: Curves.fastOutSlowIn,
-                        enlargeCenterPage: false,
+                        enlargeCenterPage: true,
                         enlargeFactor: 0.3,
                         scrollDirection: Axis.horizontal,
-                      )),
+                      ),
+                      itemBuilder:
+                          (BuildContext context, int index, int realIndex) {
+                        return Container(
+                          // Your item widget here
+                          decoration: BoxDecoration(
+                            color: Color(0xFFF89520),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              print(awarenesses[index].videoUrl);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => YoutubePlayerMy(
+                                            videoId:
+                                                awarenesses[index].videoUrl,
+                                            ids: ids,
+                                          )));
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) {
+                              //     return AlertDialog(
+                              //       content: Container(
+                              //         width: 300,
+                              //         child: YoutubePlayer(
+                              //           onReady: () {
+                              //             _isPlayerReady = true;
+                              //           },
+                              //           controller: _controller,
+                              //           showVideoProgressIndicator: true,
+                              //         ),
+                              //       ),
+                              //     );
+                              //   },
+                              // );
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.network(
+                                      awarenesses[index]
+                                          .imageUrl, // Replace with your image path
+                                      fit: BoxFit.cover,
+                                      height: 150,
+                                      width: 300,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              awarenesses[index]
+                                                  .title, // Replace with your title
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Icon(
+                                              Icons.play_circle_filled_rounded,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        awarenesses[index].description.length >
+                                                20
+                                            ? '${awarenesses[index].description.substring(0, 70)}...'
+                                            : awarenesses[index].description,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: Text(
+                      "All Videos",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
                 ],
               ),
-            ),
-          );
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.01,
+              ),
+              CarouselSlider(
+                  items: [
+                    Column(
+                      children: [
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      20), // Adjust the radius as needed
+                                  child: Image.asset(
+                                    'assets/images/livestock.jpg',
+                                    fit: BoxFit.cover,
+                                    height: 170,
+                                    width: 150,
+                                  ),
+                                )),
+                          ],
+                        ),
+                        Expanded(
+                            child: Text(
+                          "Coffee shope tips...",
+                          style: GoogleFonts.poppins(
+                              fontSize: 14, color: Color(0xFFF89520)),
+                        )),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      20), // Adjust the radius as needed
+                                  child: Image.asset(
+                                    'assets/images/business.jpg',
+                                    fit: BoxFit.cover,
+                                    height: 170,
+                                    width: 150,
+                                  ),
+                                )),
+                          ],
+                        ),
+                        Expanded(
+                            child: Text(
+                          "Coffee shope tips...",
+                          style: GoogleFonts.poppins(
+                              fontSize: 14, color: Color(0xFFF89520)),
+                        )),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      20), // Adjust the radius as needed
+                                  child: Image.asset(
+                                    'assets/images/coffee.jpg',
+                                    fit: BoxFit.cover,
+                                    height: 170,
+                                    width: 150,
+                                  ),
+                                )),
+                          ],
+                        ),
+                        Expanded(
+                            child: Text(
+                          "Coffee shope tips...",
+                          style: GoogleFonts.poppins(
+                              fontSize: 14, color: Color(0xFFF89520)),
+                        )),
+                      ],
+                    )
+                  ],
+                  options: CarouselOptions(
+                    height: 300,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.4,
+                    initialPage: 0,
+                    enableInfiniteScroll: true,
+                    reverse: false,
+                    padEnds: true,
+                    autoPlay: false,
+                    autoPlayInterval: Duration(seconds: 3),
+                    autoPlayAnimationDuration: Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: false,
+                    enlargeFactor: 0.3,
+                    scrollDirection: Axis.horizontal,
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> fetchAwareness() async {
