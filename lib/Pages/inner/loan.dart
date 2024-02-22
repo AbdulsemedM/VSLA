@@ -28,6 +28,7 @@ class LoanData {
   final String? loanId;
   final String? amountToBePaid;
   final String? dueDate;
+  final String? interestRate;
 
   LoanData({
     required this.amount,
@@ -38,11 +39,13 @@ class LoanData {
     required this.dueDate,
     required this.amountToBePaid,
     required this.loanId,
+    required this.interestRate,
   });
 }
 
 class _LoanState extends State<Loan> {
   var loading = false;
+  TextEditingController loanAmountController = new TextEditingController();
   var total;
   var pending = [];
   var active = [];
@@ -51,7 +54,15 @@ class _LoanState extends State<Loan> {
   List<LoanData> allLoans = [];
   List<LoanData> filteredLoans = [];
   final PageController _pageController = PageController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   var loan = true;
+  String? _validateField(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  }
+
   void valuechanged(value) {
     setState(() {
       value == "all"
@@ -410,7 +421,7 @@ class _LoanState extends State<Loan> {
                       color: Colors.orange,
                     )
                   : SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.35,
                       child: ListView.builder(
                           scrollDirection: Axis.vertical,
                           controller: _pageController,
@@ -485,7 +496,7 @@ class _LoanState extends State<Loan> {
                                               Row(
                                                 children: [
                                                   Text(filteredLoans[index]
-                                                      .amount),
+                                                      .amountToBePaid!),
                                                   Text(
                                                     " ETB",
                                                     style: GoogleFonts.roboto(
@@ -543,6 +554,7 @@ class _LoanState extends State<Loan> {
           amount: loan['amount'],
           updatedDate: loan['updatedDate'],
           status: loan['status'],
+          interestRate: loan['interestRate'],
         ));
       }
 
@@ -621,6 +633,18 @@ class _LoanState extends State<Loan> {
             Row(
               children: [
                 Text(
+                  "Interest Rate:  ",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  '${(double.parse(loanDetail.interestRate!) * 100).toStringAsFixed(0)} %',
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
                   "Status:  ",
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                 ),
@@ -664,6 +688,47 @@ class _LoanState extends State<Loan> {
                 ),
               ],
             ),
+            if (loanDetail.status!.toLowerCase() == "active")
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Repay Loan",
+                      style:
+                          TextStyle(fontWeight: FontWeight.w900, fontSize: 20),
+                    ),
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {},
+                        validator: _validateField,
+                        controller: loanAmountController,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          labelText: "Loan Amount *",
+                          labelStyle: GoogleFonts.poppins(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             Row(
               children: [
                 TextButton(
@@ -840,79 +905,95 @@ class _LoanState extends State<Loan> {
                     : loanDetail.status!.toLowerCase() == "active"
                         ? TextButton(
                             onPressed: () async {
-                              bool approveRepayment = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Confirm Payment'),
-                                    content: Text(
-                                        "Are you sure you want to repay ${loanDetail.requester}'s loan?"),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(
-                                              false); // User does not confirm deletion
+                              print(_formKey.currentState!.validate());
+                              if (_formKey.currentState!.validate()) {
+                                bool approveRepayment = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Confirm Payment'),
+                                      content: Text(
+                                          "Are you sure you want to repay ${loanDetail.requester}'s loan?"),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(
+                                                false); // User does not confirm deletion
+                                          },
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(
+                                                true); // User confirms deletion
+                                          },
+                                          child: const Text('Yes'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                if (approveRepayment) {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  try {
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    var accessToken =
+                                        prefs.getStringList("_keyUser");
+                                    final String authToken = accessToken![0];
+                                    final body = {
+                                      "amount": loanAmountController.text,
+                                    };
+                                    print(body);
+                                    var response = await http.put(
+                                        Uri.https(baseUrl,
+                                            "/api/v1/Loan/edit/repay/${loanDetail.loanId}"),
+                                        headers: <String, String>{
+                                          'Content-Type':
+                                              'application/json; charset=UTF-8',
+                                          'Authorization': 'Bearer $authToken',
                                         },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop(
-                                              true); // User confirms deletion
-                                        },
-                                        child: const Text('Yes'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                              if (approveRepayment) {
-                                setState(() {
-                                  loading = true;
-                                });
-                                try {
-                                  var response = await http.put(
-                                    Uri.https(baseUrl,
-                                        "/api/v1/Loan/edit/repay/${loanDetail.loanId}"),
-                                    headers: <String, String>{
-                                      'Content-Type':
-                                          'application/json; charset=UTF-8',
-                                    },
-                                  );
-                                  if (response.statusCode == 200) {
-                                    fetchLoans();
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                    const message = 'Loan repaid Successfuly!';
-                                    Future.delayed(
-                                        const Duration(milliseconds: 100), () {
+                                        body: jsonEncode(body));
+                                    if (response.statusCode == 200) {
+                                      fetchLoans();
+                                      loanAmountController.clear();
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      const message =
+                                          'Amount repaid Successfuly!';
+                                      Future.delayed(
+                                          const Duration(milliseconds: 100),
+                                          () {
+                                        Fluttertoast.showToast(
+                                            msg: message, fontSize: 18);
+                                      });
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      final responseBody =
+                                          json.decode(response.body);
+                                      final description =
+                                          responseBody?['message'];
+                                      var message = description ??
+                                          "Loan repayment failed; please try again";
                                       Fluttertoast.showToast(
                                           msg: message, fontSize: 18);
-                                    });
-                                    Navigator.of(context).pop();
-                                  } else {
-                                    final responseBody =
-                                        json.decode(response.body);
-                                    final description =
-                                        responseBody?['message'];
-                                    var message = description ??
-                                        "Loan repayment failed; please try again";
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    }
+                                  } catch (e) {
+                                    var message =
+                                        'Please check your network connection';
                                     Fluttertoast.showToast(
                                         msg: message, fontSize: 18);
+                                  } finally {
                                     setState(() {
                                       loading = false;
                                     });
                                   }
-                                } catch (e) {
-                                  var message =
-                                      'Please check your network connection';
-                                  Fluttertoast.showToast(
-                                      msg: message, fontSize: 18);
-                                } finally {
-                                  setState(() {
-                                    loading = false;
-                                  });
                                 }
                               }
                             },

@@ -656,34 +656,34 @@ class _Home3State extends State<Home3> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.09,
-                                        width: screenWidth * 0.22,
-                                        // color: Colors.amber,
-                                        child: Column(
-                                          children: [
-                                            Center(
-                                              child: Image(
-                                                image: const AssetImage(
-                                                  "assets/images/More.png",
-                                                ),
-                                                width: screenWidth * 0.19,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.04,
-                                              ),
-                                            ),
-                                            Text(
-                                              "More",
-                                              style: GoogleFonts.poppins(
-                                                  color: Colors.black),
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                      // SizedBox(
+                                      //   height:
+                                      //       MediaQuery.of(context).size.height *
+                                      //           0.09,
+                                      //   width: screenWidth * 0.22,
+                                      //   // color: Colors.amber,
+                                      //   child: Column(
+                                      //     children: [
+                                      //       Center(
+                                      //         child: Image(
+                                      //           image: const AssetImage(
+                                      //             "assets/images/More.png",
+                                      //           ),
+                                      //           width: screenWidth * 0.19,
+                                      //           height: MediaQuery.of(context)
+                                      //                   .size
+                                      //                   .height *
+                                      //               0.04,
+                                      //         ),
+                                      //       ),
+                                      //       Text(
+                                      //         "More",
+                                      //         style: GoogleFonts.poppins(
+                                      //             color: Colors.black),
+                                      //       )
+                                      //     ],
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -808,113 +808,116 @@ class _Home3State extends State<Home3> {
                                     // ),
                                   ],
                                 ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.3,
-                                  width: MediaQuery.of(context).size.width * 1,
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      controller: _pageController,
-                                      itemCount: allContribution.length,
-                                      itemBuilder: (context, index) {
-                                        return Card(
-                                          child: SizedBox(
-                                            height: 60,
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
+                                loading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.orange,
+                                      )
+                                    : SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.3,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                1,
+                                        child: ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            controller: _pageController,
+                                            itemCount: allContribution.length,
+                                            itemBuilder: (context, index) {
+                                              return Card(
+                                                child: SizedBox(
+                                                  height: 60,
+                                                  child: Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .spaceAround,
+                                                              .spaceBetween,
                                                       children: [
-                                                        const CircleAvatar(
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                          child: Icon(
-                                                              FontAwesomeIcons
-                                                                  .rotate),
-                                                        ),
-                                                        Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                              loading
-                                                                  ? ""
-                                                                  : allContribution[
-                                                                          index]
-                                                                      .contributor,
-                                                              style: GoogleFonts
-                                                                  .roboto(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceAround,
+                                                            children: [
+                                                              const CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                child: Icon(
+                                                                    FontAwesomeIcons
+                                                                        .rotate),
                                                               ),
-                                                            ),
-                                                            Text(
-                                                              loading
-                                                                  ? ""
-                                                                  : DateFormat(
-                                                                          'MMM d-yyyy')
-                                                                      .format(DateTime.parse(
-                                                                          allContribution[index]
-                                                                              .date)),
-                                                              style: GoogleFonts
-                                                                  .roboto(
-                                                                color: Colors
-                                                                    .grey[400],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Text(loading
-                                                                ? ""
-                                                                : allContribution[
-                                                                        index]
-                                                                    .amount
-                                                                    .toString()),
-                                                            Text(
-                                                              " ETB",
-                                                              style: GoogleFonts
-                                                                  .roboto(
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    loading
+                                                                        ? ""
+                                                                        : allContribution[index]
+                                                                            .contributor,
+                                                                    style: GoogleFonts
+                                                                        .roboto(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                  Text(
+                                                                    loading
+                                                                        ? ""
+                                                                        : DateFormat('MMM d-yyyy')
+                                                                            .format(DateTime.parse(allContribution[index].date)),
+                                                                    style: GoogleFonts
+                                                                        .roboto(
                                                                       color: Colors
                                                                               .grey[
                                                                           400],
-                                                                      fontSize:
-                                                                          10),
-                                                            )
-                                                          ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                ]),
-                                          ),
-                                        );
-                                      }),
-                                ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Text(loading
+                                                                      ? ""
+                                                                      : allContribution[
+                                                                              index]
+                                                                          .amount
+                                                                          .toString()),
+                                                                  Text(
+                                                                    " ETB",
+                                                                    style: GoogleFonts.roboto(
+                                                                        color: Colors.grey[
+                                                                            400],
+                                                                        fontSize:
+                                                                            10),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ]),
+                                                ),
+                                              );
+                                            }),
+                                      ),
                               ],
                             ),
                           );

@@ -1,15 +1,35 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/login.dart';
+import 'package:vsla/utils/api_config.dart';
+import 'package:http/http.dart' as http;
 
 class Otp extends StatefulWidget {
-  const Otp({super.key});
+  final String pNumber;
+  final String fullname;
+  final String password;
+  final String organization;
+  final String gender;
+  const Otp(
+      {required this.pNumber,
+      required this.fullname,
+      required this.gender,
+      required this.organization,
+      required this.password,
+      super.key});
 
   @override
   State<Otp> createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> {
+  var loading = false;
+  String? otpNumber;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +76,7 @@ class _OtpState extends State<Otp> {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                   child: Text(
-                "We will send you a one time passowrd \n             on this mobile number",
+                "We will send you a one time passowrd to",
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.normal,
@@ -67,7 +87,7 @@ class _OtpState extends State<Otp> {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                   child: Text(
-                "+251 - 924385314",
+                "+251 - ${widget.pNumber}",
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -83,46 +103,47 @@ class _OtpState extends State<Otp> {
               focusedBorderColor: Color(0xFFF89520),
               disabledBorderColor: Color(0xFFF89520),
               enabledBorderColor: Color(0xFFF89520),
-              numberOfFields: 4,
+              numberOfFields: 5,
               borderColor: Color(0xFFF89520),
-              //set to true to show as box or false to show as dash
               showFieldAsBox: true,
               //runs when a code is typed in
-              onCodeChanged: (String code) {
-                //handle validation or checks here
-              },
+              onCodeChanged: (String code) {},
               //runs when every textfield is filled
               onSubmit: (String verificationCode) {
-                // showDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return AlertDialog(
-                //         title: Text("Verification Code"),
-                //         content: Text('Code entered is $verificationCode'),
-                //       );
-                //     });
+                setState(() {
+                  otpNumber = verificationCode;
+                });
+                print(otpNumber);
               }, // end onSubmit
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.04,
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Handle form submission
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color(0xFFF89520), // Text color
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 5,
-              ),
-              child: Text(
-                "Save",
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.white),
-              ), // Button text
-            ),
+            loading
+                ? CircularProgressIndicator()
+                : SizedBox(
+                    width: 300,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (otpNumber!.isNotEmpty && otpNumber!.length == 5) {
+                          apply();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Color(0xFFF89520), // Text color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        "Send",
+                        style: GoogleFonts.poppins(
+                            fontSize: 14, color: Colors.white),
+                      ), // Button text
+                    ),
+                  ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.02,
             ),
@@ -130,5 +151,122 @@ class _OtpState extends State<Otp> {
         ),
       )),
     );
+  }
+
+  Future<void> apply() async {
+    print("mybodyyyyy");
+    setState(() {
+      loading = true;
+    });
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // var accessToken = prefs.getStringList("_keyUser");
+    // final String authToken = accessToken![0];
+    var body2 = {"code": otpNumber};
+    print(body2);
+    try {
+      var response = await http.post(
+          Uri.https(baseUrl, "/api/v1/otp/verify/${widget.pNumber}"),
+          headers: <String, String>{
+            // 'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(body2));
+      if (response.statusCode == 200) {
+        /////////////////////////////////////////////////////
+        final body = {
+          "phoneNumber": widget.pNumber,
+          "password": widget.password,
+          "fullName": widget.fullname,
+          "roleName": "GROUP_ADMIN",
+          "organizationId": widget.organization,
+          "gender": widget.gender,
+          "proxyEnabled": false
+        };
+        print(body);
+        try {
+          var response = await http.post(
+            Uri.https(baseUrl, "api/v1/users"),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(body),
+          );
+          // print("here" + "${response.statusCode}");
+          // print(response.body);
+          if (response.statusCode == 201) {
+            const message = 'Account Created Successfuly!';
+            Future.delayed(const Duration(milliseconds: 100), () {
+              Fluttertoast.showToast(msg: message, fontSize: 18);
+            });
+            // ignore: use_build_context_synchronously
+
+            setState(() {
+              loading = false;
+            });
+          } else if (response.statusCode != 201) {
+            final responseBody = json.decode(response.body);
+            final description =
+                responseBody?['message']; // Extract 'description' field
+            if (description == "Phone number is already taken") {
+              Fluttertoast.showToast(
+                  msg: "This phone number is already registered", fontSize: 18);
+            } else {
+              var message =
+                  description ?? "Account creation failed please try again";
+              Fluttertoast.showToast(msg: message, fontSize: 18);
+            }
+            setState(() {
+              loading = false;
+            });
+          }
+        } catch (e) {
+          var message = e.toString();
+          'Please check your network connection';
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        } finally {
+          setState(() {
+            loading = false;
+          });
+        }
+        ////////////////////////////////////////////////////
+        setState(() {
+          loading = false;
+        });
+
+        const message = 'Otp verified successfully';
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        });
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Login()));
+        setState(() {
+          loading = false;
+        });
+      } else if (response.statusCode != 200) {
+        final responseBody = json.decode(response.body);
+        final description =
+            responseBody?['message']; // Extract 'description' field
+        print(description);
+        if (description == "Something went wrong, please try again") {
+          Fluttertoast.showToast(
+              msg: "Something went wron, please try again", fontSize: 18);
+        } else {
+          var message = description ?? "Something went wrong, please try again";
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        }
+        setState(() {
+          loading = false;
+        });
+      }
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      // 'Please check your network connection';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 }

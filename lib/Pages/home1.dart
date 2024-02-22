@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vsla/Pages/routes/Total/total.dart';
 import 'package:vsla/Pages/routes/bank_links.dart';
 import 'package:vsla/Pages/routes/home3.dart';
 import 'package:vsla/Pages/routes/profile.dart';
@@ -53,7 +54,7 @@ class _Home1State extends State<Home1> {
             child: visit == 0
                 ? const Home3()
                 : visit == 1
-                    ? const SocialFunds()
+                    ? const Totals()
                     : visit == 2
                         ? const Bank_links()
                         // : visit == 3
