@@ -130,7 +130,8 @@ class _TotalsState extends State<Totals> with SingleTickerProviderStateMixin {
                   SizedBox(
                     height: 16,
                   ),
-                  if (_selectedIndex == 1)
+                  if (_selectedIndex == 1 &&
+                      GlobalStrings.getGlobalString() == "GROUP_ADMIN")
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange),

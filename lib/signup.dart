@@ -196,7 +196,7 @@ class _SignupState extends State<Signup> {
                           // onTapOutside: (event) {
                           //   phoneFocus.unfocus();
                           // },
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.name,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             // prefixIcon: Icon(

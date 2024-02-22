@@ -4,6 +4,7 @@ import 'package:vsla/Pages/inner/all_payments/disburse_social_fund.dart';
 import 'package:vsla/Pages/inner/all_payments/penalty_payment.dart';
 import 'package:vsla/Pages/inner/all_payments/round_payment.dart';
 import 'package:vsla/Pages/inner/all_payments/social_funds.dart';
+import 'package:vsla/utils/role.dart';
 
 class Payments extends StatefulWidget {
   const Payments({Key? key}) : super(key: key);
@@ -53,69 +54,77 @@ class _PaymentsState extends State<Payments>
   @override
   Widget build(BuildContext context) {
     var sHeight = MediaQuery.of(context).size.height * 1;
-    return Scaffold(
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: SafeArea(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Icon(Icons.arrow_back_ios_new_sharp),
-                          ),
-                          if (_selectedIndex == 2)
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.orange),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              DisburseSocialFunds()));
-                                },
-                                child: Text(
-                                  "Pay-Social Fund",
-                                  style: TextStyle(color: Colors.black),
-                                )),
-                          Image(
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            image: const AssetImage("assets/images/vsla.png"),
-                          ),
-                        ],
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context, true);
+        return Future.value(false);
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: SafeArea(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context, true);
+                              },
+                              child: const Icon(Icons.arrow_back_ios_new_sharp),
+                            ),
+                            if (_selectedIndex == 2 &&
+                                GlobalStrings.getGlobalString() ==
+                                    "GROUP_ADMIN")
+                              ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.orange),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DisburseSocialFunds()));
+                                  },
+                                  child: Text(
+                                    "Pay-Social Fund",
+                                    style: TextStyle(color: Colors.black),
+                                  )),
+                            Image(
+                              height: MediaQuery.of(context).size.height * 0.05,
+                              image: const AssetImage("assets/images/vsla.png"),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    TabBar(
-                      isScrollable: true,
-                      indicatorColor: Colors.orange,
-                      labelColor: Colors.orange,
-                      controller: _tabController,
-                      tabs: _tabs,
-                    ),
-                    SizedBox(
-                      height: sHeight * 0.85,
-                      child: TabBarView(
+                      TabBar(
+                        isScrollable: true,
+                        indicatorColor: Colors.orange,
+                        labelColor: Colors.orange,
                         controller: _tabController,
-                        children: _pages,
+                        tabs: _tabs,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        height: sHeight * 0.85,
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: _pages,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

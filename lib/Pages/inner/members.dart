@@ -437,29 +437,29 @@ class _MembersState extends State<Members> {
                 ),
               ),
             ),
-          Positioned(
-            bottom: 16.0, // Adjust this value as needed
-            left: 16.0, // Adjust this value as needed
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Profits()),
-                );
-              },
-              child: Container(
-                height: screenWidth * 0.12,
-                width: screenWidth * 0.12,
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(screenWidth * 0.12),
-                ),
-                child: const Center(
-                  child: Icon(FontAwesomeIcons.rectangleList),
-                ),
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 16.0, // Adjust this value as needed
+          //   left: 16.0, // Adjust this value as needed
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(builder: (context) => const AddMember()),
+          //       );
+          //     },
+          //     child: Container(
+          //       height: screenWidth * 0.12,
+          //       width: screenWidth * 0.12,
+          //       decoration: BoxDecoration(
+          //         color: Colors.orange,
+          //         borderRadius: BorderRadius.circular(screenWidth * 0.12),
+          //       ),
+          //       child: const Center(
+          //         child: Icon(Icons.add),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ]),
       ),
     );

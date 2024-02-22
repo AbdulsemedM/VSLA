@@ -673,6 +673,7 @@ class _TransactionState extends State<Transaction> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      print(groupId);
 
       final response = await http.get(
         Uri.https(baseUrl, '/api/v1/Transactions/getAllTransactions/$groupId'),
