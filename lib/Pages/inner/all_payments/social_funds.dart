@@ -65,7 +65,7 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
                   }
                 },
                 child: Text(
-                  "Close Meeting Payment",
+                  "Close Meeting",
                   style: TextStyle(
                       color: Colors.white, fontSize: screenWidth * 0.05),
                 ),
@@ -573,7 +573,7 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
       setState(() {
-        shareAmount = double.parse(data['socialFundAmount']);
+        shareAmount = double.parse(data['shareAmount']);
         attendance = double.parse(data['isAttendaceCompleted']);
         loading = false;
       });

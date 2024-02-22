@@ -23,6 +23,9 @@ class _AddMemberState extends State<AddMember> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  var regExp1 = RegExp(r'^09\d{8}$');
+  var regExp2 = RegExp(r'^2519\d{8}$');
+  var regExp3 = RegExp(r'^\+2519\d{8}$');
   // String? selectedRegion;
   // String? selectedZone;
   String? selectedGender;
@@ -37,7 +40,8 @@ class _AddMemberState extends State<AddMember> {
       // final Double initialContribution =
       // initialContributionController.text as Double;
       // final String woreda = woredaController.text;
-      final String phonNumber = phoneNumberController.text;
+      String phonNumber = phoneNumberController.text;
+      phonNumber = phonNumber.substring(phonNumber.length - 9);
       // final String kebele = kebeleController.text;
       final String passWord = passwordController.text;
       final Map<String, dynamic> requestBody = {
@@ -54,7 +58,7 @@ class _AddMemberState extends State<AddMember> {
         //   "kebele": kebele
         // }
       };
-
+      print(requestBody);
       const String apiUrl = 'https://$baseUrl/api/v1/groups/add-member';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
@@ -107,6 +111,20 @@ class _AddMemberState extends State<AddMember> {
   String? _validateField(String? value) {
     if (value == null || value.isEmpty) {
       return 'This field is required';
+    }
+    return null;
+  }
+
+  String? _PhoneValidateField(String? value) {
+    if (value!.isEmpty) {
+      return 'Phone number is required';
+    }
+    if (value!.isNotEmpty) {
+      if (!(regExp1.hasMatch(value) ||
+          regExp3.hasMatch(value) ||
+          regExp2.hasMatch(value))) {
+        return 'Enter a valid phone number';
+      }
     }
     return null;
   }
@@ -372,7 +390,8 @@ class _AddMemberState extends State<AddMember> {
     final phoneNumber = Padding(
       padding: const EdgeInsets.all(16),
       child: TextFormField(
-        validator: _validateField,
+        keyboardType: TextInputType.number,
+        validator: _PhoneValidateField,
         controller: phoneNumberController,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -480,6 +499,7 @@ class _AddMemberState extends State<AddMember> {
           }
           return null;
         },
+        keyboardType: TextInputType.number,
         controller: passwordController,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -503,6 +523,7 @@ class _AddMemberState extends State<AddMember> {
       child: TextFormField(
         obscureText: true,
         obscuringCharacter: "*",
+        keyboardType: TextInputType.number,
         validator: _validateConfirmPassword,
         controller: confirmPasswordController,
         decoration: InputDecoration(

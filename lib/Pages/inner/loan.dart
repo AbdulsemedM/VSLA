@@ -78,9 +78,9 @@ class _LoanState extends State<Loan> {
                       ? filteredLoans = allLoans
                           .where((loans) => loans.status == "repaid")
                           .toList()
-                      : value == "lost"
+                      : value == "rejected"
                           ? filteredLoans = allLoans
-                              .where((loans) => loans.status == "lost")
+                              .where((loans) => loans.status == "rejected")
                               .toList()
                           : filteredLoans = allLoans;
     });
@@ -96,425 +96,434 @@ class _LoanState extends State<Loan> {
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context, true);
+        return Future.value(false);
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context, true);
+                            // setState(() {
+                            //   loan = false;
+                            // });
+                          },
+                          child: const Icon(Icons.arrow_back_ios_new_sharp)),
+                      Image(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                          image: const AssetImage("assets/images/vsla.png"))
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          // setState(() {
-                          //   loan = false;
-                          // });
-                        },
-                        child: const Icon(Icons.arrow_back_ios_new_sharp)),
-                    Image(
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        image: const AssetImage("assets/images/vsla.png"))
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 8),
+                      child: Text(
+                        "Loans",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
                   ],
                 ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 8),
-                    child: Text(
-                      "Loans",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  CircularPercentageWidget(
-                    percentages: [
-                      loading ? 0 : double.parse(pending[0]),
-                      loading ? 0 : double.parse(active[0]),
-                      loading ? 0 : double.parse(repaid[0]),
-                      loading ? 0 : double.parse(lost[0])
-                    ], // Change these to your desired percentages
-                    colors: const [
-                      Colors.green,
-                      Colors.purple,
-                      Colors.orange,
-                      Colors.blue
-                    ], // Change the colors as needed
-                    text:
-                        '${loading ? 0 : total}\n   ETB', // Change this to your desired text
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Pending ${loading ? 0 : pending[0]}%",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Icon(
-                            Icons.rectangle,
-                            color: Colors.green,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                          Text(
-                            "${loading ? 0 : pending[1]} ETB",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      Text(
-                        "Active ${loading ? 0 : active[0]}%",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Icon(
-                            Icons.rectangle,
-                            color: Colors.purple,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                          Text(
-                            "${loading ? 0 : active[1]} ETB",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      Text(
-                        "Repaid ${loading ? 0 : repaid[0]}%",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Icon(
-                            Icons.rectangle,
-                            color: Colors.orange,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                          Text(
-                            "${loading ? 0 : repaid[1]} ETB",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                      Text(
-                        "Rejected ${loading ? 0 : lost[0]}%",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.01,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Icon(
-                            Icons.rectangle,
-                            color: Colors.blue,
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01,
-                          ),
-                          Text(
-                            "${loading ? 0 : lost[1]} ETB",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.02,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
                 SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.068,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            side: BorderSide.none,
-                            shape: const StadiumBorder()),
-                        onPressed: () async {
-                          var result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ApplyLoan()),
-                          );
-                          if (result != null) {
-                            print('popper');
-                            fetchLoans();
-                          }
-                        },
-                        child: Text(
-                          "Apply for Loan",
+                  height: MediaQuery.of(context).size.height * 0.01,
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CircularPercentageWidget(
+                      percentages: [
+                        loading ? 0 : double.parse(pending[0]),
+                        loading ? 0 : double.parse(active[0]),
+                        loading ? 0 : double.parse(repaid[0]),
+                        loading ? 0 : double.parse(lost[0])
+                      ], // Change these to your desired percentages
+                      colors: const [
+                        Colors.green,
+                        Colors.purple,
+                        Colors.orange,
+                        Colors.blue
+                      ], // Change the colors as needed
+                      text:
+                          '${loading ? 0 : total}\n   ETB', // Change this to your desired text
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          "Pending ${loading ? 0 : pending[0]}%",
                           style: GoogleFonts.poppins(
-                              color: Colors.white, fontWeight: FontWeight.w700),
-                        ))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      width: screenWidth * 0.32,
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-                          labelText: "Filter by",
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide:
-                                const BorderSide(color: Color(0xFFF89520)),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide:
-                                const BorderSide(color: Color(0xFFF89520)),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide:
-                                const BorderSide(color: Color(0xFFF89520)),
-                          ),
-                          filled: true,
-                          fillColor: Colors.transparent,
                         ),
-                        items: [
-                          DropdownMenuItem<String>(
-                            value: "all",
-                            child: Center(
-                              child: Text('All',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, color: Colors.black)),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(
+                              Icons.rectangle,
+                              color: Colors.green,
                             ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "active",
-                            child: Center(
-                              child: Text('Active',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, color: Colors.black)),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
                             ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "pending",
-                            child: Center(
-                              child: Text('Pending',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, color: Colors.black)),
+                            Text(
+                              "${loading ? 0 : pending[1]} ETB",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Text(
+                          "Active ${loading ? 0 : active[0]}%",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                           ),
-                          DropdownMenuItem<String>(
-                            value: "repaid",
-                            child: Center(
-                              child: Text('Repaid',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, color: Colors.black)),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(
+                              Icons.rectangle,
+                              color: Colors.purple,
                             ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "lost",
-                            child: Center(
-                              child: Text('Lost',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, color: Colors.black)),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
                             ),
+                            Text(
+                              "${loading ? 0 : active[1]} ETB",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Text(
+                          "Repaid ${loading ? 0 : repaid[0]}%",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                        onChanged: (value) => valuechanged(value),
-                        // hint: Text("Select zone",
-                        //     style: GoogleFonts.poppins(
-                        //         fontSize: 14, color: Color(0xFFF89520))),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(
+                              Icons.rectangle,
+                              color: Colors.orange,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            Text(
+                              "${loading ? 0 : repaid[1]} ETB",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        Text(
+                          "Rejected ${loading ? 0 : lost[0]}%",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Icon(
+                              Icons.rectangle,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            Text(
+                              "${loading ? 0 : lost[1]} ETB",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
+                  SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.068,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              side: BorderSide.none,
+                              shape: const StadiumBorder()),
+                          onPressed: () async {
+                            var result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ApplyLoan()),
+                            );
+                            if (result != null) {
+                              print('popper');
+                              fetchLoans();
+                            }
+                          },
+                          child: Text(
+                            "Apply for Loan",
+                            style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.05,
+                        width: screenWidth * 0.32,
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                12.0, 10.0, 12.0, 10.0),
+                            labelText: "Filter by",
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Color(0xFFF89520)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Color(0xFFF89520)),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide:
+                                  const BorderSide(color: Color(0xFFF89520)),
+                            ),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                          ),
+                          items: [
+                            DropdownMenuItem<String>(
+                              value: "all",
+                              child: Center(
+                                child: Text('All',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "active",
+                              child: Center(
+                                child: Text('Active',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "pending",
+                              child: Center(
+                                child: Text('Pending',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "repaid",
+                              child: Center(
+                                child: Text('Repaid',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                            DropdownMenuItem<String>(
+                              value: "rejected",
+                              child: Center(
+                                child: Text('Rejected',
+                                    style: GoogleFonts.poppins(
+                                        fontSize: 14, color: Colors.black)),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) => valuechanged(value),
+                          // hint: Text("Select zone",
+                          //     style: GoogleFonts.poppins(
+                          //         fontSize: 14, color: Color(0xFFF89520))),
+                        ),
                       ),
                     ),
-                  ),
-                  // Padding(
-                  //   padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                  //   child: GestureDetector(
-                  //       onTap: () {
-                  //         fetchLoans();
-                  //       },
-                  //       child: const Icon(Icons.refresh)),
-                  // )
-                ],
-              ),
-              loading
-                  ? const CircularProgressIndicator(
-                      color: Colors.orange,
-                    )
-                  : SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          controller: _pageController,
-                          itemCount: filteredLoans.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: GlobalStrings.getGlobalString() ==
-                                      "GROUP_ADMIN"
-                                  ? () {
-                                      viewModal(filteredLoans[index]);
-                                    }
-                                  : null,
-                              child: Card(
-                                child: SizedBox(
-                                  height: 60,
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              CircleAvatar(
-                                                radius: screenWidth * 0.05,
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: filteredLoans[
-                                                                index]
-                                                            .gender!
-                                                            .toLowerCase() ==
-                                                        "male"
-                                                    ? const AssetImage(
-                                                        "assets/images/male.png")
-                                                    : const AssetImage(
-                                                        "assets/images/female.png"),
-                                              ),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    filteredLoans[index]
-                                                        .requester
-                                                        .toString(),
-                                                    style: GoogleFonts.roboto(
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                    // Padding(
+                    //   padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                    //   child: GestureDetector(
+                    //       onTap: () {
+                    //         fetchLoans();
+                    //       },
+                    //       child: const Icon(Icons.refresh)),
+                    // )
+                  ],
+                ),
+                loading
+                    ? const CircularProgressIndicator(
+                        color: Colors.orange,
+                      )
+                    : SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.35,
+                        child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            controller: _pageController,
+                            itemCount: filteredLoans.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: GlobalStrings.getGlobalString() ==
+                                        "GROUP_ADMIN"
+                                    ? () {
+                                        viewModal(filteredLoans[index]);
+                                      }
+                                    : null,
+                                child: Card(
+                                  child: SizedBox(
+                                    height: 60,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceAround,
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: screenWidth * 0.05,
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: filteredLoans[
+                                                                  index]
+                                                              .gender!
+                                                              .toLowerCase() ==
+                                                          "male"
+                                                      ? const AssetImage(
+                                                          "assets/images/male.png")
+                                                      : const AssetImage(
+                                                          "assets/images/female.png"),
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      filteredLoans[index]
+                                                          .requester
+                                                          .toString(),
+                                                      style: GoogleFonts.roboto(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    DateFormat('MMM d-yyyy')
-                                                        .format(DateTime.parse(
-                                                            filteredLoans[index]
-                                                                .updatedDate)),
-                                                    style: GoogleFonts.roboto(
-                                                      color: Colors.grey[400],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(filteredLoans[index]
-                                                      .amountToBePaid!),
-                                                  Text(
-                                                    " ETB",
-                                                    style: GoogleFonts.roboto(
+                                                    Text(
+                                                      DateFormat('MMM d-yyyy')
+                                                          .format(DateTime.parse(
+                                                              filteredLoans[
+                                                                      index]
+                                                                  .updatedDate)),
+                                                      style: GoogleFonts.roboto(
                                                         color: Colors.grey[400],
-                                                        fontSize: 10),
-                                                  )
-                                                ],
-                                              ),
-                                            ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        )
-                                      ]),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(filteredLoans[index]
+                                                        .amountToBePaid!),
+                                                    Text(
+                                                      " ETB",
+                                                      style: GoogleFonts.roboto(
+                                                          color:
+                                                              Colors.grey[400],
+                                                          fontSize: 10),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ]),
+                                  ),
                                 ),
-                              ),
-                            );
-                          }),
-                    )
-            ],
+                              );
+                            }),
+                      )
+              ],
+            ),
           ),
         ),
       ),
@@ -557,7 +566,8 @@ class _LoanState extends State<Loan> {
           interestRate: loan['interestRate'],
         ));
       }
-
+      print('heree');
+      print(data['lostPercent']);
       setState(() {
         total = data['totalValue'];
         pending.clear();

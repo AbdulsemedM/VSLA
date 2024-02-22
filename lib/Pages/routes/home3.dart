@@ -495,12 +495,16 @@ class _Home3State extends State<Home3> {
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
+                                          onTap: () async {
+                                            final result = await Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         Loan()));
+                                            if (result) {
+                                              fetchDashBoardData();
+                                              fetchTips();
+                                            }
                                             // setState(() {
                                             //   transaction = true;
                                             // });
@@ -587,14 +591,16 @@ class _Home3State extends State<Home3> {
                                         width: screenWidth * 0.22,
                                         // color: Colors.amber,
                                         child: GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Payments()));
-                                            });
+                                          onTap: () async {
+                                            final result = await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Payments()));
+                                            if (result) {
+                                              fetchDashBoardData();
+                                              fetchTips();
+                                            }
                                           },
                                           child: Column(
                                             children: [
@@ -975,6 +981,7 @@ class _Home3State extends State<Home3> {
       // transactions = parseTransactions(response.body);
       Map<String, dynamic> data = jsonDecode(response.body);
       // print(response.body);
+      allContribution.clear();
       for (var recentContributions in data['recentContributions']) {
         allContribution.add(ContributionData(
           amount: recentContributions['amount'],
