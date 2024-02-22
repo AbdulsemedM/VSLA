@@ -30,12 +30,17 @@ class _LoginState extends State<Login> {
   TextEditingController password = TextEditingController();
   FocusNode pinFocus = FocusNode();
   FocusNode phoneFocus = FocusNode();
+  var regExp1 = RegExp(r'^09\d{8}$');
+  var regExp2 = RegExp(r'^2519\d{8}$');
+  var regExp3 = RegExp(r'^\+2519\d{8}$');
   var registered = false;
 
   login() async {
     // pnumber.text = "0912345678";
     // password.text = "123456";
-    if (pnumber.text.length < 9 || pnumber.text == "") {
+    if (!(regExp1.hasMatch(pnumber.text) ||
+        regExp3.hasMatch(pnumber.text) ||
+        regExp2.hasMatch(pnumber.text))) {
       const message = 'Invalid phone number format';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -49,6 +54,7 @@ class _LoginState extends State<Login> {
       setState(() {
         loading = true;
       });
+      pnumber.text = pnumber.text.substring(pnumber.text.length - 9);
       final body = <String, String>{
         "username": pnumber.text.toString(),
         "password": password.text.toString(),

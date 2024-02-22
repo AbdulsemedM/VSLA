@@ -27,145 +27,217 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
   final PageController _pageController = PageController();
   double shareAmount = 0;
   double attendance = 0;
+  var admin = GlobalStrings.getGlobalString() == "GROUP_ADMIN" ? true : false;
   List<MemberData> allMembers = [];
   String? group;
   var loading = false;
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
-    return loading
-        ? const SizedBox(
-            child: Center(
-              child: CircularProgressIndicator(
-                color: Colors.orange,
+    return Scaffold(
+      floatingActionButton: SizedBox(
+        width: screenWidth * 0.7,
+        height: 50,
+        child: admin
+            ? ElevatedButton(
+                onPressed: () async {
+                  bool process = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Caution'),
+                        content:
+                            Text("Are you sure, This process is irreversible!"),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(true); // User confirms deletion
+                            },
+                            child: const Text('Okay'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (process) {
+                    await apply();
+                  }
+                },
+                child: Text(
+                  "Close Meeting Payment",
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.05),
+                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+              )
+            : Container(
+                width: 0,
               ),
-            ),
-          )
-        : SizedBox(
-            height: MediaQuery.of(context).size.height * 0.76,
-            width: MediaQuery.of(context).size.width * 1,
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              controller: _pageController,
-              itemCount: allMembers.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () async {
-                    print(GlobalStrings.getGlobalString());
-                    // print(allMembers[index].proxy.toLowerCase());
-                    if (GlobalStrings.getGlobalString() == "GROUP_ADMIN") {
-                      if (attendance == 1) {
-                        editModal(allMembers[index]);
-                      } else {
-                        bool rejectLoan = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Caution'),
-                              content: Text(
-                                  "Please fill attendance before any payment."),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .pop(true); // User confirms deletion
+      ),
+      body: loading
+          ? const SizedBox(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Colors.orange,
+                ),
+              ),
+            )
+          : Container(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.76,
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: _pageController,
+                      itemCount: allMembers.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () async {
+                            print(GlobalStrings.getGlobalString());
+                            // print(allMembers[index].proxy.toLowerCase());
+                            if (GlobalStrings.getGlobalString() ==
+                                "GROUP_ADMIN") {
+                              if (attendance == 1) {
+                                editModal(allMembers[index]);
+                              } else {
+                                bool rejectLoan = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Caution'),
+                                      content: Text(
+                                          "Please fill attendance before any payment."),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(
+                                                true); // User confirms deletion
+                                          },
+                                          child: const Text('Okay'),
+                                        ),
+                                      ],
+                                    );
                                   },
-                                  child: const Text('Okay'),
-                                ),
-                              ],
-                            );
+                                );
+                              }
+                            }
                           },
-                        );
-                      }
-                    }
-                  },
-                  child: Card(
-                    // shadowColor: Colors.white,
-                    color: Colors.white,
-                    surfaceTintColor: Colors.white,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.11,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            // shadowColor: Colors.white,
+                            color: Colors.white,
+                            surfaceTintColor: Colors.white,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.11,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    radius: screenWidth * 0.05,
-                                    backgroundColor: Colors.white,
-                                    backgroundImage: allMembers[index]
-                                                .gender
-                                                .toLowerCase() ==
-                                            "male"
-                                        ? const AssetImage(
-                                            "assets/images/male.png")
-                                        : const AssetImage(
-                                            "assets/images/female.png"),
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            allMembers[index].fullName,
-                                            style: GoogleFonts.roboto(
-                                              fontWeight: FontWeight.w500,
-                                            ),
+                                          CircleAvatar(
+                                            radius: screenWidth * 0.05,
+                                            backgroundColor: Colors.white,
+                                            backgroundImage: allMembers[index]
+                                                        .gender
+                                                        .toLowerCase() ==
+                                                    "male"
+                                                ? const AssetImage(
+                                                    "assets/images/male.png")
+                                                : const AssetImage(
+                                                    "assets/images/female.png"),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    allMembers[index].fullName,
+                                                    style: GoogleFonts.roboto(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text("Current Round",
+                                                    style: GoogleFonts.poppins(
+                                                        color: Colors
+                                                            .orange[900])),
+                                              ),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: allMembers[index]
+                                                              .hasPaid ==
+                                                          'true'
+                                                      ? Colors.green
+                                                      : Colors.orange,
+                                                ),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    " ${allMembers[index].hasPaid == 'true' ? 'Paid' : 'Unpaid'}",
+                                                    style: GoogleFonts.roboto(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          // Container(
+                                          //   height: screenWidth * 0.05,
+                                          //   width: screenWidth * 0.05,
+                                          //   color: Colors.orange,
+                                          //   child: Icon(
+                                          //     FontAwesomeIcons
+                                          //         .diagramProject,
+                                          //     size: screenWidth * 0.04,
+                                          //   ),
+                                          // )
+                                        ],
+                                      ),
+                                    )
+                                  ]),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text("Round",
-                                            style: GoogleFonts.poppins(
-                                                color: Colors.orange[900])),
-                                      ),
-                                      Text(
-                                        " ${allMembers[index].round.toString()}",
-                                        style: GoogleFonts.roboto(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  // Container(
-                                  //   height: screenWidth * 0.05,
-                                  //   width: screenWidth * 0.05,
-                                  //   color: Colors.orange,
-                                  //   child: Icon(
-                                  //     FontAwesomeIcons
-                                  //         .diagramProject,
-                                  //     size: screenWidth * 0.04,
-                                  //   ),
-                                  // )
-                                ],
-                              ),
-                            )
-                          ]),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
-          );
+    );
   }
 
   void editModal(MemberData allMember) {
@@ -518,6 +590,68 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
     }
   }
 
+  Future<void> apply() async {
+    print("mybodyyyyy");
+    setState(() {
+      loading = true;
+    });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+
+    try {
+      var response = await http.put(
+        Uri.https(baseUrl, "/api/v1/groups/closeMeetingRound"),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (response.statusCode == 200) {
+        fetchMembersRound();
+        setState(() {
+          loading = false;
+        });
+        const message = 'Meeting closed successfully';
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        });
+
+        // ignore: use_build_context_synchronously
+
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => const Otp()));
+        setState(() {
+          loading = false;
+        });
+      } else if (response.statusCode != 200) {
+        final responseBody = json.decode(response.body);
+        final description =
+            responseBody?['message']; // Extract 'description' field
+        print(description);
+        if (description == "Something went wrong, please try again") {
+          Fluttertoast.showToast(
+              msg: "Something went wron, please try again", fontSize: 18);
+        } else {
+          var message = description ?? "Something went wrong, please try again";
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        }
+        setState(() {
+          loading = false;
+        });
+      }
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      // 'Please check your network connection';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
   Future<void> fetchMembersRound() async {
     try {
       setState(() {
@@ -544,6 +678,7 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
       for (var member in data) {
         newMember.add(MemberData(
           round: member['round'],
+          hasPaid: member['hasPaidCurrentSocialFund'],
           proxy: member['proxy'],
           userId: member['userId'],
           fullName: member['fullName'],

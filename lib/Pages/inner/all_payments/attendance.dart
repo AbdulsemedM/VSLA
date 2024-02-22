@@ -17,9 +17,24 @@ class Attendance extends StatefulWidget {
   State<Attendance> createState() => _AttendanceState();
 }
 
+class AttendanceData {
+  final String userId;
+  final String fullName;
+  final String gender;
+  final String proxy;
+  final String round;
+
+  AttendanceData(
+      {required this.userId,
+      required this.fullName,
+      required this.round,
+      required this.proxy,
+      required this.gender});
+}
+
 class _AttendanceState extends State<Attendance> {
   var loading = true;
-  List<MemberData> allMembers = [];
+  List<AttendanceData> allMembers = [];
   final PageController _pageController = PageController();
   var _isCheckedList;
 
@@ -40,7 +55,28 @@ class _AttendanceState extends State<Attendance> {
         child: admin
             ? ElevatedButton(
                 onPressed: () async {
-                  await apply();
+                  bool process = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Caution'),
+                        content:
+                            Text("Are you sure, This process is irreversible!"),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(true); // User confirms deletion
+                            },
+                            child: const Text('Okay'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (process) {
+                    await apply();
+                  }
                 },
                 child: Text(
                   "Save",
@@ -58,14 +94,14 @@ class _AttendanceState extends State<Attendance> {
           children: [
             loading
                 ? Center(
-                  child: const SizedBox(
+                    child: const SizedBox(
                       child: Center(
                         child: CircularProgressIndicator(
                           color: Colors.orange,
                         ),
                       ),
                     ),
-                )
+                  )
                 : SizedBox(
                     height: MediaQuery.of(context).size.height * 0.76,
                     width: MediaQuery.of(context).size.width * 1,
@@ -297,9 +333,9 @@ class _AttendanceState extends State<Attendance> {
       // final json = "[" + response.body + "]";
       var data = jsonDecode(response.body);
 
-      List<MemberData> newMember = [];
+      List<AttendanceData> newMember = [];
       for (var member in data) {
-        newMember.add(MemberData(
+        newMember.add(AttendanceData(
           round: member['round'],
           proxy: member['proxy'],
           userId: member['userId'],

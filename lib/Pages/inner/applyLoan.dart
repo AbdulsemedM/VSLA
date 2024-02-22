@@ -145,7 +145,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
           body: jsonEncode(body),
         );
         // print("here" + "${response.statusCode}");
-        // print(response.body);
+        print(response.body);
         if (response.statusCode == 200) {
           setState(() {
             loading = false;
@@ -167,7 +167,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
           setState(() {
             loading = false;
           });
-        } else if (response.statusCode != 201) {
+        } else if (response.statusCode != 200) {
           final responseBody = json.decode(response.body);
           final description =
               responseBody?['message']; // Extract 'description' field
@@ -324,6 +324,14 @@ class _ApplyLoanState extends State<ApplyLoan> {
         ),
         items: [
           DropdownMenuItem<String>(
+            value: "7",
+            child: Center(
+              child: Text('1 Week',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
             value: "14",
             child: Center(
               child: Text('2 Weeks',
@@ -340,17 +348,25 @@ class _ApplyLoanState extends State<ApplyLoan> {
             ),
           ),
           DropdownMenuItem<String>(
-            value: "90",
+            value: "45",
             child: Center(
-              child: Text('3 Months',
+              child: Text('45 Days',
                   style:
                       GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),
           ),
           DropdownMenuItem<String>(
-            value: "150",
+            value: "60",
             child: Center(
-              child: Text('5 Months',
+              child: Text('2 Months',
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+            ),
+          ),
+          DropdownMenuItem<String>(
+            value: "90",
+            child: Center(
+              child: Text('3 Months',
                   style:
                       GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
             ),

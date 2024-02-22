@@ -27,12 +27,14 @@ class MemberData {
   final String gender;
   final String proxy;
   final String round;
+  final String hasPaid;
 
   MemberData(
       {required this.userId,
       required this.fullName,
       required this.round,
       required this.proxy,
+      required this.hasPaid,
       required this.gender});
 }
 
@@ -312,6 +314,7 @@ class _AllTrnxState extends State<AllTrnx> {
       List<MemberData> newMember = [];
       for (var member in data) {
         newMember.add(MemberData(
+          hasPaid: member['hasPaidCurrentRound'],
           round: member['round'],
           proxy: member['proxy'],
           userId: member['userId'],
@@ -365,6 +368,7 @@ class _AllTrnxState extends State<AllTrnx> {
       List<MemberData> newMember = [];
       for (var member in data) {
         newMember.add(MemberData(
+          hasPaid: member['hasPaidCurrentRound'],
           round: member['round'],
           proxy: member['proxy'],
           userId: member['userId'],

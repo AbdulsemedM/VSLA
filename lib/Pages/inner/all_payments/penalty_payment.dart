@@ -9,14 +9,14 @@ import 'package:vsla/utils/api_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:vsla/utils/role.dart';
 
-class RoundPayments extends StatefulWidget {
-  const RoundPayments({super.key});
+class PenaltyPayment extends StatefulWidget {
+  const PenaltyPayment({super.key});
 
   @override
-  State<RoundPayments> createState() => _RoundPaymentsState();
+  State<PenaltyPayment> createState() => _PenaltyPaymentState();
 }
 
-class _RoundPaymentsState extends State<RoundPayments> {
+class _PenaltyPaymentState extends State<PenaltyPayment> {
   @override
   void initState() {
     super.initState();
@@ -35,7 +35,6 @@ class _RoundPaymentsState extends State<RoundPayments> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-     
       body: loading
           ? const SizedBox(
               child: Center(
@@ -61,30 +60,7 @@ class _RoundPaymentsState extends State<RoundPayments> {
                             // print(allMembers[index].proxy.toLowerCase());
                             if (GlobalStrings.getGlobalString() ==
                                 "GROUP_ADMIN") {
-                              if (attendance == 1 &&
-                                  allMembers[index].hasPaid == 'false') {
-                                editModal(allMembers[index]);
-                              } else {
-                                bool rejectLoan = await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Caution'),
-                                      content: Text(
-                                          "Either Attendance has not been filled or payment is already done for ${allMembers[index].fullName}"),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(
-                                                true); // User confirms deletion
-                                          },
-                                          child: const Text('Okay'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
+                              editModal(allMembers[index]);
                             }
                           },
                           child: Card(
@@ -144,36 +120,38 @@ class _RoundPaymentsState extends State<RoundPayments> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.all(8.0),
-                                                child: Text("Current Round",
+                                                child: Text("Pay penalty here",
                                                     style: GoogleFonts.poppins(
                                                         color: Colors
                                                             .orange[900])),
                                               ),
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: allMembers[index]
-                                                              .hasPaid ==
-                                                          'true'
-                                                      ? Colors.green
-                                                      : Colors.orange,
-                                                ),
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(4.0),
-                                                  child: Text(
-                                                    " ${allMembers[index].hasPaid == 'true' ? 'Paid' : 'Unpaid'}",
-                                                    style: GoogleFonts.roboto(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                              // Container(
+                                              //   decoration: BoxDecoration(
+                                              //     borderRadius:
+                                              //         BorderRadius.circular(5),
+                                              //     color: allMembers[index]
+                                              //                 .hasPaid ==
+                                              //             'true'
+                                              //         ? Colors.green
+                                              //         : Colors.orange,
+                                              //   ),
+                                              //   child: Padding(
+                                              //     padding:
+                                              //         const EdgeInsets.all(4.0),
+                                              //     child: Text(
+                                              //       " ${allMembers[index].hasPaid == 'true' ? 'Paid' : 'Unpaid'}",
+                                              //       style: GoogleFonts.roboto(
+                                              //         color: Colors.black,
+                                              //       ),
+                                              //     ),
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                           // Container(
@@ -205,9 +183,10 @@ class _RoundPaymentsState extends State<RoundPayments> {
   void editModal(MemberData allMember) {
     TextEditingController fullNameController = TextEditingController();
     TextEditingController amountController = TextEditingController();
-    TextEditingController roundController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     var loading1 = false;
-    roundController.text = allMember.round;
+    // descriptionController.text = allMember.round;
     fullNameController.text = allMember.fullName;
 
     // ignore: no_leading_underscores_for_local_identifiers
@@ -228,157 +207,94 @@ class _RoundPaymentsState extends State<RoundPayments> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                "Add Round Payment",
+                "Add Penalty Payment",
                 style: GoogleFonts.poppins(
                     fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              CircleAvatar(
-                backgroundColor: Colors.orange,
-                child: Text(allMember.round.toString()),
-              )
             ],
           ), // Set your dialog title
           // content: Text(allMember.fullName), // Set your dialog content
           actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(5, 2, 0, 8),
-              child: TextFormField(
-                readOnly: true,
-                controller: fullNameController,
-                validator: _validateField,
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: Color(0xFFF89520)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: Color(0xFFF89520)),
-                  ),
-                  labelText: "Full name *",
-                  labelStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: const Color(0xFFF89520)),
-                ),
-              ),
-            ),
-            // Padding(
-            //   padding: const EdgeInsets.all(16),
-            //   child: TextFormField(
-            //     readOnly: true,
-            //     controller: roundController,
-            //     decoration: InputDecoration(
-            //       contentPadding:
-            //           const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-            //       enabledBorder: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10.0),
-            //         borderSide: const BorderSide(color: Color(0xFFF89520)),
-            //       ),
-            //       focusedBorder: OutlineInputBorder(
-            //         borderRadius: BorderRadius.circular(10.0),
-            //         borderSide: const BorderSide(color: Color(0xFFF89520)),
-            //       ),
-            //       labelText: "Round *",
-            //       labelStyle: GoogleFonts.poppins(
-            //           fontSize: 14, color: const Color(0xFFF89520)),
-            //     ),
-            //   ),
-            // ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: TextFormField(
-                readOnly: true,
-                keyboardType: TextInputType.number,
-                validator: _validateField,
-                controller: amountController,
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: Color(0xFFF89520)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: Color(0xFFF89520)),
-                  ),
-                  labelText: "Amount *",
-                  labelStyle: GoogleFonts.poppins(
-                      fontSize: 14, color: const Color(0xFFF89520)),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      // int currentAmount =
-                      //     int.tryParse(amountController.text) ?? 0;
-                      amountController.text = (shareAmount * 1).toString();
-                    });
-                  },
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    child: Text("1"),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      // int currentAmount =
-                      //     int.tryParse(amountController.text) ?? 0;
-                      amountController.text = (shareAmount * 2).toString();
-                    });
-                  },
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    child: Text("2"),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      // int currentAmount =
-                      //     int.tryParse(amountController.text) ?? 0;
-                      amountController.text = (shareAmount * 3).toString();
-                    });
-                  },
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    child: Text("3"),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      // int currentAmount =
-                      //     int.tryParse(amountController.text) ?? 0;
-                      amountController.text = (shareAmount * 4).toString();
-                    });
-                  },
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    child: Text("4"),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      // int currentAmount =
-                      //     int.tryParse(amountController.text) ?? 0;
-                      amountController.text = (shareAmount * 5).toString();
-                    });
-                  },
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.orange,
-                    child: Text("5"),
-                  ),
-                ),
-              ],
-            ),
+            Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 2, 8, 8),
+                      child: TextFormField(
+                        readOnly: true,
+                        controller: fullNameController,
+                        validator: _validateField,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          labelText: "Full name *",
+                          labelStyle: GoogleFonts.poppins(
+                              fontSize: 14, color: const Color(0xFFF89520)),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        controller: descriptionController,
+                        validator: _validateField,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          labelText: "Reason *",
+                          labelStyle: GoogleFonts.poppins(
+                              fontSize: 14, color: const Color(0xFFF89520)),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        validator: _validateField,
+                        controller: amountController,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide:
+                                const BorderSide(color: Color(0xFFF89520)),
+                          ),
+                          labelText: "Amount *",
+                          labelStyle: GoogleFonts.poppins(
+                              fontSize: 14, color: const Color(0xFFF89520)),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
             Row(
               children: [
                 loading1
@@ -421,20 +337,14 @@ class _RoundPaymentsState extends State<RoundPayments> {
                             final body = {
                               "groupId": group,
                               "payerId": allMember.userId,
-                              "payementTypeId": 1,
+                              "payementTypeId": 6,
                               "amount": amountController.text,
-                              "round": roundController.text
+                              "description": descriptionController.text,
+                              "round": '0'
                             };
                             print(body);
                             // ignore: unnecessary_null_comparison
-                            if (amountController.text == null) {
-                              const message = 'Please enter an amount!';
-                              Future.delayed(const Duration(milliseconds: 100),
-                                  () {
-                                Fluttertoast.showToast(
-                                    msg: message, fontSize: 18);
-                              });
-                            } else {
+                            if (_formKey.currentState!.validate()) {
                               try {
                                 final SharedPreferences prefs =
                                     await SharedPreferences.getInstance();

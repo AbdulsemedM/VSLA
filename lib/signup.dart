@@ -59,6 +59,10 @@ class _SignupState extends State<Signup> {
   bool _passwordVisible1 = false;
   bool _passwordVisible = false;
   bool loading = false;
+  var regExp1 = RegExp(r'^09\d{8}$');
+  var regExp2 = RegExp(r'^2519\d{8}$');
+  var regExp3 = RegExp(r'^\+2519\d{8}$');
+
   signup() async {
     // print(pnumber);
     if (fname.text.isEmpty) {
@@ -66,7 +70,9 @@ class _SignupState extends State<Signup> {
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
-    } else if (pnumber.text.length != 10 || pnumber.text == "") {
+    } else if (!(regExp1.hasMatch(pnumber.text) ||
+        regExp3.hasMatch(pnumber.text) ||
+        regExp2.hasMatch(pnumber.text))) {
       const message = 'Invalid phone number format';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -90,64 +96,32 @@ class _SignupState extends State<Signup> {
       setState(() {
         loading = true;
       });
-      final body = {
-        "phoneNumber": pnumber.text,
-        "password": password.text,
-        "fullName": fname.text,
-        "roleName": "GROUP_ADMIN",
-        "organizationId": selectedCompany,
-        "gender": selectedGender,
-        "proxyEnabled": false
-      };
-      print(body);
-      try {
-        var response = await http.post(
-          Uri.https(baseUrl, "api/v1/users"),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(body),
-        );
-        // print("here" + "${response.statusCode}");
-        // print(response.body);
-        if (response.statusCode == 201) {
-          setState(() {
-            loading = false;
-          });
-          const message = 'Account Created Successfuly!';
-          Future.delayed(const Duration(milliseconds: 100), () {
-            Fluttertoast.showToast(msg: message, fontSize: 18);
-          });
-
-          // ignore: use_build_context_synchronously
-          Navigator.pop(context);
-          setState(() {
-            loading = false;
-          });
-        } else if (response.statusCode != 201) {
-          final responseBody = json.decode(response.body);
-          final description =
-              responseBody?['message']; // Extract 'description' field
-          if (description == "Phone number is already taken") {
-            Fluttertoast.showToast(
-                msg: "This phone number is already registered", fontSize: 18);
-          } else {
-            var message =
-                description ?? "Account creation failed please try again";
-            Fluttertoast.showToast(msg: message, fontSize: 18);
-          }
-          setState(() {
-            loading = false;
-          });
-        }
-      } catch (e) {
-        var message = e.toString();
-        'Please check your network connection';
-        Fluttertoast.showToast(msg: message, fontSize: 18);
-      } finally {
-        setState(() {
-          loading = false;
-        });
+      pnumber.text = pnumber.text.substring(pnumber.text.length - 9);
+      var body2 = {"phoneNumber": pnumber.text};
+      print(body2);
+      var otp = await http.post(
+        Uri.https(baseUrl, "api/v1/otp/send"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(body2),
+      );
+      print(otp.body);
+      if (otp.statusCode == 200) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Otp(
+                      pNumber: pnumber.text,
+                      fullname: fname.text,
+                      gender: selectedGender!,
+                      organization: selectedCompany!,
+                      password: password.text,
+                    )));
+      } else {
+        Fluttertoast.showToast(
+            msg: "Something went wron, please try again", fontSize: 18);
       }
     }
   }
