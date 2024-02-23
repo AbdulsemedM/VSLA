@@ -492,6 +492,7 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
                                 // print("here" + "${response.statusCode}");
                                 // print(response.body);
                                 if (response.statusCode == 200) {
+                                  fetchMembersRound();
                                   setState(() {
                                     loading1 = false;
                                   });
@@ -572,13 +573,14 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
       );
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
+      print(data);
       setState(() {
-        shareAmount = double.parse(data['shareAmount']);
-        attendance = double.parse(data['isAttendaceCompleted']);
+        shareAmount = double.parse(data['socialFundAmount'].toString());
+        attendance = double.parse(data['isAttendaceCompleted'].toString());
         loading = false;
       });
-
-      print(data);
+      print(shareAmount);
+      print(attendance);
     } catch (e) {
       setState(() {
         loading = false;

@@ -111,7 +111,7 @@ class _TransactionState extends State<Transaction> {
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 0, 16),
                                   child: Text(
-                                    "Round Payement",
+                                    "Saving",
                                     style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white),
@@ -368,7 +368,7 @@ class _TransactionState extends State<Transaction> {
                                   padding:
                                       const EdgeInsets.fromLTRB(8, 0, 0, 16),
                                   child: Text(
-                                    "Total",
+                                    "Social Funds",
                                     style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white),
@@ -431,77 +431,6 @@ class _TransactionState extends State<Transaction> {
                           fontSize: screenWidth * 0.04,
                           fontWeight: FontWeight.w700),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      // Text("View by", style: GoogleFonts.poppins(fontWeight: FontWeight.w500),),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.05,
-                          width: screenWidth * 0.32,
-                          child: DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.fromLTRB(
-                                  12.0, 10.0, 12.0, 10.0),
-                              labelText: "sort by",
-                              // hintText: "Choose zone/subcity",
-                              // labelStyle: GoogleFonts.poppins(
-                              //     fontSize: 14, color: Color(0xFFF89520)),
-                              // hintStyle: GoogleFonts.poppins(
-                              //     fontSize: 14, color: Color(0xFFF89520)),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide:
-                                    const BorderSide(color: Color(0xFFF89520)),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                            ),
-                            items: [
-                              DropdownMenuItem<String>(
-                                value: "1000",
-                                child: Center(
-                                  child: Text('Recent',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 14, color: Colors.black)),
-                                ),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "1200",
-                                child: Center(
-                                  child: Text('Amount',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 14, color: Colors.black)),
-                                ),
-                              ),
-                              DropdownMenuItem<String>(
-                                value: "1300",
-                                child: Center(
-                                  child: Text('Done',
-                                      style: GoogleFonts.poppins(
-                                          fontSize: 14, color: Colors.black)),
-                                ),
-                              ),
-                            ],
-                            onChanged: (value) => valuechanged(value),
-                            // hint: Text("Select zone",
-                            //     style: GoogleFonts.poppins(
-                            //         fontSize: 14, color: Color(0xFFF89520))),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -585,8 +514,14 @@ class _TransactionState extends State<Transaction> {
                                                         width:
                                                             screenWidth * 0.25,
                                                         decoration: BoxDecoration(
-                                                            color: Colors
-                                                                .green[300],
+                                                            color: allTransactions[
+                                                                            index]
+                                                                        .status
+                                                                        .toString() ==
+                                                                    "Recieved"
+                                                                ? Colors
+                                                                    .green[300]
+                                                                : Colors.orange,
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(

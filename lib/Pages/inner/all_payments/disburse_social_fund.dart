@@ -299,14 +299,14 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
                                           ),
                                         ),
                                       ),
-                                      const Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                        child: Icon(
-                                          FontAwesomeIcons.plus,
-                                          color: Colors.orange,
-                                        ),
-                                      )
+                                      // const Padding(
+                                      //   padding:
+                                      //       EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      //   child: Icon(
+                                      //     FontAwesomeIcons.plus,
+                                      //     color: Colors.orange,
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),
@@ -391,14 +391,14 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
                                           ),
                                         ),
                                       ),
-                                      const Padding(
-                                        padding:
-                                            EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                        child: Icon(
-                                          FontAwesomeIcons.plus,
-                                          color: Colors.orange,
-                                        ),
-                                      )
+                                      // const Padding(
+                                      //   padding:
+                                      //       EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      //   child: Icon(
+                                      //     FontAwesomeIcons.plus,
+                                      //     color: Colors.orange,
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                 ),

@@ -202,7 +202,7 @@ class _Bank_linksState extends State<Bank_links> {
                                         ),
                                       ),
                                       Text(
-                                        "Oromia Bank",
+                                        "Other Bank",
                                         style: GoogleFonts.poppins(
                                             fontSize: screenWidth * 0.023,
                                             fontWeight: FontWeight.w700),
@@ -220,16 +220,19 @@ class _Bank_linksState extends State<Bank_links> {
                       right: screenWidth * 0.09,
                       left: screenWidth * 0.09,
                       child: Container(
-                        width: screenWidth * 0.2,
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        decoration: BoxDecoration(
-                            color: Colors.white60,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: SizedBox(
+                          width: screenWidth * 0.2,
+                          height: MediaQuery.of(context).size.height * 0.06,
+                          decoration: BoxDecoration(
+                              color: Colors.white60,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.04,
-                            child: const Image(
-                                image: AssetImage("assets/images/oromia.png"))),
-                      ),
+                            child: Container(),
+                          )
+                          // Image(
+                          //     image:
+                          //         AssetImage("assets/images/Business.jpg"))),
+                          ),
                     ),
                   ],
                 ),

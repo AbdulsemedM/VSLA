@@ -20,7 +20,7 @@ class _PaymentsState extends State<Payments>
 
   final List<Tab> _tabs = const [
     Tab(text: "Attendance"),
-    Tab(text: "Round Payment"),
+    Tab(text: "Saving"),
     Tab(text: "Social funds"),
     Tab(text: "Penalty payments"),
   ];
