@@ -229,9 +229,7 @@ class _Bank_linksState extends State<Bank_links> {
                             height: MediaQuery.of(context).size.height * 0.04,
                             child: Container(),
                           )
-                          // Image(
-                          //     image:
-                          //         AssetImage("assets/images/Business.jpg"))),
+                         
                           ),
                     ),
                   ],
