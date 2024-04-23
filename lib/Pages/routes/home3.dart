@@ -592,14 +592,44 @@ class _Home3State extends State<Home3> {
                                         // color: Colors.amber,
                                         child: GestureDetector(
                                           onTap: () async {
-                                            final result = await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Payments()));
-                                            if (result) {
-                                              fetchDashBoardData();
-                                              fetchTips();
+                                            bool process = await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Start Meeting'),
+                                                  content: Text(
+                                                      "Do you want to start the meeting?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(
+                                                            false); // User confirms deletion
+                                                      },
+                                                      child: const Text('No'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(
+                                                            true); // User confirms deletion
+                                                      },
+                                                      child: const Text('Yes'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                            if (process) {
+                                              final result =
+                                                  await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Payments()));
+                                              if (result) {
+                                                fetchDashBoardData();
+                                                fetchTips();
+                                              }
                                             }
                                           },
                                           child: Column(
@@ -617,7 +647,7 @@ class _Home3State extends State<Home3> {
                                                 ),
                                               ),
                                               Text(
-                                                "Payment",
+                                                "Start",
                                                 style: GoogleFonts.poppins(
                                                     color: Colors.black),
                                               )
