@@ -85,6 +85,7 @@ class _CreatGroupState extends State<CreatGroup> {
   TextEditingController groupNameController = new TextEditingController();
   TextEditingController woredaController = new TextEditingController();
   TextEditingController entryFeeController = new TextEditingController();
+  TextEditingController cycleController = new TextEditingController();
   TextEditingController interestRateController = new TextEditingController();
   TextEditingController socialFundAmountController =
       new TextEditingController();
@@ -115,12 +116,13 @@ class _CreatGroupState extends State<CreatGroup> {
         "projectId": selectedProject,
         "groupTypeId": selectedGroup,
         "meetingDate": selectedDate,
+        "cycleSize": cycleController.text,
         "entryFee": 0,
         "address": {
           "region": selectedRegion,
           "zone": selectedZone,
           "woreda": woreda,
-          "kebele": kebele,
+          "kebele": kebele == "" ? "null" : kebele,
         }
       };
       print(requestBody);
@@ -130,18 +132,12 @@ class _CreatGroupState extends State<CreatGroup> {
       final String phone = accessToken[1];
       final String orgId = accessToken[2];
       final String role = accessToken[3];
-      // final String groupId = accessToken[2];
-      // const String apiUrl = 'https://$baseUrl/api/v1/groups';
-      // 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwOTc3Nzc3Nzc4Iiwicm9sZSI6WyJHUk9VUF9BRE1JTiJdLCJpc3MiOiJTdG9yZSBNYW5hZ2VtZW50IEFwcCIsImV4cCI6MTY5OTI1NTk2NSwiaWF0IjoxNjk4NjUxMTY1fQ.Mq9Dr_cE1HALxv0oQORS5FHjdbBKSQao-5kV-R7GDq8';
-
-      final response = await http.post(
-        Uri.https(baseUrl, '/api/v1/groups'),
-        headers: {
-          'Authorization': 'Bearer $authToken',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(requestBody),
-      );
+      final response = await http.post(Uri.https(baseUrl, '/api/v1/groups'),
+          headers: {
+            'Authorization': 'Bearer $authToken',
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(requestBody));
       if (response.statusCode == 201) {
         var data = jsonDecode(response.body);
         var groupId = data['groupId'];
@@ -490,7 +486,29 @@ class _CreatGroupState extends State<CreatGroup> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Share Amount",
+          labelText: "Share Amount*",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
+        ),
+      ),
+    );
+    final cycle = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        validator: _validateField,
+        controller: cycleController,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "No. of Cycle(s)*",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520)),
         ),
@@ -832,6 +850,20 @@ class _CreatGroupState extends State<CreatGroup> {
                   ),
                   Expanded(
                     child: entryFee,
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: cycle,
+                  ),
+                  const SizedBox(
+                    width:
+                        16.0, // Adjust this value as needed for the gap between the widgets
+                  ),
+                  Expanded(
+                    child: Container(),
                   ),
                 ],
               ),

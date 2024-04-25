@@ -53,6 +53,7 @@ class _SignupState extends State<Signup> {
   }
 
   TextEditingController fname = TextEditingController();
+  TextEditingController lname = TextEditingController();
   TextEditingController pnumber = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController cpassword = TextEditingController();
@@ -67,6 +68,11 @@ class _SignupState extends State<Signup> {
     // print(pnumber);
     if (fname.text.isEmpty) {
       const message = 'Full name is mandatory';
+      Future.delayed(const Duration(milliseconds: 100), () {
+        Fluttertoast.showToast(msg: message, fontSize: 18);
+      });
+    } else if (lname.text.isEmpty) {
+      const message = 'Last name is mandatory';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
@@ -96,8 +102,8 @@ class _SignupState extends State<Signup> {
       setState(() {
         loading = true;
       });
-      pnumber.text = pnumber.text.substring(pnumber.text.length - 9);
-      var body2 = {"phoneNumber": pnumber.text};
+      String num = pnumber.text.substring(pnumber.text.length - 9);
+      var body2 = {"phoneNumber": num};
       print(body2);
       var otp = await http.post(
         Uri.https(baseUrl, "api/v1/otp/send"),
@@ -113,8 +119,8 @@ class _SignupState extends State<Signup> {
             context,
             MaterialPageRoute(
                 builder: (context) => Otp(
-                      pNumber: pnumber.text,
-                      fullname: fname.text,
+                      pNumber: num,
+                      fullname: "${fname.text} ${lname.text}",
                       gender: selectedGender!,
                       organization: selectedCompany!,
                       password: password.text,
@@ -175,7 +181,7 @@ class _SignupState extends State<Signup> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                     child: Text(
-                      "Name",
+                      "First Name",
                       style: GoogleFonts.poppins(
                           fontSize: 15, fontWeight: FontWeight.w600),
                     ),
@@ -202,7 +208,57 @@ class _SignupState extends State<Signup> {
                             // prefixIcon: Icon(
                             //   Icons.phone_android,
                             // ),
-                            hintText: "ex: John Doe",
+                            hintText: "ex: John",
+                            hintStyle:
+                                GoogleFonts.poppins(color: Colors.grey[400]),
+                          ),
+                          onChanged: (value) {
+                            // Handle the phone number input here
+                            // print('Phone Number: $value');
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                    child: Text(
+                      "Last Name",
+                      style: GoogleFonts.poppins(
+                          fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: TextField(
+                          controller: lname,
+                          // focusNode: phoneFocus,
+                          // onTapOutside: (event) {
+                          //   phoneFocus.unfocus();
+                          // },
+                          keyboardType: TextInputType.name,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            // prefixIcon: Icon(
+                            //   Icons.phone_android,
+                            // ),
+                            hintText: "ex: Doe",
                             hintStyle:
                                 GoogleFonts.poppins(color: Colors.grey[400]),
                           ),

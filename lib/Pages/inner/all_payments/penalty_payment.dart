@@ -58,9 +58,15 @@ class _PenaltyPaymentState extends State<PenaltyPayment> {
                           onTap: () async {
                             print(GlobalStrings.getGlobalString());
                             // print(allMembers[index].proxy.toLowerCase());
-                            if (GlobalStrings.getGlobalString() ==
-                                "GROUP_ADMIN") {
-                              editModal(allMembers[index]);
+                            if (attendance == 1) {
+                              if (GlobalStrings.getGlobalString() ==
+                                  "GROUP_ADMIN") {
+                                editModal(allMembers[index]);
+                              }
+                            } else {
+                              var message = 'Please fill attendace first.';
+                              Fluttertoast.showToast(
+                                  msg: message, fontSize: 18);
                             }
                           },
                           child: Card(

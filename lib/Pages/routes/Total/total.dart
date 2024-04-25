@@ -25,6 +25,7 @@ class Totals extends StatefulWidget {
 class _TotalsState extends State<Totals> with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _selectedIndex = 0;
+  bool isAttendanceFilled = false;
 
   final List<Tab> _tabs = const [
     Tab(text: "Report"),
@@ -41,6 +42,25 @@ class _TotalsState extends State<Totals> with SingleTickerProviderStateMixin {
     _tabController = TabController(length: _tabs.length, vsync: this);
     _tabController!.addListener(
         _handleTabSelection); // Add listener to handle tab selection
+    fetchAttendace();
+  }
+
+  Future<void> fetchAttendace() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+    final response1 = await http.get(
+      Uri.https(baseUrl, '/api/v1/Loan/isAttendaceFilled'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $authToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    // transactions = parseTransactions(response.body);
+    var data1 = jsonDecode(response1.body);
+    setState(() {
+      isAttendanceFilled = data1;
+    });
   }
 
   @override
@@ -135,9 +155,15 @@ class _TotalsState extends State<Totals> with SingleTickerProviderStateMixin {
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange),
-                        onPressed: () async {
-                          editModal();
-                        },
+                        onPressed: isAttendanceFilled
+                            ? () async {
+                                editModal();
+                              }
+                            : () {
+                                var message = 'Please fill attendace first.';
+                                Fluttertoast.showToast(
+                                    msg: message, fontSize: 18);
+                              },
                         child: Text(
                           "Pay-Expenditure",
                           style: TextStyle(color: Colors.black),

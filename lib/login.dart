@@ -54,9 +54,9 @@ class _LoginState extends State<Login> {
       setState(() {
         loading = true;
       });
-      pnumber.text = pnumber.text.substring(pnumber.text.length - 9);
+      String num = pnumber.text.substring(pnumber.text.length - 9);
       final body = <String, String>{
-        "username": pnumber.text.toString(),
+        "username": num,
         "password": password.text.toString(),
       };
       // print(body);
@@ -71,7 +71,7 @@ class _LoginState extends State<Login> {
             )
             .timeout(const Duration(seconds: 15));
 
-        // print(response.body);
+        print(response.body);
         // print("here" + "${response.statusCode}");
 
         if (response.statusCode == 200) {
@@ -118,6 +118,9 @@ class _LoginState extends State<Login> {
               print(decodedToken);
               String sub = subVal.toString();
               List<String> newUser = [accessToken, sub, orgId.toString(), role];
+              // print("object");
+              // print(newUser);
+              GlobalStrings.setGlobalString(role);
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 

@@ -15,8 +15,8 @@ class AddMember extends StatefulWidget {
 }
 
 class _AddMemberState extends State<AddMember> {
-  TextEditingController fullNameController = TextEditingController();
-  // TextEditingController woredaController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   // TextEditingController kebeleController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   // TextEditingController initialContributionController = TextEditingController();
@@ -36,7 +36,8 @@ class _AddMemberState extends State<AddMember> {
       setState(() {
         loading = true;
       });
-      final String fullName = fullNameController.text;
+      final String fullName =
+          "${firstNameController.text} ${lastNameController.text}";
       // final Double initialContribution =
       // initialContributionController.text as Double;
       // final String woreda = woredaController.text;
@@ -73,7 +74,7 @@ class _AddMemberState extends State<AddMember> {
         body: jsonEncode(requestBody),
       );
       if (response.statusCode == 200) {
-        fullNameController.clear();
+        firstNameController.clear();
         // woredaController.clear();
         // kebeleController.clear();
         phoneNumberController.clear();
@@ -147,7 +148,7 @@ class _AddMemberState extends State<AddMember> {
       padding: const EdgeInsets.all(16),
       child: TextFormField(
         validator: _validateField,
-        controller: fullNameController,
+        controller: firstNameController,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
           enabledBorder: OutlineInputBorder(
@@ -158,7 +159,28 @@ class _AddMemberState extends State<AddMember> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: const BorderSide(color: Color(0xFFF89520)),
           ),
-          labelText: "Full name *",
+          labelText: "First name *",
+          labelStyle:
+              GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
+        ),
+      ),
+    );
+    final lastName = Padding(
+      padding: const EdgeInsets.all(16),
+      child: TextFormField(
+        validator: _validateField,
+        controller: lastNameController,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(color: Color(0xFFF89520)),
+          ),
+          labelText: "Last name *",
           labelStyle:
               GoogleFonts.poppins(fontSize: 14, color: const Color(0xFFF89520)),
         ),
@@ -590,6 +612,10 @@ class _AddMemberState extends State<AddMember> {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               fullName,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              lastName,
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),

@@ -51,6 +51,7 @@ class _LoanState extends State<Loan> {
   var active = [];
   var lost = [];
   var repaid = [];
+  bool isAttendanceFilled = false;
   List<LoanData> allLoans = [];
   List<LoanData> filteredLoans = [];
   final PageController _pageController = PageController();
@@ -306,7 +307,8 @@ class _LoanState extends State<Loan> {
                     )
                   ],
                 ),
-                if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
+                if (GlobalStrings.getGlobalString() == "GROUP_ADMIN" &&
+                    isAttendanceFilled)
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.068,
                       width: MediaQuery.of(context).size.width * 0.5,
@@ -434,12 +436,20 @@ class _LoanState extends State<Loan> {
                             itemCount: filteredLoans.length,
                             itemBuilder: (context, index) {
                               return GestureDetector(
-                                onTap: GlobalStrings.getGlobalString() ==
-                                        "GROUP_ADMIN"
+                                onTap: (GlobalStrings.getGlobalString() ==
+                                            "GROUP_ADMIN" &&
+                                        isAttendanceFilled)
                                     ? () {
                                         viewModal(filteredLoans[index]);
                                       }
-                                    : null,
+                                    : isAttendanceFilled == false
+                                        ? () {
+                                            var message =
+                                                'Please fill attendace first.';
+                                            Fluttertoast.showToast(
+                                                msg: message, fontSize: 18);
+                                          }
+                                        : null,
                                 child: Card(
                                   child: SizedBox(
                                     height: 60,
@@ -590,8 +600,16 @@ class _LoanState extends State<Loan> {
       print(allLoans.length);
 
       // print(transactions[0]);
-
+      final response1 = await http.get(
+        Uri.https(baseUrl, '/api/v1/Loan/isAttendaceFilled'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      var data1 = jsonDecode(response1.body);
       setState(() {
+        isAttendanceFilled = data1;
         loading = false;
       });
     } catch (e) {
