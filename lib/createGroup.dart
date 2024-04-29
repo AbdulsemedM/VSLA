@@ -52,13 +52,14 @@ class ProjectData {
 }
 
 class _CreatGroupState extends State<CreatGroup> {
-  String? selectedInterval;
+  // String? selectedInterval;
   String? selectedGroup;
   String? selectedProject;
+  MeetingIntevalData? selectedMeetingInterval;
   void onChanged(String? value) {
     // print(value);
     setState(() {
-      selectedInterval = value;
+      // selectedInterval = value;
     });
   }
 
@@ -112,11 +113,13 @@ class _CreatGroupState extends State<CreatGroup> {
         "shareAmount": entryFee,
         "socialFundAmount": socialFundAmount,
         "interestRate": interestRate,
-        "meetingIntervalId": selectedInterval,
+        "meetingIntervalId": selectedMeetingInterval!.meetingIntervalId,
         "projectId": selectedProject,
         "groupTypeId": selectedGroup,
         "meetingDate": selectedDate,
         "cycleSize": cycleController.text,
+        "meetingIntervalDays": selectedMeetingInterval!.intervalInDays,
+        "meetingIntervalName": selectedMeetingInterval!.meetingIntervalName,
         "entryFee": 0,
         "address": {
           "region": selectedRegion,
@@ -590,7 +593,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final meetingInterval = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
-        value: selectedInterval,
+        // value: selectedMeetingInterval!.meetingIntervalName,
         validator: _validateField,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -624,7 +627,15 @@ class _CreatGroupState extends State<CreatGroup> {
             ),
           );
         }).toList(),
-        onChanged: onChanged,
+        onChanged: (newValue) {
+          setState(() {
+            // selectedInterval = newValue;
+            selectedMeetingInterval = interval.firstWhere(
+              (element) => element.meetingIntervalId.toString() == newValue,
+              // orElse: () => null,
+            );
+          });
+        },
         hint: Text("Select meeting interval",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
       ),
@@ -863,7 +874,11 @@ class _CreatGroupState extends State<CreatGroup> {
                         16.0, // Adjust this value as needed for the gap between the widgets
                   ),
                   Expanded(
-                    child: Container(),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          _selectTime(context);
+                        },
+                        child: Text("time")),
                   ),
                 ],
               ),
@@ -904,6 +919,27 @@ class _CreatGroupState extends State<CreatGroup> {
         )),
       ),
     );
+  }
+
+  TimeOfDay selectedTime = TimeOfDay.now();
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime != null && pickedTime != selectedTime) {
+      setState(() {
+        selectedTime = pickedTime;
+      });
+    }
   }
 
   Future<void> fetchMeetingIntervals() async {
