@@ -56,6 +56,8 @@ class _CreatGroupState extends State<CreatGroup> {
   String? selectedGroup;
   String? selectedProject;
   MeetingIntevalData? selectedMeetingInterval;
+  TimeOfDay selectedTime = TimeOfDay.now();
+
   void onChanged(String? value) {
     // print(value);
     setState(() {
@@ -116,7 +118,8 @@ class _CreatGroupState extends State<CreatGroup> {
         "meetingIntervalId": selectedMeetingInterval!.meetingIntervalId,
         "projectId": selectedProject,
         "groupTypeId": selectedGroup,
-        "meetingDate": selectedDate,
+        "meetingDate":
+            "$selectedDate ${selectedTime.hour.toString().length == 1 ? '0${selectedTime.hour}' : selectedTime.hour}:${selectedTime.minute}:00",
         "cycleSize": cycleController.text,
         "meetingIntervalDays": selectedMeetingInterval!.intervalInDays,
         "meetingIntervalName": selectedMeetingInterval!.meetingIntervalName,
@@ -724,6 +727,7 @@ class _CreatGroupState extends State<CreatGroup> {
     );
 
     return Scaffold(
+      backgroundColor: Colors.white.withOpacity(1),
       body: WillPopScope(
         onWillPop: () => _onBackButtonPressed(context),
         child: SafeArea(
@@ -874,11 +878,36 @@ class _CreatGroupState extends State<CreatGroup> {
                         16.0, // Adjust this value as needed for the gap between the widgets
                   ),
                   Expanded(
-                    child: ElevatedButton(
-                        onPressed: () {
-                          _selectTime(context);
-                        },
-                        child: Text("time")),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10), // Adjust the radius as needed
+                            ),
+                          ),
+                          onPressed: () {
+                            _selectTime(context);
+                            print(selectedTime.hour.toString().length);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedTime.hour.isNaN
+                                    ? "Meeting Time"
+                                    : "${selectedTime.hour} : ${selectedTime.minute}",
+                                style: TextStyle(color: Color(0xFFF89520)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -920,8 +949,6 @@ class _CreatGroupState extends State<CreatGroup> {
       ),
     );
   }
-
-  TimeOfDay selectedTime = TimeOfDay.now();
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? pickedTime = await showTimePicker(
