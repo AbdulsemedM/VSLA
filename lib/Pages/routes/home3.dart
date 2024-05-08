@@ -599,7 +599,7 @@ class _Home3State extends State<Home3> {
                                                   title: const Text(
                                                       'Start Meeting'),
                                                   content: Text(
-                                                      "Do you want to start the meeting?"),
+                                                      "Do you want to start/continue the meeting?"),
                                                   actions: <Widget>[
                                                     TextButton(
                                                       onPressed: () {
@@ -610,6 +610,7 @@ class _Home3State extends State<Home3> {
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
+                                                        // fetchStart();
                                                         Navigator.of(context).pop(
                                                             true); // User confirms deletion
                                                       },
@@ -1089,5 +1090,25 @@ class _Home3State extends State<Home3> {
           i, i + maxLength > input.length ? input.length : i + maxLength));
     }
     return lines.join('\n');
+  }
+
+  Future<bool> fetchStart() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+    final response1 = await http.get(
+      Uri.https(baseUrl, '/api/v1/meetings/checkmeeetingdate'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $authToken',
+        // 'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    // transactions = parseTransactions(response.body);
+    var data = jsonDecode(response1.body);
+    print(data);
+    // setState(() {
+    //   isAttendanceFilled = data1;
+    // });
+    return data == true ? data : false;
   }
 }

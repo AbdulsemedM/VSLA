@@ -35,6 +35,46 @@ class _PenaltyPaymentState extends State<PenaltyPayment> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      floatingActionButton: SizedBox(
+        width: screenWidth * 0.7,
+        height: 50,
+        child: admin
+            ? ElevatedButton(
+                onPressed: () async {
+                  bool process = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Caution'),
+                        content:
+                            Text("Are you sure, This process is irreversible!"),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(true); // User confirms deletion
+                            },
+                            child: const Text('Okay'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (process) {
+                    await close();
+                  }
+                },
+                child: Text(
+                  "Close Meeting",
+                  style: TextStyle(
+                      color: Colors.white, fontSize: screenWidth * 0.05),
+                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+              )
+            : Container(
+                width: 0,
+              ),
+      ),
       body: loading
           ? const SizedBox(
               child: Center(
@@ -431,6 +471,68 @@ class _PenaltyPaymentState extends State<PenaltyPayment> {
         );
       },
     );
+  }
+
+  Future<void> close() async {
+    print("mybodyyyyy");
+    setState(() {
+      loading = true;
+    });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+
+    try {
+      var response = await http.put(
+        Uri.https(baseUrl, "/api/v1/groups/closeMeetingRound"),
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      if (response.statusCode == 200) {
+        fetchMembersRound();
+        setState(() {
+          loading = false;
+        });
+        const message = 'Meeting closed successfully';
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        });
+
+        // ignore: use_build_context_synchronously
+
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => const Otp()));
+        setState(() {
+          loading = false;
+        });
+      } else if (response.statusCode != 200) {
+        final responseBody = json.decode(response.body);
+        final description =
+            responseBody?['message']; // Extract 'description' field
+        print(description);
+        if (description == "Something went wrong, please try again") {
+          Fluttertoast.showToast(
+              msg: "Something went wron, please try again", fontSize: 18);
+        } else {
+          var message = description ?? "Something went wrong, please try again";
+          Fluttertoast.showToast(msg: message, fontSize: 18);
+        }
+        setState(() {
+          loading = false;
+        });
+      }
+    } catch (e) {
+      var message = e.toString();
+      print(e.toString());
+      // 'Please check your network connection';
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   Future<void> apply() async {
