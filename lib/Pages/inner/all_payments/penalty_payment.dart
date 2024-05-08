@@ -31,6 +31,7 @@ class _PenaltyPaymentState extends State<PenaltyPayment> {
   var admin = GlobalStrings.getGlobalString() == "GROUP_ADMIN" ? true : false;
   String? group;
   var loading = false;
+  TextEditingController agendaController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
@@ -49,10 +50,41 @@ class _PenaltyPaymentState extends State<PenaltyPayment> {
                         content:
                             Text("Are you sure, This process is irreversible!"),
                         actions: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: TextFormField(
+                              keyboardType: TextInputType.name,
+                              // validator: _validateField,
+                              controller: agendaController,
+                              decoration: InputDecoration(
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFF89520)),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFF89520)),
+                                ),
+                                labelText: "Meeting Agenda *",
+                                labelStyle: GoogleFonts.poppins(
+                                    fontSize: 14, color: Color(0xFFF89520)),
+                              ),
+                            ),
+                          ),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context)
-                                  .pop(true); // User confirms deletion
+                              if (agendaController.text.isNotEmpty) {
+                                Navigator.of(context)
+                                    .pop(true); // User confirms deletion
+                              } else {
+                                var message = 'Meeting agenda is required.';
+                                Fluttertoast.showToast(
+                                    msg: message, fontSize: 18);
+                              }
                             },
                             child: const Text('Okay'),
                           ),
@@ -481,15 +513,15 @@ class _PenaltyPaymentState extends State<PenaltyPayment> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var accessToken = prefs.getStringList("_keyUser");
     final String authToken = accessToken![0];
-
+    final body = {"agenda": agendaController.text};
     try {
-      var response = await http.put(
-        Uri.https(baseUrl, "/api/v1/groups/closeMeetingRound"),
-        headers: <String, String>{
-          'Authorization': 'Bearer $authToken',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+      var response =
+          await http.put(Uri.https(baseUrl, "/api/v1/groups/closeMeetingRound"),
+              headers: <String, String>{
+                'Authorization': 'Bearer $authToken',
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(body));
       if (response.statusCode == 200) {
         fetchMembersRound();
         setState(() {
