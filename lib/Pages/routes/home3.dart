@@ -609,10 +609,20 @@ class _Home3State extends State<Home3> {
                                                       child: const Text('No'),
                                                     ),
                                                     TextButton(
-                                                      onPressed: () {
-                                                        // fetchStart();
-                                                        Navigator.of(context).pop(
-                                                            true); // User confirms deletion
+                                                      onPressed: () async {
+                                                        bool start =
+                                                            await fetchStart();
+                                                        if (start) {
+                                                          Navigator.of(context).pop(
+                                                              start); // User confirms deletion
+                                                        } else {
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  "The meeting date is not due.",
+                                                              fontSize: 18);
+                                                          Navigator.of(context)
+                                                              .pop(start);
+                                                        }
                                                       },
                                                       child: const Text('Yes'),
                                                     ),
@@ -1097,7 +1107,7 @@ class _Home3State extends State<Home3> {
     var accessToken = prefs.getStringList("_keyUser");
     final String authToken = accessToken![0];
     final response1 = await http.get(
-      Uri.https(baseUrl, '/api/v1/meetings/checkmeeetingdate'),
+      Uri.https(baseUrl, '/api/v1/meetings/CheckMeeetingDate'),
       headers: <String, String>{
         'Authorization': 'Bearer $authToken',
         // 'Content-Type': 'application/json; charset=UTF-8',
@@ -1106,6 +1116,7 @@ class _Home3State extends State<Home3> {
     // transactions = parseTransactions(response.body);
     var data = jsonDecode(response1.body);
     print(data);
+    data = data['isMeetingDate'];
     // setState(() {
     //   isAttendanceFilled = data1;
     // });

@@ -83,6 +83,7 @@ class _LoginState extends State<Login> {
           if (dataList.isNotEmpty) {
             Map<String, dynamic> data = dataList.first;
             String accessToken = data['access_token'];
+            print(accessToken);
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
             print(decodedToken['role'][0]);
             String role = decodedToken['role'][0];

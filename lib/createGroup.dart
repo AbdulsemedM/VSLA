@@ -119,7 +119,7 @@ class _CreatGroupState extends State<CreatGroup> {
         "projectId": selectedProject,
         "groupTypeId": selectedGroup,
         "meetingDate":
-            "$selectedDate ${selectedTime.hour.toString().length == 1 ? '0${selectedTime.hour}' : selectedTime.hour}:${selectedTime.minute}:00",
+            "$selectedDate ${selectedTime.hour.toString().length == 1 ? '0${selectedTime.hour}' : selectedTime.hour}:${selectedTime.minute.toString().length == 1 ? '0${selectedTime.minute}' : selectedTime.minute}:00",
         "cycleSize": cycleController.text,
         "meetingIntervalDays": selectedMeetingInterval!.intervalInDays,
         "meetingIntervalName": selectedMeetingInterval!.meetingIntervalName,
