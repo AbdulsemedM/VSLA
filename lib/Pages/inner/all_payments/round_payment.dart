@@ -35,7 +35,6 @@ class _RoundPaymentsState extends State<RoundPayments> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-     
       body: loading
           ? const SizedBox(
               child: Center(
@@ -600,6 +599,8 @@ class _RoundPaymentsState extends State<RoundPayments> {
       setState(() {
         shareAmount = double.parse(data['shareAmount']);
         attendance = double.parse(data['isAttendaceCompleted']);
+        print("attendance");
+        print(attendance);
         loading = false;
       });
 

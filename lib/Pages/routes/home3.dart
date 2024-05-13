@@ -592,14 +592,55 @@ class _Home3State extends State<Home3> {
                                         // color: Colors.amber,
                                         child: GestureDetector(
                                           onTap: () async {
-                                            final result = await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Payments()));
-                                            if (result) {
-                                              fetchDashBoardData();
-                                              fetchTips();
+                                            bool process = await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Start Meeting'),
+                                                  content: Text(
+                                                      "Do you want to start/continue the meeting?"),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(
+                                                            false); // User confirms deletion
+                                                      },
+                                                      child: const Text('No'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        bool start =
+                                                            await fetchStart();
+                                                        if (start) {
+                                                          Navigator.of(context).pop(
+                                                              start); // User confirms deletion
+                                                        } else {
+                                                          Fluttertoast.showToast(
+                                                              msg:
+                                                                  "The meeting date is not due.",
+                                                              fontSize: 18);
+                                                          Navigator.of(context)
+                                                              .pop(start);
+                                                        }
+                                                      },
+                                                      child: const Text('Yes'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                            if (process) {
+                                              final result =
+                                                  await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Payments()));
+                                              if (result) {
+                                                fetchDashBoardData();
+                                                fetchTips();
+                                              }
                                             }
                                           },
                                           child: Column(
@@ -617,7 +658,7 @@ class _Home3State extends State<Home3> {
                                                 ),
                                               ),
                                               Text(
-                                                "Payment",
+                                                "Start",
                                                 style: GoogleFonts.poppins(
                                                     color: Colors.black),
                                               )
@@ -1059,5 +1100,26 @@ class _Home3State extends State<Home3> {
           i, i + maxLength > input.length ? input.length : i + maxLength));
     }
     return lines.join('\n');
+  }
+
+  Future<bool> fetchStart() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+    final response1 = await http.get(
+      Uri.https(baseUrl, '/api/v1/meetings/CheckMeeetingDate'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $authToken',
+        // 'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    // transactions = parseTransactions(response.body);
+    var data = jsonDecode(response1.body);
+    print(data);
+    data = data['isMeetingDate'];
+    // setState(() {
+    //   isAttendanceFilled = data1;
+    // });
+    return data == true ? data : false;
   }
 }

@@ -411,7 +411,7 @@ class _MembersState extends State<Members> {
           ),
           if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
             Positioned(
-              bottom: 16.0, // Adjust this value as needed
+              bottom: 4.0, // Adjust this value as needed
               right: 16.0, // Adjust this value as needed
               child: GestureDetector(
                 onTap: () async {
@@ -426,13 +426,26 @@ class _MembersState extends State<Members> {
                 },
                 child: Container(
                   height: screenWidth * 0.12,
-                  width: screenWidth * 0.12,
+                  width: screenWidth * 0.3,
                   decoration: BoxDecoration(
                     color: Colors.orange,
                     borderRadius: BorderRadius.circular(screenWidth * 0.12),
                   ),
                   child: const Center(
-                    child: Icon(FontAwesomeIcons.plus),
+                    child: Row(
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.plus,
+                          weight: 5,
+                          size: 16,
+                        ),
+                        Text(
+                          "Add Member",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700, fontSize: 14),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

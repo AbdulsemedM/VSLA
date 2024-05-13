@@ -164,6 +164,7 @@ class _OtpState extends State<Otp> {
     var body2 = {"code": otpNumber};
     print(body2);
     try {
+      print(widget.pNumber);
       var response = await http.post(
           Uri.https(baseUrl, "/api/v1/otp/verify/${widget.pNumber}"),
           headers: <String, String>{
@@ -171,6 +172,7 @@ class _OtpState extends State<Otp> {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(body2));
+      print(response.body);
       if (response.statusCode == 200) {
         /////////////////////////////////////////////////////
         final body = {

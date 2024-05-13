@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/all_payments/attendance.dart';
 import 'package:vsla/Pages/inner/all_payments/disburse_social_fund.dart';
 import 'package:vsla/Pages/inner/all_payments/penalty_payment.dart';
 import 'package:vsla/Pages/inner/all_payments/round_payment.dart';
 import 'package:vsla/Pages/inner/all_payments/social_funds.dart';
+import 'package:vsla/utils/api_config.dart';
 import 'package:vsla/utils/role.dart';
+import 'package:http/http.dart' as http;
 
 class Payments extends StatefulWidget {
   const Payments({Key? key}) : super(key: key);
@@ -17,6 +23,7 @@ class _PaymentsState extends State<Payments>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   int _selectedIndex = 0; // Variable to store the selected index
+  bool isAttendanceFilled = false;
 
   final List<Tab> _tabs = const [
     Tab(text: "Attendance"),
@@ -37,12 +44,31 @@ class _PaymentsState extends State<Payments>
     _tabController = TabController(length: _tabs.length, vsync: this);
     _tabController!.addListener(
         _handleTabSelection); // Add listener to handle tab selection
+    fetchAttendace();
   }
 
   @override
   void dispose() {
     _tabController!.dispose();
     super.dispose();
+  }
+
+  Future<void> fetchAttendace() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var accessToken = prefs.getStringList("_keyUser");
+    final String authToken = accessToken![0];
+    final response1 = await http.get(
+      Uri.https(baseUrl, '/api/v1/Loan/isAttendaceFilled'),
+      headers: <String, String>{
+        'Authorization': 'Bearer $authToken',
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    // transactions = parseTransactions(response.body);
+    var data1 = jsonDecode(response1.body);
+    setState(() {
+      isAttendanceFilled = data1;
+    });
   }
 
   void _handleTabSelection() {
@@ -86,13 +112,20 @@ class _PaymentsState extends State<Payments>
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.orange),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                DisburseSocialFunds()));
-                                  },
+                                  onPressed: isAttendanceFilled
+                                      ? () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DisburseSocialFunds()));
+                                        }
+                                      : () {
+                                          var message =
+                                              'Please fill attendace first.';
+                                          Fluttertoast.showToast(
+                                              msg: message, fontSize: 18);
+                                        },
                                   child: Text(
                                     "Pay-Social Fund",
                                     style: TextStyle(color: Colors.black),
