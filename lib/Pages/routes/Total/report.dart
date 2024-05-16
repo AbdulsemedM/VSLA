@@ -128,6 +128,8 @@ class _TotalReportsState extends State<TotalReports> {
                                     MediaQuery.of(context).size.height * 0.13,
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
+                                    // crossAxisAlignment:
+                                    //     CrossAxisAlignment.center,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -198,8 +200,8 @@ class _TotalReportsState extends State<TotalReports> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
-                                          // crossAxisAlignment:
-                                          //     CrossAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Column(
                                               children: [
@@ -210,7 +212,7 @@ class _TotalReportsState extends State<TotalReports> {
                                                           .fromLTRB(
                                                           10, 0, 10, 0),
                                                       child: Text(
-                                                        " Total Contr.: ${allMembers[index].totalContribution} ETB",
+                                                        "Contr.: ${allMembers[index].totalContribution} ETB",
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 color: Colors

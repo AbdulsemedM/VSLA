@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/all_payments/attendance.dart';
 import 'package:vsla/Pages/inner/all_payments/disburse_social_fund.dart';
+import 'package:vsla/Pages/inner/all_payments/penalties.dart';
 import 'package:vsla/Pages/inner/all_payments/penalty_payment.dart';
 import 'package:vsla/Pages/inner/all_payments/round_payment.dart';
 import 'package:vsla/Pages/inner/all_payments/social_funds.dart';
@@ -30,12 +31,14 @@ class _PaymentsState extends State<Payments>
     Tab(text: "Saving"),
     Tab(text: "Social funds"),
     Tab(text: "Penalty payments"),
+    Tab(text: "Penalties"),
   ];
   final List<Widget> _pages = const [
     Attendance(),
     RoundPayments(),
     SocialFundsPayment(),
     PenaltyPayment(),
+    PaidPenalties()
   ];
 
   @override

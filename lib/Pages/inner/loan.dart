@@ -655,11 +655,17 @@ class _LoanState extends State<Loan> {
               children: [
                 Text(
                   "Amount:  ",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.red,
+                      fontSize: 15),
                 ),
                 Text(
                   "${loanDetail.amount.toString()} ETB",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.red,
+                      fontSize: 15),
                 ),
               ],
             ),
@@ -691,11 +697,17 @@ class _LoanState extends State<Loan> {
               children: [
                 Text(
                   "Repayment Amount:  ",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.red,
+                      fontSize: 15),
                 ),
                 Text(
                   "${loanDetail.amountToBePaid} ETB",
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w800),
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w800,
+                      color: Colors.red,
+                      fontSize: 15),
                 ),
               ],
             ),

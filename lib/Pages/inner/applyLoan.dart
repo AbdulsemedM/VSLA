@@ -151,6 +151,7 @@ class _ApplyLoanState extends State<ApplyLoan> {
             loading = false;
             loanAmountController.clear();
             loanDescController = "";
+            Navigator.pop(context, true);
             // loanInterestController.clear();
             // selectedMember = "";
             // selectedPlan = "";
