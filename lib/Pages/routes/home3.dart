@@ -131,7 +131,7 @@ class _Home3State extends State<Home3> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Working Balance",
+                                        "Loanable Fund",
                                         style: GoogleFonts.poppins(
                                             fontSize: screenWidth * 0.045,
                                             fontWeight: FontWeight.w600),

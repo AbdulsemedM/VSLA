@@ -158,13 +158,13 @@ class _LoanState extends State<Loan> {
                         loading ? 0 : double.parse(pending[0]),
                         loading ? 0 : double.parse(active[0]),
                         loading ? 0 : double.parse(repaid[0]),
-                        loading ? 0 : double.parse(lost[0])
+                        // loading ? 0 : double.parse(lost[0])
                       ], // Change these to your desired percentages
                       colors: const [
                         Colors.green,
                         Colors.purple,
                         Colors.orange,
-                        Colors.blue
+                        // Colors.blue
                       ], // Change the colors as needed
                       text:
                           '${loading ? 0 : total}\n   ETB', // Change this to your desired text
@@ -307,8 +307,7 @@ class _LoanState extends State<Loan> {
                     )
                   ],
                 ),
-                if (GlobalStrings.getGlobalString() == "GROUP_ADMIN" &&
-                    isAttendanceFilled)
+                if (GlobalStrings.getGlobalString() == "GROUP_ADMIN")
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.068,
                       width: MediaQuery.of(context).size.width * 0.5,
@@ -318,14 +317,20 @@ class _LoanState extends State<Loan> {
                               side: BorderSide.none,
                               shape: const StadiumBorder()),
                           onPressed: () async {
-                            var result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ApplyLoan()),
-                            );
-                            if (result != null) {
-                              print('popper');
-                              fetchLoans();
+                            if (isAttendanceFilled) {
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const ApplyLoan()),
+                              );
+                              if (result != null) {
+                                print('popper');
+                                fetchLoans();
+                              }
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "Please fill attendace first.",
+                                  fontSize: 18);
                             }
                           },
                           child: Text(
