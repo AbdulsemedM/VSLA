@@ -182,7 +182,8 @@ class _OtpState extends State<Otp> {
           "roleName": "GROUP_ADMIN",
           "organizationId": widget.organization,
           "gender": widget.gender,
-          "proxyEnabled": false
+          "proxyEnabled": false,
+          // "vslaRole": ""
         };
         print(body);
         try {
@@ -194,7 +195,7 @@ class _OtpState extends State<Otp> {
             body: jsonEncode(body),
           );
           // print("here" + "${response.statusCode}");
-          // print(response.body);
+          print(response.body);
           if (response.statusCode == 201) {
             const message = 'Account Created Successfuly!';
             Future.delayed(const Duration(milliseconds: 100), () {
@@ -205,6 +206,8 @@ class _OtpState extends State<Otp> {
             setState(() {
               loading = false;
             });
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => Login()));
           } else if (response.statusCode != 201) {
             final responseBody = json.decode(response.body);
             final description =
@@ -239,8 +242,7 @@ class _OtpState extends State<Otp> {
         Future.delayed(const Duration(milliseconds: 100), () {
           Fluttertoast.showToast(msg: message, fontSize: 18);
         });
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Login()));
+
         setState(() {
           loading = false;
         });

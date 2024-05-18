@@ -21,6 +21,26 @@ class CreatGroup extends StatefulWidget {
   State<CreatGroup> createState() => _CreatGroupState();
 }
 
+class RegionData {
+  final int regionId;
+  final String regionName;
+
+  RegionData({
+    required this.regionId,
+    required this.regionName,
+  });
+}
+
+class ZoneData {
+  final int meetingIntervalId;
+  final String meetingIntervalName;
+
+  ZoneData({
+    required this.meetingIntervalId,
+    required this.meetingIntervalName,
+  });
+}
+
 class IntervalData {
   final int meetingIntervalId;
   final String meetingIntervalName;

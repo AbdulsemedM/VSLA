@@ -66,6 +66,7 @@ class _AddMemberState extends State<AddMember> {
         "roleName": "USER",
         "proxyEnabled": selectedProxy,
         "gender": selectedGender,
+        "vslaRole": selectedRole,
         // "address": {
         //   "region": selectedRegion,
         //   "zone": selectedZone,
@@ -110,6 +111,7 @@ class _AddMemberState extends State<AddMember> {
         setState(() {
           loading = false;
         });
+        Navigator.pop(context, true);
       } else {
         var message = 'Something went wrong please try again.';
         Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -291,7 +293,7 @@ class _AddMemberState extends State<AddMember> {
         ),
         items: myRoles.map((RoleData roles) {
           return DropdownMenuItem<String>(
-            value: roles.vslaRoleId.toString(),
+            value: roles.vslaRoleName.toString(),
             child: Text(
               roles.vslaRoleName,
               style: const TextStyle(fontSize: 14, color: Colors.black),
@@ -738,8 +740,7 @@ class _AddMemberState extends State<AddMember> {
       final String orgId = accessToken[3];
 
       final response = await http.get(
-        Uri.https("vslaapi.coopbankoromiasc.com:9001",
-            '/api/v1/VslaRoles/getVslaRoles/App/$orgId'),
+        Uri.https(baseUrl, '/api/v1/VslaRoles/getVslaRoles/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json; charset=UTF-8',
