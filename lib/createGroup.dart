@@ -32,12 +32,12 @@ class RegionData {
 }
 
 class ZoneData {
-  final int meetingIntervalId;
-  final String meetingIntervalName;
+  final int zoneId;
+  final String zoneName;
 
   ZoneData({
-    required this.meetingIntervalId,
-    required this.meetingIntervalName,
+    required this.zoneId,
+    required this.zoneName,
   });
 }
 
@@ -102,9 +102,11 @@ class _CreatGroupState extends State<CreatGroup> {
   String selectedDate = "";
   List<MeetingIntevalData> interval = [];
   List<GroupData> groupTypes = [];
+  List<ZoneData> myZones = [];
+  List<RegionData> myRegions = [];
   List<ProjectData> projects = [];
-  String? selectedRegion;
-  String? selectedZone;
+  RegionData? selectedRegion;
+  ZoneData? selectedZone;
   TextEditingController groupNameController = new TextEditingController();
   TextEditingController woredaController = new TextEditingController();
   TextEditingController entryFeeController = new TextEditingController();
@@ -145,8 +147,8 @@ class _CreatGroupState extends State<CreatGroup> {
         "meetingIntervalName": selectedMeetingInterval!.meetingIntervalName,
         "entryFee": 0,
         "address": {
-          "region": selectedRegion,
-          "zone": selectedZone,
+          "region": selectedRegion!.regionName,
+          "zone": selectedZone!.zoneName,
           "woreda": woreda,
           "kebele": kebele == "" ? "null" : kebele,
         }
@@ -241,6 +243,7 @@ class _CreatGroupState extends State<CreatGroup> {
     fetchMeetingIntervals();
     fetchGroup();
     fetchProject();
+    fetchRegions();
   }
 
   @override
@@ -296,36 +299,24 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: [
-          DropdownMenuItem<String>(
-            value: "Oromia",
-            child: Center(
-              child: Text('Oromia',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+        items: myRegions.map((RegionData regions) {
+          return DropdownMenuItem<String>(
+            value: regions.regionId.toString(),
+            child: Text(
+              regions.regionName,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
             ),
-          ),
-          DropdownMenuItem<String>(
-            value: "Amhara",
-            child: Center(
-              child: Text('Amhara',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-          DropdownMenuItem<String>(
-            value: "Addis Ababa",
-            child: Center(
-              child: Text('Addis Ababa',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-        ],
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
-            selectedRegion = value;
+            selectedRegion = myRegions.firstWhere(
+              (element) => element.regionId.toString() == value,
+            );
+            myZones.clear();
+            selectedZone = null;
           });
+          fetchZone(selectedRegion!.regionId.toString());
         },
         hint: Text("Select Region",
             style: GoogleFonts.poppins(fontSize: 14, color: Color(0xFFF89520))),
@@ -335,6 +326,7 @@ class _CreatGroupState extends State<CreatGroup> {
     final zone = Padding(
       padding: const EdgeInsets.all(16),
       child: DropdownButtonFormField<String>(
+        value: myZones.isNotEmpty ? myZones.first.zoneId.toString() : null,
         validator: _validateField,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
@@ -359,43 +351,21 @@ class _CreatGroupState extends State<CreatGroup> {
           filled: true,
           fillColor: Colors.transparent,
         ),
-        items: [
-          DropdownMenuItem<String>(
-            value: "Arsi",
-            child: Center(
-              child: Text('Arsi',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
+        items: myZones.map((ZoneData zones) {
+          return DropdownMenuItem<String>(
+            value: zones.zoneId.toString(),
+            child: Text(
+              zones.zoneName,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
             ),
-          ),
-          DropdownMenuItem<String>(
-            value: "Adama",
-            child: Center(
-              child: Text('Adama',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-          DropdownMenuItem<String>(
-            value: "Jimma",
-            child: Center(
-              child: Text('Jimma',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-          DropdownMenuItem<String>(
-            value: "Illu Ababor",
-            child: Center(
-              child: Text('Illu Ababor',
-                  style:
-                      GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-            ),
-          ),
-        ],
+          );
+        }).toList(),
         onChanged: (value) {
           setState(() {
-            selectedZone = value;
+            selectedZone = myZones.firstWhere(
+              (element) => element.zoneId.toString() == value,
+              // orElse: () => null,
+            );
           });
         },
         hint: Text("Select zone",
@@ -1067,6 +1037,102 @@ class _CreatGroupState extends State<CreatGroup> {
       }
       groupTypes.addAll(newGroupType);
       print(groupTypes.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      print(e.toString());
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchRegions() async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // var accessToken = prefs.getStringList("_keyUser");
+      // print(accessToken);
+      // final String authToken = accessToken![0];
+      // final String orgId = accessToken[2];
+      final response = await http.get(
+        Uri.https(baseUrl, '/api/v1/Regions/getAll'),
+        headers: <String, String>{
+          // 'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      print(data);
+      List<RegionData> newRegions = [];
+
+      for (var region in data) {
+        // print(transaction.date);
+        var regionsData = RegionData(
+          regionId: region['regionId'],
+          regionName: region['regionName'],
+        );
+        newRegions.add(regionsData);
+        // print(company);
+      }
+      myRegions.addAll(newRegions);
+      print(newRegions.length);
+
+      // print(transactions[0]);
+
+      // setState(() {
+      //   loading = false;
+      // }
+      // );
+    } catch (e) {
+      var message =
+          'Something went wrong. Please check your internet connection.';
+      print(e.toString());
+      Fluttertoast.showToast(msg: message, fontSize: 18);
+    }
+  }
+
+  Future<void> fetchZone(String regionId) async {
+    try {
+      // var user = await SimplePreferences().getUser();
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // var accessToken = prefs.getStringList("_keyUser");
+      // print(accessToken);
+      // final String authToken = accessToken![0];
+      // final String orgId = accessToken[2];
+      final response = await http.get(
+        Uri.https(baseUrl, '/api/v1/Zone/getAll/$regionId'),
+        headers: <String, String>{
+          // 'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      // transactions = parseTransactions(response.body);
+      var data = jsonDecode(response.body);
+
+      print(data);
+      List<ZoneData> newZoneData = [];
+
+      for (var zone in data) {
+        // print(transaction.date);
+        var zonesData = ZoneData(
+          zoneId: zone['zoneId'],
+          zoneName: zone['zoneName'],
+        );
+        newZoneData.add(zonesData);
+        // print(company);
+      }
+      setState(() {
+        myZones.addAll(newZoneData);
+      });
+      print(myZones.length);
 
       // print(transactions[0]);
 

@@ -28,6 +28,7 @@ class MemberData {
   final double totalOwning;
   final String gender;
   final bool proxy;
+  final String vslaRole;
 
   MemberData(
       {required this.userId,
@@ -37,6 +38,7 @@ class MemberData {
       required this.loanBalance,
       required this.paid,
       required this.totalOwning,
+      required this.vslaRole,
       required this.gender});
 }
 
@@ -384,6 +386,12 @@ class _MembersState extends State<Members> {
                                                       color: Colors.black,
                                                     ),
                                                   ),
+                                                  Text(
+                                                    " ${allMembers[index].vslaRole}",
+                                                    style: GoogleFonts.roboto(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                               Container(
@@ -499,7 +507,7 @@ class _MembersState extends State<Members> {
       // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
-      // print(data);
+      print(data);
       List<MemberData> newMember = [];
       for (var member in data['memberList']) {
         newMember.add(MemberData(
@@ -511,6 +519,7 @@ class _MembersState extends State<Members> {
           loanBalance: member['loanBalance'],
           paid: member['paid'],
           totalOwning: member['totalOwning'],
+          vslaRole: member['vslaRole'],
         ));
       }
 
@@ -699,7 +708,7 @@ class _MembersState extends State<Members> {
                         Future.delayed(const Duration(milliseconds: 100), () {
                           Fluttertoast.showToast(msg: message, fontSize: 18);
                         });
-                      } else if (phoneNumberController.text.length != 10 ||
+                      } else if (phoneNumberController.text.length != 9 ||
                           phoneNumberController.text == "") {
                         const message = 'Invalid phone number format';
                         Future.delayed(const Duration(milliseconds: 100), () {
@@ -789,7 +798,7 @@ class _MembersState extends State<Members> {
                       Future.delayed(const Duration(milliseconds: 100), () {
                         Fluttertoast.showToast(msg: message, fontSize: 18);
                       });
-                    } else if (phoneNumberController.text.length != 10 ||
+                    } else if (phoneNumberController.text.length != 9 ||
                         phoneNumberController.text == "") {
                       const message = 'Invalid phone number format';
                       Future.delayed(const Duration(milliseconds: 100), () {
