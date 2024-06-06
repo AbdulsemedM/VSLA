@@ -666,43 +666,43 @@ class _Home3State extends State<Home3> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.09,
-                                        width: screenWidth * 0.22,
-                                        // color: Colors.amber,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const Meetings()));
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Center(
-                                                child: Image(
-                                                  image: const AssetImage(
-                                                    "assets/images/Meeting.png",
-                                                  ),
-                                                  width: screenWidth * 0.19,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.04,
-                                                ),
-                                              ),
-                                              Text(
-                                                "Meetings",
-                                                style: GoogleFonts.poppins(
-                                                    color: Colors.black),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      // SizedBox(
+                                      //   height:
+                                      //       MediaQuery.of(context).size.height *
+                                      //           0.09,
+                                      //   width: screenWidth * 0.22,
+                                      //   // color: Colors.amber,
+                                      //   child: GestureDetector(
+                                      //     onTap: () {
+                                      //       Navigator.push(
+                                      //           context,
+                                      //           MaterialPageRoute(
+                                      //               builder: (context) =>
+                                      //                   const Meetings()));
+                                      //     },
+                                      //     child: Column(
+                                      //       children: [
+                                      //         Center(
+                                      //           child: Image(
+                                      //             image: const AssetImage(
+                                      //               "assets/images/Meeting.png",
+                                      //             ),
+                                      //             width: screenWidth * 0.19,
+                                      //             height: MediaQuery.of(context)
+                                      //                     .size
+                                      //                     .height *
+                                      //                 0.04,
+                                      //           ),
+                                      //         ),
+                                      //         Text(
+                                      //           "Meetings",
+                                      //           style: GoogleFonts.poppins(
+                                      //               color: Colors.black),
+                                      //         )
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // ),
                                       // SizedBox(
                                       //   height:
                                       //       MediaQuery.of(context).size.height *
