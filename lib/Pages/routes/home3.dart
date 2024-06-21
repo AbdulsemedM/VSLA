@@ -1036,8 +1036,8 @@ class _Home3State extends State<Home3> {
       setState(() {
         totalAmount = data['totalAmount'];
         groupName = (data['groupName']);
-        // print(totalAmount);
-        // print(groupName);
+
+        mileStone.clear();
         mileStone.add(data['milestone']['bronze']);
         mileStone.add(data['milestone']['silver']);
         mileStone.add(data['milestone']['gold']);
@@ -1046,6 +1046,8 @@ class _Home3State extends State<Home3> {
         tipOfTheDay.add(data['tipOfTheDay']["description"]);
         loading = false;
       });
+
+      print(mileStone);
       print(utf8.decode(groupName.runes.toList()));
     } catch (e) {
       var message = e.toString();
@@ -1057,7 +1059,6 @@ class _Home3State extends State<Home3> {
 
   Future<void> fetchTips() async {
     try {
-      // var user = await SimplePreferences().getUser();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
@@ -1069,7 +1070,6 @@ class _Home3State extends State<Home3> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-      // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
       print(data);
       if (data.length > 0) {
