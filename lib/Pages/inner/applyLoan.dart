@@ -560,16 +560,10 @@ class _ApplyLoanState extends State<ApplyLoan> {
         ));
       }
 
-      // setState(() {
-      //   male = data['genderStatics']['male'];
-      //   female = data['genderStatics']['female'];
-      // });
       allMembers.clear();
       allMembers.addAll(newMember);
       print(allMembers.length);
       print("hereee");
-
-      // print(transactions[0]);
 
       setState(() {
         loading = false;
@@ -587,7 +581,6 @@ class _ApplyLoanState extends State<ApplyLoan> {
 
   Future<void> fetchLoanReasons() async {
     try {
-      // var user = await SimplePreferences().getUser();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
@@ -598,7 +591,6 @@ class _ApplyLoanState extends State<ApplyLoan> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
-      // transactions = parseTransactions(response.body);
       var data = jsonDecode(response.body);
 
       // print(data);
@@ -612,13 +604,6 @@ class _ApplyLoanState extends State<ApplyLoan> {
       }
       newLoanReasons.addAll(allreason);
       print(newLoanReasons.length);
-
-      // print(transactions[0]);
-
-      // setState(() {
-      //   loading = false;
-      // }
-      // );
     } catch (e) {
       print(e.toString());
       var message =
