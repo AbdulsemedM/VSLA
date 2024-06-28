@@ -67,7 +67,7 @@ class _SignupState extends State<Signup> {
   signup() async {
     // print(pnumber);
     if (fname.text.isEmpty) {
-      const message = 'Full name is mandatory';
+      const message = 'First name is mandatory';
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
@@ -127,7 +127,7 @@ class _SignupState extends State<Signup> {
                     )));
       } else {
         Fluttertoast.showToast(
-            msg: "Something went wron, please try again", fontSize: 18);
+            msg: "Something went wrong, please try again", fontSize: 18);
       }
     }
   }

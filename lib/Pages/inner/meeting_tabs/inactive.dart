@@ -750,7 +750,7 @@ class _InactiveMeetingState extends State<InactiveMeeting> {
         final responseBody = json.decode(response.body);
         final description =
             responseBody?['message']; // Extract 'description' field
-        if (description == "Something went wron, please try again") {
+        if (description == "Something went wrong, please try again") {
           Fluttertoast.showToast(
               msg: "Something went wron, please try again", fontSize: 18);
         } else {

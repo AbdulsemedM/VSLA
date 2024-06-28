@@ -108,7 +108,7 @@ class _SocialFundsPaymentState extends State<SocialFundsPayment> {
                                   builder: (BuildContext context) {
                                     return AlertDialog(
                                       title: const Text('Caution'),
-                                      content: Text(
+                                      content: const Text(
                                           "Please fill attendance before any payment."),
                                       actions: <Widget>[
                                         TextButton(

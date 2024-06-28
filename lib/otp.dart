@@ -253,7 +253,7 @@ class _OtpState extends State<Otp> {
         print(description);
         if (description == "Something went wrong, please try again") {
           Fluttertoast.showToast(
-              msg: "Something went wron, please try again", fontSize: 18);
+              msg: "Something went wrong, please try again", fontSize: 18);
         } else {
           var message = description ?? "Something went wrong, please try again";
           Fluttertoast.showToast(msg: message, fontSize: 18);
