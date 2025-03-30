@@ -299,8 +299,9 @@ class _AllTrnxState extends State<AllTrnx> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/groups/$groupId/contributors/socialFund'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -352,8 +353,9 @@ class _AllTrnxState extends State<AllTrnx> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(
             baseUrl, '/api/v1/groups/$groupId/constributors/roundPayment'),
         headers: <String, String>{
@@ -589,7 +591,7 @@ class _AllTrnxState extends State<AllTrnx> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Confirm Payment'),
+                                title: const Text('Confirm Payment'),
                                 content: Text(
                                     'Are you sure you want to add ${amountController.text} Birr to ${allMember.fullName}?'),
                                 actions: <Widget>[
@@ -598,7 +600,7 @@ class _AllTrnxState extends State<AllTrnx> {
                                       Navigator.of(context).pop(
                                           false); // User does not confirm deletion
                                     },
-                                    child: Text('Cancel'),
+                                    child: const Text('Cancel'),
                                   ),
                                   TextButton(
                                     onPressed: () {
@@ -608,7 +610,7 @@ class _AllTrnxState extends State<AllTrnx> {
                                       Navigator.of(context)
                                           .pop(true); // User confirms deletion
                                     },
-                                    child: Text('Yes'),
+                                    child: const Text('Yes'),
                                   ),
                                 ],
                               );
@@ -645,7 +647,9 @@ class _AllTrnxState extends State<AllTrnx> {
                                 var accessToken =
                                     prefs.getStringList("_keyUser");
                                 final String authToken = accessToken![0];
-                                var response = await http.post(
+                                final client = createIOClient();
+
+                                var response = await client.post(
                                   Uri.https(baseUrl,
                                       "/api/v1/Transactions/addTransaction"),
                                   headers: <String, String>{
@@ -705,7 +709,7 @@ class _AllTrnxState extends State<AllTrnx> {
                           }
                         },
                         child: loading1
-                            ? CircularProgressIndicator()
+                            ? const CircularProgressIndicator()
                             : Text(
                                 'Add',
                                 style:

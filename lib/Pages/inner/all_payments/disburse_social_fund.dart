@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vsla/Pages/inner/allTrnx.dart';
 import 'package:vsla/login.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:vsla/utils/api_config.dart';
 import 'package:vsla/utils/role.dart';
 
@@ -57,7 +57,7 @@ class MemberData {
 }
 
 class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
-  final PageController _pageController = PageController();
+  // final PageController _pageController = PageController();
   var loading = false;
   var payment = false;
   List<SocialFundsTrnx> allTrnx = [];
@@ -573,8 +573,9 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(baseUrl,
             '/api/v1/Transactions/getAllTransactions/socialFund/$groupId'),
         headers: <String, String>{
@@ -652,8 +653,9 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/groups/$groupId/members'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -702,7 +704,7 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
       });
     }
 
-    String? _validateField(String? value) {
+    String? validateField(String? value) {
       if (value == null || value.isEmpty) {
         return 'This field is required';
       }
@@ -787,7 +789,7 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
                 padding: const EdgeInsets.all(16),
                 child: TextFormField(
                   keyboardType: TextInputType.number,
-                  validator: _validateField,
+                  validator: validateField,
                   controller: amountController,
                   decoration: InputDecoration(
                     contentPadding:
@@ -884,7 +886,7 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
                 child: TextFormField(
                   maxLines: 2,
                   // keyboardType: TextInputType.number,
-                  validator: _validateField,
+                  validator: validateField,
                   controller: descController,
                   decoration: InputDecoration(
                     contentPadding:
@@ -944,14 +946,14 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
                                           Navigator.of(context).pop(
                                               false); // User does not confirm deletion
                                         },
-                                        child: Text('Cancel'),
+                                        child: const Text('Cancel'),
                                       ),
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop(
                                               true); // User confirms deletion
                                         },
-                                        child: Text('Agree'),
+                                        child: const Text('Agree'),
                                       ),
                                     ],
                                   ),
@@ -976,7 +978,9 @@ class _DisburseSocialFundsState extends State<DisburseSocialFunds> {
                               };
                               print(body);
                               try {
-                                var response = await http.post(
+                                final client = createIOClient();
+
+                                var response = await client.post(
                                   Uri.https(baseUrl,
                                       "/api/v1/Transactions/addTransaction"),
                                   headers: <String, String>{

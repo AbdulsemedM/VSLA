@@ -2,12 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsla/Pages/routes/home3.dart';
-import 'package:vsla/Pages/inner/addMember.dart';
-import 'package:http/http.dart' as http;
 import 'package:vsla/utils/api_config.dart';
 
 class TotalReports extends StatefulWidget {
@@ -59,7 +56,7 @@ class _TotalReportsState extends State<TotalReports> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Loan Priority List",
+                      "Loan Priority List".tr,
                       style: GoogleFonts.poppins(
                           fontSize: screenWidth * 0.045,
                           fontWeight: FontWeight.bold),
@@ -128,6 +125,8 @@ class _TotalReportsState extends State<TotalReports> {
                                     MediaQuery.of(context).size.height * 0.13,
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
+                                    // crossAxisAlignment:
+                                    //     CrossAxisAlignment.center,
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -164,12 +163,23 @@ class _TotalReportsState extends State<TotalReports> {
                                                       padding: const EdgeInsets
                                                           .fromLTRB(
                                                           10, 0, 10, 0),
-                                                      child: Text(
-                                                        "Net Share: ${allMembers[index].profit} ETB",
-                                                        style:
-                                                            GoogleFonts.roboto(
-                                                                color: Colors
-                                                                    .orange),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            "Net Share".tr,
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                        .orange),
+                                                          ),
+                                                          Text(
+                                                            ": ${allMembers[index].profit} ETB",
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                        .orange),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ],
@@ -180,12 +190,25 @@ class _TotalReportsState extends State<TotalReports> {
                                                       padding: const EdgeInsets
                                                           .fromLTRB(
                                                           10, 0, 10, 0),
-                                                      child: Text(
-                                                        " Gross Share: ${allMembers[index].grossShare} ETB",
-                                                        style:
-                                                            GoogleFonts.roboto(
-                                                                color: Colors
-                                                                    .blue[400]),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            "Gross Share".tr,
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        400]),
+                                                          ),
+                                                          Text(
+                                                            ": ${allMembers[index].grossShare} ETB",
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        400]),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ],
@@ -198,8 +221,8 @@ class _TotalReportsState extends State<TotalReports> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
-                                          // crossAxisAlignment:
-                                          //     CrossAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
                                             Column(
                                               children: [
@@ -209,12 +232,25 @@ class _TotalReportsState extends State<TotalReports> {
                                                       padding: const EdgeInsets
                                                           .fromLTRB(
                                                           10, 0, 10, 0),
-                                                      child: Text(
-                                                        " Total Contr.: ${allMembers[index].totalContribution} ETB",
-                                                        style:
-                                                            GoogleFonts.roboto(
-                                                                color: Colors
-                                                                    .blue[400]),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            "Contr.".tr,
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        400]),
+                                                          ),
+                                                          Text(
+                                                            ": ${allMembers[index].totalContribution} ETB",
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    color: Colors
+                                                                            .blue[
+                                                                        400]),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ],
@@ -222,13 +258,23 @@ class _TotalReportsState extends State<TotalReports> {
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                      "Debt: ${allMembers[index].debt} ETB",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                              color:
-                                                                  Colors.orange[
+                                                  child: Row(
+                                                    children: [
+                                                      Text("Debt".tr,
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  color: Colors
+                                                                          .orange[
                                                                       900])),
+                                                      Text(
+                                                          ": ${allMembers[index].debt} ETB",
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  color: Colors
+                                                                          .orange[
+                                                                      900])),
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -256,8 +302,9 @@ class _TotalReportsState extends State<TotalReports> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/Transactions/getAllTransactions/report'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -290,7 +337,7 @@ class _TotalReportsState extends State<TotalReports> {
     } catch (e) {
       print(e.toString());
       var message =
-          'Something went wrong. Please check your internet connection.';
+          'Something went wrong, please Check your network connection'.tr;
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }

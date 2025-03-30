@@ -23,7 +23,7 @@ class _MeetingsState extends State<Meetings>
     with SingleTickerProviderStateMixin {
   List<MeetingTypeData> meetingTypes = [];
   List<MeetingIntevalData> meetingIntervals = [];
-  TextEditingController currentRound = new TextEditingController();
+  TextEditingController currentRound = TextEditingController();
   // TextEditingController meetingReason = new TextEditingController();
   String? meeetingType;
   String? meetingInterval;
@@ -45,6 +45,7 @@ class _MeetingsState extends State<Meetings>
     ActiveMeeting(),
     InactiveMeeting(),
   ];
+  @override
   void initState() {
     super.initState();
     fetchMeetingTypes();
@@ -332,7 +333,7 @@ class _MeetingsState extends State<Meetings>
                                           labelText: "Next Meeting Date *",
                                           labelStyle: GoogleFonts.poppins(
                                               fontSize: 14,
-                                              color: Color(0xFFF89520)),
+                                              color: const Color(0xFFF89520)),
                                           hintText: "Select next Meeting Date",
                                         ),
                                         mode: DateTimeFieldPickerMode.date,
@@ -469,7 +470,9 @@ class _MeetingsState extends State<Meetings>
       print("mybodyyyyy");
       print(body);
       try {
-        var response = await http.post(
+        final client = createIOClient();
+
+        var response = await client.post(
           Uri.https(baseUrl, "/api/v1/meetings/createMeeting"),
           headers: <String, String>{
             'Authorization': 'Bearer $authToken',
@@ -505,9 +508,9 @@ class _MeetingsState extends State<Meetings>
           final responseBody = json.decode(response.body);
           final description =
               responseBody?['message']; // Extract 'description' field
-          if (description == "Something went wron, please try again") {
+          if (description == "Something went wrong, please try again") {
             Fluttertoast.showToast(
-                msg: "Something went wron, please try again", fontSize: 18);
+                msg: "Something went wrong, please try again", fontSize: 18);
           } else {
             var message =
                 description ?? "Something went wrong, please try again";
@@ -536,7 +539,9 @@ class _MeetingsState extends State<Meetings>
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
-      final response = await http.get(
+      final client = createIOClient();
+
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/meeting-types/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -581,7 +586,9 @@ class _MeetingsState extends State<Meetings>
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
-      final response = await http.get(
+      final client = createIOClient();
+
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',

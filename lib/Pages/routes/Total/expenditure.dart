@@ -2,12 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vsla/Pages/routes/home3.dart';
-import 'package:vsla/Pages/inner/addMember.dart';
-import 'package:http/http.dart' as http;
 import 'package:vsla/utils/api_config.dart';
 
 class TotalExpenditures extends StatefulWidget {
@@ -148,8 +144,9 @@ class _TotalExpendituresState extends State<TotalExpenditures> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/Transactions/getExpenditures'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -183,5 +180,4 @@ class _TotalExpendituresState extends State<TotalExpenditures> {
       Fluttertoast.showToast(msg: message, fontSize: 18);
     }
   }
-  
 }

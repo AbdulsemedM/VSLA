@@ -64,7 +64,7 @@ class MeetingIntevalData {
 }
 
 class _ActiveMeetingState extends State<ActiveMeeting> {
-  TextEditingController currentRound = new TextEditingController();
+  TextEditingController currentRound = TextEditingController();
   // TextEditingController meetingReason = new TextEditingController();
   String? meeetingType;
   String? meetingInterval;
@@ -79,6 +79,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
   bool? done;
   List<MeetingData> newMeeting = [];
   final PageController _pageController = PageController();
+  @override
   void initState() {
     super.initState();
     fetchMeetings();
@@ -201,12 +202,12 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
     if (text.length <= maxLength) {
       return text;
     } else {
-      return text.substring(0, maxLength) + '...';
+      return '${text.substring(0, maxLength)}...';
     }
   }
 
   void editModal(MeetingData allMeeting) {
-    String? _validateField(String? value) {
+    String? validateField(String? value) {
       if (value == null || value.isEmpty) {
         return 'This field is required';
       }
@@ -406,7 +407,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
                           ),
                           // labelText: "Next Meeting Date *",
                           labelStyle: GoogleFonts.poppins(
-                              fontSize: 14, color: Color(0xFFF89520)),
+                              fontSize: 14, color: const Color(0xFFF89520)),
                           hintText: "$nextMeetingDate",
                         ),
                         mode: DateTimeFieldPickerMode.date,
@@ -536,7 +537,9 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
         };
         print("mybodyyyyy");
         print(body);
-        var response = await http.put(
+        final client = createIOClient();
+
+        var response = await client.put(
           Uri.https(baseUrl, "/api/v1/meetings/editMeeting/$meetingId"),
           headers: <String, String>{
             // 'Authorization': 'Bearer $authToken',
@@ -605,7 +608,9 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
-      var response = await http.put(
+      final client = createIOClient();
+
+      var response = await client.put(
         Uri.https(baseUrl, "/api/v1/meetings/cancelMeeting/$meetingId"),
         headers: <String, String>{
           // 'Authorization': 'Bearer $authToken',
@@ -673,7 +678,9 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       // final String groupId = accessToken[2];
 
       try {
-        var response = await http.put(
+        final client = createIOClient();
+
+        var response = await client.put(
           Uri.https(
               baseUrl, "api/v1/meetings/continueMeeting/$meetingId/$round"),
           headers: <String, String>{
@@ -702,7 +709,7 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
           final responseBody = json.decode(response.body);
           final description =
               responseBody?['message']; // Extract 'description' field
-          if (description == "Something went wron, please try again") {
+          if (description == "Something went wrong, please try again") {
             Fluttertoast.showToast(
                 msg: "Something went wron, please try again", fontSize: 18);
           } else {
@@ -737,8 +744,9 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
       final String groupId = accessToken[2];
+      final client = createIOClient();
 
-      final response = await http.get(
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/meetings/getActiveMeetings/$groupId'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -786,7 +794,9 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
-      final response = await http.get(
+      final client = createIOClient();
+
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/meeting-types/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',
@@ -831,7 +841,9 @@ class _ActiveMeetingState extends State<ActiveMeeting> {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getStringList("_keyUser");
       final String authToken = accessToken![0];
-      final response = await http.get(
+      final client = createIOClient();
+
+      final response = await client.get(
         Uri.https(baseUrl, '/api/v1/meeting-intervals/getAll/App'),
         headers: <String, String>{
           'Authorization': 'Bearer $authToken',

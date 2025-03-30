@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +14,7 @@ import "package:http/http.dart" as http;
 import 'package:vsla/signup.dart';
 import 'package:vsla/utils/api_config.dart';
 import 'package:vsla/utils/role.dart';
+import 'package:vsla/utils/simplePreferences.dart';
 // import 'package:vsla/utils/simplePreferences.dart';
 
 class Login extends StatefulWidget {
@@ -35,18 +38,70 @@ class _LoginState extends State<Login> {
   var regExp3 = RegExp(r'^\+2519\d{8}$');
   var registered = false;
 
+  final List locale = [
+    {'name': 'English', 'locale': const Locale('en', 'US')},
+    {'name': 'Afaan Oromoo', 'locale': const Locale('or', 'ET')},
+    {'name': 'አማርኛ', 'locale': const Locale('am', 'ET')},
+    // {'name': 'Somali', 'locale': Locale('en', 'US')},
+  ];
+  updateLanguage(Locale locale) async {
+    Get.back();
+    Get.updateLocale(locale);
+  }
+
+  buildLanguageDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (builder) {
+          return AlertDialog(
+            backgroundColor: Colors.grey[200],
+            title: Text('Choose Language'.tr),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        child: Text(locale[index]['name']),
+                        onTap: () async {
+                          String selectedLocale = locale[index]['name'];
+                          print(selectedLocale);
+                          SimplePreferences preferences = SimplePreferences();
+                          await preferences.setLanguage(selectedLocale);
+                          print("here");
+                          print(locale[index]['locale']);
+                          updateLanguage(locale[index]['locale']);
+
+                          // await prefs.setBool('repeat', true);
+                        },
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      color: Colors.grey,
+                    );
+                  },
+                  itemCount: locale.length),
+            ),
+          );
+        });
+  }
+
   login() async {
     // pnumber.text = "0912345678";
     // password.text = "123456";
     if (!(regExp1.hasMatch(pnumber.text) ||
         regExp3.hasMatch(pnumber.text) ||
         regExp2.hasMatch(pnumber.text))) {
-      const message = 'Invalid phone number format';
+      var message = 'Invalid phone number format'.tr;
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
     } else if (password.text == "") {
-      const message = 'Invalid password';
+      var message = 'Invalid password'.tr;
       Future.delayed(const Duration(milliseconds: 100), () {
         Fluttertoast.showToast(msg: message, fontSize: 18);
       });
@@ -54,14 +109,16 @@ class _LoginState extends State<Login> {
       setState(() {
         loading = true;
       });
-      pnumber.text = pnumber.text.substring(pnumber.text.length - 9);
+      String num = pnumber.text.substring(pnumber.text.length - 9);
       final body = <String, String>{
-        "username": pnumber.text.toString(),
+        "username": num,
         "password": password.text.toString(),
       };
-      // print(body);
+      print(body);
       try {
-        final response = await http
+        final client = createIOClient();
+
+        final response = await client
             .post(
               Uri.https(baseUrl, '/login'),
               headers: <String, String>{
@@ -71,8 +128,8 @@ class _LoginState extends State<Login> {
             )
             .timeout(const Duration(seconds: 15));
 
-        // print(response.body);
-        // print("here" + "${response.statusCode}");
+        print("here");
+        print(response.body);
 
         if (response.statusCode == 200) {
           // ignore: prefer_interpolation_to_compose_strings
@@ -83,6 +140,7 @@ class _LoginState extends State<Login> {
           if (dataList.isNotEmpty) {
             Map<String, dynamic> data = dataList.first;
             String accessToken = data['access_token'];
+            print(accessToken);
             Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
             print(decodedToken['role'][0]);
             String role = decodedToken['role'][0];
@@ -118,6 +176,9 @@ class _LoginState extends State<Login> {
               print(decodedToken);
               String sub = subVal.toString();
               List<String> newUser = [accessToken, sub, orgId.toString(), role];
+              // print("object");
+              // print(newUser);
+              GlobalStrings.setGlobalString(role);
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
 
@@ -144,13 +205,13 @@ class _LoginState extends State<Login> {
           setState(() {
             loading = false;
           });
-          const message = 'Invalid username or password!';
+          var message = 'Invalid username or password!'.tr;
           Fluttertoast.showToast(msg: message, fontSize: 18);
         }
       } catch (e) {
         print(e.toString());
-        const message =
-            "Something went wrong, please Check your network connection";
+        var message =
+            "Something went wrong, please Check your network connection".tr;
 
         // print(message);
         Fluttertoast.showToast(msg: message, fontSize: 18);
@@ -169,10 +230,10 @@ class _LoginState extends State<Login> {
     return WillPopScope(
       onWillPop: () async {
         final difference = DateTime.now().difference(timeBackPressed);
-        final isExitWarning = difference >= Duration(seconds: 2);
+        final isExitWarning = difference >= const Duration(seconds: 2);
         timeBackPressed = DateTime.now();
         if (isExitWarning) {
-          const message = 'press again to exit';
+          var message = 'press again to exit'.tr;
           Fluttertoast.showToast(msg: message, fontSize: 18);
 
           return false;
@@ -186,17 +247,22 @@ class _LoginState extends State<Login> {
             child: SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "English",
-                      style: GoogleFonts.poppins(fontSize: 15),
-                    ),
-                    const Icon(Icons.arrow_drop_down, size: 30)
-                  ],
+              GestureDetector(
+                onTap: () async {
+                  await buildLanguageDialog(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "English".tr,
+                        style: GoogleFonts.poppins(fontSize: 15),
+                      ),
+                      const Icon(Icons.arrow_drop_down, size: 30)
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -206,14 +272,16 @@ class _LoginState extends State<Login> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    "Sign in to your account",
-                    style: GoogleFonts.poppins(
-                        fontSize: screenWidth * 0.07,
-                        fontWeight: FontWeight.w700),
-                  ),
-                ),
+                    padding: const EdgeInsets.all(15.0),
+                    child: FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        "Sign in to your account".tr,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
@@ -223,7 +291,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                       child: Text(
-                        "Phone Number",
+                        "Phone Number".tr,
                         style: GoogleFonts.poppins(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
@@ -273,7 +341,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                       child: Text(
-                        "Pin",
+                        "Pin".tr,
                         style: GoogleFonts.poppins(
                             fontSize: 15, fontWeight: FontWeight.w600),
                       ),
@@ -360,7 +428,7 @@ class _LoginState extends State<Login> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "LOGIN",
+                                    "LOGIN".tr,
                                     style: GoogleFonts.poppins(
                                       color: Colors
                                           .white, // You can use your color here
@@ -440,11 +508,15 @@ class _LoginState extends State<Login> {
                   child: RichText(
                       text: TextSpan(children: <TextSpan>[
                     TextSpan(
-                        text: "Don't have an account?",
+                        text: "Don't have an account?".tr,
                         style: GoogleFonts.poppins(
                             fontSize: 15, color: Colors.grey[700])),
                     TextSpan(
-                        text: " SIGN UP ",
+                        text: " ".tr,
+                        style: GoogleFonts.poppins(
+                            fontSize: 15, color: Colors.grey[700])),
+                    TextSpan(
+                        text: "SIGNUP".tr,
                         style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 25,
